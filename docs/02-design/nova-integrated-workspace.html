@@ -1,0 +1,1818 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SEbit NOVA · 통합 워크스페이스 (프로토타입)</title>
+<meta name="description" content="NOVA 제품(UX·UI·Grid·Chart·Dashboard·Doc)으로 조립한 멀티탭 업무 워크스페이스 데모 — 예시 데이터">
+<script>
+/* FOUC 방지: 저장된 테마 복원(기본 dark). 단일 라인 · import.meta 불필요(순수 HTML) */
+(function(){try{var t=localStorage.getItem('sebit-theme');document.documentElement.dataset.theme=(t==='light'||t==='dark')?t:'dark';}catch(e){document.documentElement.dataset.theme='dark';}})();
+</script>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   ① 토큰 원장 — nova-showcase-design.md 부록 A 전문 (라이트=:root / 다크=[data-theme=dark])
+   ⛔ 이 블록 외 HEX 직접 사용 금지 (grep 검사 대상)
+   ═══════════════════════════════════════════════════════════════════════ */
+:root{
+  --nova-primary-50:#F3F1FC; --nova-primary-100:#E7E2FA; --nova-primary-200:#CFC5F4;
+  --nova-primary-300:#B3A3EC; --nova-primary-400:#9678E2; --nova-primary-500:#7C52D6;
+  --nova-primary-600:#6636C4; --nova-primary-700:#532AA3; --nova-primary-800:#422383;
+  --nova-primary-900:#351E68; --nova-primary-950:#211244;
+  --nova-primary:var(--nova-primary-600); --nova-primary-hover:var(--nova-primary-700);
+  --nova-aurora-from:#7C52D6; --nova-aurora-via:#3E7DE0; --nova-aurora-to:#2BC8B4;
+  --nova-aurora:linear-gradient(120deg,var(--nova-aurora-from),var(--nova-aurora-via) 45%,var(--nova-aurora-to));
+  /* D2: 대형 그라디언트 텍스트 전용(라이트) — 동일 색상호(violet→blue→teal)의 딥 스텝: via=info-fg(#2857B8 5.9:1)·테일=live-fg(#0B7D70 4.2:1).
+     순수 teal 테일(1.9:1)·순수 via(3.3:1)의 대형텍스트 3.0 미달 부류 제거. 다크는 아래 블록에서 원본 aurora로 재정의(픽셀 무변경) */
+  --nova-aurora-text:linear-gradient(120deg,var(--nova-aurora-from),var(--nova-info-fg) 45%,var(--nova-live-fg));
+  --nova-bg-gnb:#FFFFFF; --nova-bg-page:#F7F6FB; --nova-bg-card:#FFFFFF; --nova-bg-surface:#F1EFF8;
+  --nova-border:#E2DFF0; --nova-border-strong:#CCC7E0;
+  --nova-text:#17132B; --nova-text-sub:#4E4868; --nova-text-muted:#6E6791; --nova-text-faint:#9C96BC;
+  --nova-good-fg:#0B7A54; --nova-good-base:#12A66F; --nova-good-bg:#E4F7EE;
+  --nova-warn-fg:#B45309; --nova-warn-base:#F59E0B; --nova-warn-bg:#FDF3E1;
+  --nova-critical-fg:#B91C1C; --nova-critical-base:#EF4444; --nova-critical-bg:#FCE9E9;
+  --nova-critical-badge:#B91C1C; /* 카운트 배지 배경 — 흰 텍스트 대비 6.5:1 (AA). 라이트/다크 공통 고정 */
+  --nova-info-fg:#2857B8; --nova-info-base:#3E7DE0; --nova-info-bg:#E7EEFB;
+  --nova-live-fg:#0B7D70; --nova-live-base:#2BC8B4; --nova-live-bg:#E2F6F3;
+  --nova-sample-fg:#C2410C; --nova-sample-base:#F97316; --nova-sample-bg:#FDEEE3;
+  --nova-radius-sm:6px; --nova-radius-md:10px; --nova-radius-lg:14px; --nova-radius-xl:20px;
+  --nova-shadow-sm:0 1px 2px rgba(23,19,43,.06); --nova-shadow-md:0 4px 16px rgba(23,19,43,.10);
+  --nova-glow-live:0 0 0 4px rgba(43,200,180,.15);
+  --nova-focus:0 0 0 2px var(--nova-bg-page),0 0 0 4px var(--nova-aurora-to);
+  --nova-dur-fast:120ms; --nova-dur-base:200ms; --nova-dur-slow:400ms; --nova-ease:cubic-bezier(.2,0,0,1);
+  --nova-font-sans:"Pretendard Variable",Pretendard,-apple-system,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --nova-font-mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --nova-space-1:4px; --nova-space-2:8px; --nova-space-3:12px; --nova-space-4:16px; --nova-space-5:20px;
+  --nova-space-6:24px; --nova-space-7:32px; --nova-space-8:40px; --nova-space-9:48px; --nova-space-10:64px;
+  /* 지도 choropleth 5단 램프 — Aurora 램프(저=violet → 고=teal), --nova-aurora 그라디언트 샘플(C①)
+     data-ink 전용(맵 위 텍스트 없음) · map-3=aurora-via · map-5=aurora-to(=live-base) */
+  --nova-map-1:#4B3FA3; --nova-map-2:#6C5AD6;
+  --nova-map-3:var(--nova-aurora-via); --nova-map-4:#2B95CB;
+  --nova-map-5:var(--nova-aurora-to); --nova-map-stroke:var(--nova-border-strong);
+  /* 멀티탭 바 전용 (workspace 부록 A) */
+  --nova-tab-h:40px; --nova-tab-active-bd:var(--nova-primary);
+  --nova-tab-bg:var(--nova-bg-surface); --nova-tab-hover:var(--nova-bg-card);
+}
+[data-theme="dark"]{
+  --nova-primary:var(--nova-primary-400); --nova-primary-hover:var(--nova-primary-300);
+  --nova-bg-gnb:#0B0817; --nova-bg-page:#120E22; --nova-bg-card:#1A1530; --nova-bg-surface:#251E40;
+  --nova-border:#2E2650; --nova-border-strong:#3A3160;
+  --nova-text:#F2F0FA; --nova-text-sub:#A9A3C4; --nova-text-muted:#8E88B0; --nova-text-faint:#6F6893; /* muted #8B84AD→#8E88B0: on bg-surface(#251E40) 4.48→4.71 AA (라이트 무회귀·다크 surface 위 텍스트 전용 상향) */
+  --nova-good-fg:#34D399; --nova-good-bg:rgba(52,211,153,.12);
+  --nova-warn-fg:#FBBF24; --nova-warn-bg:rgba(251,191,36,.12);
+  --nova-critical-fg:#F87171; --nova-critical-bg:rgba(248,113,113,.12);
+  --nova-info-fg:#7FA8EC; --nova-info-bg:rgba(62,125,224,.12);
+  --nova-live-fg:#2BC8B4; --nova-live-bg:rgba(43,200,180,.12);
+  --nova-sample-fg:#FB923C; --nova-sample-bg:rgba(251,146,60,.12);
+  --nova-shadow-sm:0 1px 2px rgba(8,6,20,.35); --nova-shadow-md:0 4px 16px rgba(8,6,20,.45);
+  --nova-aurora-text:var(--nova-aurora); /* D2: 다크는 원본 aurora 그대로(3.4:1 통과) — 라이트 전용 딥 스텝의 다크 오염 차단 */
+  /* Aurora 램프(다크) — 다크 배경 가독 위해 저단 어둡게, 고단 teal 발광 */
+  --nova-map-1:#3A2F7A; --nova-map-2:#5B4AB8;
+  --nova-map-3:var(--nova-aurora-via); --nova-map-4:#2FA8C8;
+  --nova-map-5:#37E0C8;
+}
+/* ═══ ② 베이스 ═══ */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:var(--nova-font-sans); background:var(--nova-bg-page); color:var(--nova-text);
+  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  overflow:hidden; word-break:keep-all;
+}
+.tnum{font-variant-numeric:tabular-nums;}
+.mono{font-family:var(--nova-font-mono);}
+button{font-family:inherit; cursor:pointer;}
+:focus-visible{outline:none; box-shadow:var(--nova-focus);}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.skip-link{position:absolute;left:8px;top:-48px;z-index:200;background:var(--nova-primary-600);color:#fff;padding:8px 14px;border-radius:var(--nova-radius-sm);transition:top var(--nova-dur-fast) var(--nova-ease);text-decoration:none;font-size:13px;font-weight:600;}
+.skip-link:focus{top:8px;}
+@keyframes nova-flash{0%{background:var(--nova-live-bg);}100%{background:transparent;}}
+.flash{animation:nova-flash 600ms var(--nova-ease);}
+@keyframes nova-pulse{0%{transform:scale(1);opacity:.7;}100%{transform:scale(2.2);opacity:0;}}
+@keyframes nova-march{to{stroke-dashoffset:-16;}}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important;}
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   ③ 셸 5층 구조
+   ═══════════════════════════════════════════════════════════════════════ */
+.ws{display:grid;grid-template-rows:40px 56px var(--nova-tab-h) 1fr 32px;grid-template-columns:minmax(0,1fr);height:100vh;height:100dvh;overflow:hidden;}
+/* ── 층① 데모 프레임 바 ── */
+.frame-bar{grid-row:1;display:flex;align-items:center;gap:var(--nova-space-3);min-width:0;overflow:hidden;
+  background:var(--nova-bg-gnb);border-bottom:1px solid var(--nova-border);padding:0 var(--nova-space-4);}
+.brand-mark{width:18px;height:18px;flex:none;}
+.brand-word{font-weight:700;font-size:13px;letter-spacing:-.01em;
+  background:var(--nova-aurora);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap;}
+.badge{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;
+  font-size:12px;font-weight:600;line-height:1;border:1px solid transparent;white-space:nowrap;}
+.badge-sample{color:var(--nova-sample-fg);background:var(--nova-sample-bg);border-color:var(--nova-sample-fg);cursor:pointer;}
+.badge-sample:hover{filter:brightness(1.05);}
+.frame-spacer{flex:1;}
+.frame-tools{display:flex;align-items:center;gap:var(--nova-space-1);}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;height:28px;min-height:28px;padding:0 10px;
+  border:1px solid var(--nova-border);background:transparent;color:var(--nova-text-sub);
+  border-radius:var(--nova-radius-sm);font-size:12px;transition:background var(--nova-dur-fast) var(--nova-ease),color var(--nova-dur-fast) var(--nova-ease),border-color var(--nova-dur-fast) var(--nova-ease);}
+.tool-btn:hover{background:var(--nova-bg-surface);color:var(--nova-text);}
+.tool-btn[aria-pressed="true"]{background:var(--nova-primary-600);border-color:var(--nova-primary-600);color:#fff;} /* 활성 채움=primary-600 고정(라이트=현행, 다크=흰텍스트 AA 7.3:1 · primary-400 3.45 회피) */
+.tool-btn svg{width:14px;height:14px;flex:none;}
+.tool-btn.primary{color:var(--nova-primary);border-color:var(--nova-border-strong);}
+.tool-btn.copy-fail{color:var(--nova-critical-fg);border-color:var(--nova-critical-fg);} /* D6 실패 표시(라이트/다크 var 공용) */
+/* ── 층② 회사 GNB ── */
+.gnb{grid-row:2;position:relative;display:flex;align-items:center;gap:var(--nova-space-4);min-width:0;
+  background:var(--nova-bg-card);border-bottom:1px solid var(--nova-border);padding:0 var(--nova-space-4);}
+.gnb-logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.gnb-logo svg{width:22px;height:22px;color:var(--nova-primary);flex:none;}
+.gnb-menu{display:flex;align-items:stretch;height:100%;margin-left:var(--nova-space-3);}
+.gnb-cat{position:relative;display:flex;align-items:center;}
+.gnb-cat>button{display:inline-flex;align-items:center;gap:5px;height:100%;padding:0 14px;border:0;background:transparent;
+  color:var(--nova-text-sub);font-size:14px;font-weight:500;border-bottom:2px solid transparent;}
+.gnb-cat>button:hover,.gnb-cat>button[aria-expanded="true"]{color:var(--nova-text);border-bottom-color:var(--nova-primary);}
+.gnb-cat>button .caret{width:9px;height:9px;transition:transform var(--nova-dur-fast) var(--nova-ease);opacity:.7;}
+.gnb-cat>button[aria-expanded="true"] .caret{transform:rotate(180deg);}
+.submenu{position:absolute;top:100%;left:0;min-width:248px;background:var(--nova-bg-card);
+  border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);box-shadow:var(--nova-shadow-md);
+  padding:6px;z-index:60;display:none;transform-origin:top;}
+.submenu.open{display:block;animation:nova-slidedown var(--nova-dur-base) var(--nova-ease);}
+@keyframes nova-slidedown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.submenu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--nova-text);font-size:13px;padding:9px 10px;border-radius:var(--nova-radius-sm);min-height:40px;}
+.submenu button:hover,.submenu button:focus-visible{background:var(--nova-bg-surface);}
+.submenu .mi-ico{width:18px;height:18px;flex:none;color:var(--nova-primary);}
+.submenu .mi-star{color:var(--nova-sample-fg);font-size:11px;margin-left:auto;} /* 동일 계열: 별=sample-fg(AA) */
+.submenu .mi-sub{display:block;font-size:11px;color:var(--nova-text-muted);}
+.gnb-right{margin-left:auto;display:flex;align-items:center;gap:var(--nova-space-3);}
+.bell{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border:0;background:transparent;color:var(--nova-text-sub);border-radius:var(--nova-radius-sm);}
+.bell:hover{background:var(--nova-bg-surface);color:var(--nova-text);}
+.bell svg{width:18px;height:18px;}
+.bell .dot{position:absolute;top:5px;right:6px;min-width:15px;height:15px;padding:0 3px;border-radius:999px;
+  background:var(--nova-critical-badge);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;font-variant-numeric:tabular-nums;}
+.user-chip{display:flex;align-items:center;gap:8px;padding:4px 6px 4px 4px;border-radius:999px;border:1px solid var(--nova-border);}
+.user-chip .av{width:26px;height:26px;border-radius:999px;background:var(--nova-aurora);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none;}
+.user-chip .un{font-size:13px;white-space:nowrap;}
+.notif-pop{position:absolute;top:calc(100% - 4px);right:var(--nova-space-4);width:320px;background:var(--nova-bg-card);
+  border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);box-shadow:var(--nova-shadow-md);z-index:70;display:none;}
+.notif-pop.open{display:block;animation:nova-slidedown var(--nova-dur-base) var(--nova-ease);}
+.notif-pop h4{margin:0;padding:12px 14px;font-size:13px;border-bottom:1px solid var(--nova-border);}
+.notif-pop ul{list-style:none;margin:0;padding:6px;max-height:280px;overflow:auto;}
+.notif-pop li{padding:9px 10px;border-radius:var(--nova-radius-sm);font-size:12.5px;color:var(--nova-text-sub);}
+.notif-pop li:hover{background:var(--nova-bg-surface);}
+.notif-pop li b{color:var(--nova-text);font-weight:600;}
+.notif-pop li .t{display:block;font-size:11px;color:var(--nova-text-muted);margin-top:2px;}
+/* ── 층③ 멀티탭 바 = NOVA UX TabWorkspace ── */
+.tabbar{grid-row:3;display:flex;align-items:stretch;background:var(--nova-tab-bg);
+  border-bottom:1px solid var(--nova-border);padding:0 var(--nova-space-2);gap:2px;min-width:0;}
+.tabs-scroll{display:flex;align-items:stretch;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;scroll-behavior:smooth;}
+.tabs-scroll::-webkit-scrollbar{display:none;}
+.tab{position:relative;display:inline-flex;align-items:center;gap:7px;height:100%;max-width:210px;padding:0 10px;
+  border:0;background:transparent;color:var(--nova-text-sub);font-size:13px;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:background var(--nova-dur-fast) var(--nova-ease),color var(--nova-dur-fast) var(--nova-ease);flex:none;}
+.tab:hover{background:var(--nova-tab-hover);color:var(--nova-text);}
+.tab[aria-selected="true"]{color:var(--nova-text);border-bottom-color:transparent;background:var(--nova-tab-hover);}
+/* Aurora 2px 언더라인 모티프(D-A) — 탭 활성 */
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--nova-aurora);}
+.tab .t-ico{width:15px;height:15px;flex:none;opacity:.85;}
+.tab .t-label{overflow:hidden;text-overflow:ellipsis;max-width:14ch;}
+.tab .t-badge{min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--nova-critical-badge);
+  color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+.tab .t-pin{width:12px;height:12px;flex:none;color:var(--nova-primary);}
+.tab .t-close{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--nova-radius-sm);color:var(--nova-text-muted);margin-right:-4px;}
+.tab .t-close:hover{background:var(--nova-critical-bg);color:var(--nova-critical-fg);}
+.tab .t-close svg{width:11px;height:11px;}
+.tab.dragging{opacity:.45;}
+.tab.drop-before::before,.tab.drop-after::after{content:"";position:absolute;top:6px;bottom:6px;width:2px;background:var(--nova-primary);}
+.tab.drop-before::before{left:-1px;} .tab.drop-after::after{right:-1px;}
+.tab-home .t-close{display:none;}
+.tab-pinned .t-close{display:none;} /* 핀 탭 = 닫기 숨김(핀 해제로만 닫힘) */
+.tabbar-nav{display:inline-flex;align-items:center;justify-content:center;width:26px;flex:none;border:0;
+  background:transparent;color:var(--nova-text-sub);}
+.tabbar-nav:hover{color:var(--nova-text);background:var(--nova-tab-hover);}
+.tabbar-nav svg{width:14px;height:14px;}
+.tabbar-nav[hidden]{display:none;}
+.tab-add{flex:none;width:30px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;
+  color:var(--nova-text-sub);border-left:1px solid var(--nova-border);}
+.tab-add:hover{color:var(--nova-primary);background:var(--nova-tab-hover);}
+.tab-add svg{width:16px;height:16px;}
+/* 컨텍스트 메뉴 / 오버플로 드롭다운 공통 */
+.popmenu{position:fixed;z-index:120;min-width:190px;background:var(--nova-bg-card);border:1px solid var(--nova-border);
+  border-radius:var(--nova-radius-md);box-shadow:var(--nova-shadow-md);padding:5px;font-size:13px;}
+.popmenu button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--nova-text);padding:8px 10px;border-radius:var(--nova-radius-sm);min-height:36px;}
+.popmenu button:hover:not(:disabled),.popmenu button:focus-visible{background:var(--nova-bg-surface);}
+.popmenu button:disabled{color:var(--nova-text-faint);cursor:not-allowed;}
+.popmenu button svg{width:15px;height:15px;flex:none;opacity:.8;}
+.popmenu .divider{height:1px;background:var(--nova-border);margin:4px 2px;}
+.popmenu .dot{width:8px;height:8px;border-radius:999px;background:var(--nova-live-base);flex:none;}
+.popmenu .mk-active{margin-left:auto;color:var(--nova-primary);font-size:11px;}
+/* ═══ 층④ 본문: LNB + 스테이지 ═══ */
+.body-row{grid-row:4;display:grid;grid-template-columns:232px 1fr;min-height:0;}
+.lnb{background:var(--nova-bg-card);border-right:1px solid var(--nova-border);overflow-y:auto;padding:var(--nova-space-4);display:flex;flex-direction:column;gap:var(--nova-space-5);}
+.persona{display:flex;align-items:center;gap:10px;}
+.persona .av{width:40px;height:40px;border-radius:var(--nova-radius-md);background:var(--nova-aurora);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;}
+.persona .greet{font-size:12px;color:var(--nova-text-muted);}
+.persona .who{font-size:14px;font-weight:600;}
+.lnb h5{margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--nova-text-muted);}
+.lnb-tree{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.lnb-tree button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--nova-text-sub);font-size:13px;padding:8px 10px;border-radius:var(--nova-radius-sm);min-height:38px;}
+.lnb-tree button:hover{background:var(--nova-bg-surface);color:var(--nova-text);}
+.lnb-tree button[aria-current="true"]{background:var(--nova-bg-surface);color:var(--nova-primary);font-weight:600;}
+.lnb-tree button svg{width:16px;height:16px;flex:none;opacity:.75;}
+.lnb-ctx{border-top:1px solid var(--nova-border);padding-top:var(--nova-space-4);}
+.stage{position:relative;overflow:auto;background:var(--nova-bg-page);min-width:0;min-height:0;}
+.tabpane{padding:var(--nova-space-6);min-height:100%;}
+.tabpane[hidden]{display:none;}
+/* ═══ 층⑥ 푸터 ═══ */
+.footer{grid-row:5;display:flex;align-items:center;padding:0 var(--nova-space-4);background:var(--nova-bg-gnb);
+  border-top:1px solid var(--nova-border);font-size:11.5px;color:var(--nova-text-muted);gap:6px;overflow:hidden;white-space:nowrap;}
+.footer b{color:var(--nova-text-sub);font-weight:600;}
+.footer .disc{overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
+/* 라이브 텔레메트리 레일(D-A) — 갱신시각·OEE·정시출하 mono 흐름 */
+.footer .telemetry{flex:none;display:flex;align-items:center;gap:12px;padding-left:14px;margin-left:auto;
+  border-left:1px solid var(--nova-border);font-family:var(--nova-font-mono);font-variant-numeric:tabular-nums;color:var(--nova-text-sub);}
+.footer .telemetry .tm{display:inline-flex;align-items:center;gap:5px;}
+.footer .telemetry .tm .lbl{color:var(--nova-text-muted);}
+.footer .telemetry .live-dot{width:6px;height:6px;border-radius:999px;background:var(--nova-live-base);box-shadow:0 0 0 3px var(--nova-live-bg);flex:none;}
+@media (max-width:768px){.footer .telemetry .tm.opt{display:none;}}
+@media (max-width:520px){.footer .telemetry{display:none;}}
+/* ═══ 공통: 타이포/카드/로컬 툴바/배지 ═══ */
+/* ic() 기본 아이콘 안전치수(N-1) — 컨테이너 규칙(.tool-btn svg 등 특이성 높음)이 항상 우선 */
+.ic-inline{width:14px;height:14px;flex:none;vertical-align:-3px;}
+.pane-head{display:flex;align-items:flex-end;gap:var(--nova-space-4);margin-bottom:var(--nova-space-5);flex-wrap:wrap;}
+.pane-title{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0;}
+.pane-sub{font-size:13px;color:var(--nova-text-muted);margin:2px 0 0;}
+.pane-xtag{margin-left:auto;}
+.xtag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--nova-font-mono);
+  color:var(--nova-primary);background:var(--nova-primary-50);border:1px solid var(--nova-border);
+  padding:3px 8px;border-radius:999px;}
+[data-theme="dark"] .xtag{background:rgba(150,120,226,.12);}
+.local-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:var(--nova-space-5);
+  padding:10px 12px;background:var(--nova-bg-surface);border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);}
+.local-bar .lb-note{font-size:12px;color:var(--nova-text-sub);}
+.seg{display:inline-flex;border:1px solid var(--nova-border);border-radius:var(--nova-radius-sm);overflow:hidden;}
+.seg button{border:0;background:transparent;color:var(--nova-text-sub);font-size:12px;padding:6px 12px;min-height:32px;}
+.seg button[aria-pressed="true"]{background:var(--nova-primary-600);color:#fff;} /* 활성 채움=primary-600 고정(흰텍스트 AA · 다크 primary-400 3.45 회피) */
+.card{background:var(--nova-bg-card);border:1px solid var(--nova-border);border-radius:var(--nova-radius-lg);box-shadow:var(--nova-shadow-sm);}
+.st-good{color:var(--nova-good-fg);} .st-warn{color:var(--nova-warn-fg);} .st-critical{color:var(--nova-critical-fg);} .st-info{color:var(--nova-info-fg);}
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:500;}
+.pill::before{content:"";width:7px;height:7px;border-radius:999px;background:currentColor;opacity:.9;}
+.pill-good{color:var(--nova-good-fg);background:var(--nova-good-bg);}
+.pill-warn{color:var(--nova-warn-fg);background:var(--nova-warn-bg);}
+.pill-critical{color:var(--nova-critical-fg);background:var(--nova-critical-bg);}
+.pill-down{color:var(--nova-text-muted);background:var(--nova-bg-surface);}
+/* ═══ 홈 런처 ═══ */
+.launcher{display:grid;gap:var(--nova-space-5);}
+.launch-hero{padding:var(--nova-space-7);border-radius:var(--nova-radius-xl);border:1px solid var(--nova-border);
+  background:radial-gradient(120% 140% at 15% 0%,rgba(124,82,214,.14),transparent 55%),var(--nova-bg-card);}
+.launch-hero h1{font-size:clamp(24px,3.2vw,34px);line-height:1.2;margin:0 0 8px;letter-spacing:-.02em;}
+.launch-hero h1 .grad{background:var(--nova-aurora-text);-webkit-background-clip:text;background-clip:text;color:transparent;} /* D2: aurora→aurora-text(라이트 테일 AA) */
+.launch-hero p{max-width:64ch;color:var(--nova-text-sub);margin:0;font-size:14px;}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:var(--nova-space-5);}
+.cat-card{padding:var(--nova-space-5);display:flex;flex-direction:column;gap:12px;}
+.cat-card .ch{display:flex;align-items:center;gap:10px;}
+.cat-card .ch .ci{width:36px;height:36px;border-radius:var(--nova-radius-md);background:var(--nova-primary-50);
+  color:var(--nova-primary);display:flex;align-items:center;justify-content:center;flex:none;}
+[data-theme="dark"] .cat-card .ch .ci{background:rgba(150,120,226,.14);}
+.cat-card .ch h3{margin:0;font-size:15px;}
+.cat-card .ch .cn{font-size:11.5px;color:var(--nova-text-muted);}
+.cat-links{display:flex;flex-direction:column;gap:4px;}
+.cat-links button{display:flex;align-items:center;gap:8px;border:0;background:transparent;text-align:left;
+  color:var(--nova-text-sub);font-size:13px;padding:8px 10px;border-radius:var(--nova-radius-sm);min-height:38px;}
+.cat-links button:hover{background:var(--nova-bg-surface);color:var(--nova-text);}
+.cat-links button .lk{width:6px;height:6px;border-radius:999px;background:var(--nova-primary);flex:none;}
+.cat-links button .star{color:var(--nova-sample-fg);font-size:10px;margin-left:auto;} /* 별=sample-fg(라이트 #C2410C 5.2:1 · base #F97316 2.8 AA미달 회피) */
+.coming{margin-top:var(--nova-space-3);padding-top:var(--nova-space-4);border-top:1px dashed var(--nova-border);}
+.coming .ct{font-size:11px;color:var(--nova-text-muted);margin-bottom:6px;}
+.coming .cbadges{display:flex;flex-wrap:wrap;gap:6px;}
+.coming .cbadges span{font-size:11px;color:var(--nova-text-muted);border:1px dashed var(--nova-border-strong);
+  border-radius:999px;padding:3px 9px;cursor:default;}
+/* ═══ T1 상황실: 12col 위젯 그리드 ═══ */
+.room-toolbar{margin-bottom:var(--nova-space-4);}
+.subviews{display:inline-flex;gap:2px;background:var(--nova-bg-surface);padding:3px;border-radius:var(--nova-radius-md);border:1px solid var(--nova-border);}
+.subviews button{position:relative;border:0;background:transparent;color:var(--nova-text-sub);font-size:13px;
+  padding:7px 14px;border-radius:var(--nova-radius-sm);min-height:34px;overflow:hidden;}
+.subviews button[aria-selected="true"]{background:var(--nova-bg-card);color:var(--nova-text);box-shadow:var(--nova-shadow-sm);}
+.subviews button .prog{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--nova-aurora);}
+.room-meta{margin-left:auto;font-size:12px;color:var(--nova-text-sub);display:flex;align-items:center;gap:6px;}
+.grid12{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--nova-space-4);align-content:start;}
+.view{display:none;} .view.on{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--nova-space-4);}
+.widget{grid-column:span 4;background:var(--nova-bg-card);border:1px solid var(--nova-border);border-radius:var(--nova-radius-lg);
+  box-shadow:var(--nova-shadow-sm);display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.w-c12{grid-column:span 12;} .w-c8{grid-column:span 8;} .w-c5{grid-column:span 5;} .w-c7{grid-column:span 7;} .w-c6{grid-column:span 6;}
+.w-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px;}
+.w-head h4{margin:0;font-size:13px;font-weight:600;flex:1;}
+.w-head .w-act{display:flex;gap:4px;}
+.w-body{padding:0 14px 12px;flex:1;min-height:0;}
+.w-insight{border-top:1px solid var(--nova-border);padding:8px 14px;font-size:12px;color:var(--nova-text-sub);display:flex;align-items:center;gap:7px;min-height:34px;}
+.w-insight::before{content:"";width:5px;height:5px;transform:rotate(45deg);background:var(--nova-primary);flex:none;}
+.w-insight b{font-weight:600;}
+/* KPI 스트립 */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--nova-space-3);}
+.kpi{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);background:var(--nova-bg-surface);}
+.kpi .kv{font-size:22px;font-weight:700;line-height:1;font-family:var(--nova-font-mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
+.kpi .kl{font-size:11.5px;color:var(--nova-text-sub);margin-top:4px;}
+.kpi .kd{font-size:11px;font-weight:600;margin-top:3px;}
+.kpi .kd.up{color:var(--nova-good-fg);} .kpi .kd.down{color:var(--nova-critical-fg);}
+.donut-mini{width:44px;height:44px;flex:none;}
+/* 리스트/피드 */
+.feed-tabs{display:flex;gap:4px;margin-bottom:8px;}
+.feed-tabs button{border:0;background:transparent;color:var(--nova-text-sub);font-size:12px;padding:5px 9px;border-radius:var(--nova-radius-sm);min-height:30px;}
+.feed-tabs button[aria-selected="true"]{background:var(--nova-bg-surface);color:var(--nova-text);font-weight:600;}
+.feed-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.feed-list li{padding:8px 10px;border-radius:var(--nova-radius-sm);font-size:12.5px;color:var(--nova-text-sub);display:flex;gap:8px;align-items:center;}
+.feed-list li:hover{background:var(--nova-bg-surface);}
+.feed-list li .nd{width:6px;height:6px;border-radius:999px;background:var(--nova-live-base);flex:none;}
+.feed-list li .ft{margin-left:auto;font-size:11px;color:var(--nova-text-muted);}
+.appr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.appr-grid .ac{padding:10px;border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);text-align:center;}
+.appr-grid .ac .n{font-size:20px;font-weight:700;} .appr-grid .ac .l{font-size:11px;color:var(--nova-text-muted);}
+.memo-card{border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);padding:8px;margin-bottom:8px;background:var(--nova-warn-bg);}
+.memo-card textarea{width:100%;border:0;background:transparent;color:var(--nova-text);font-family:inherit;font-size:12.5px;resize:vertical;min-height:44px;}
+.memo-card textarea:focus-visible{outline:none;box-shadow:none;}
+.memo-del{border:0;background:transparent;color:var(--nova-critical-fg);font-size:11px;}
+/* 그리드 테이블 */
+.gtable{width:100%;border-collapse:collapse;font-size:12.5px;}
+.gtable th{position:sticky;top:0;background:var(--nova-bg-surface);text-align:left;padding:8px 10px;font-weight:600;
+  color:var(--nova-text-sub);border-bottom:1px solid var(--nova-border);cursor:pointer;white-space:nowrap;user-select:none;}
+.gtable th[aria-sort]:not([aria-sort="none"])::after{content:"▾";margin-left:4px;font-size:10px;color:var(--nova-primary);}
+.gtable th[aria-sort="ascending"]::after{content:"▴";}
+.gtable td{padding:7px 10px;border-bottom:1px solid var(--nova-border);white-space:nowrap;}
+.gtable tbody tr:hover{background:var(--nova-bg-surface);}
+.gtable tbody tr[aria-selected="true"]{background:var(--nova-primary-50);}
+[data-theme="dark"] .gtable tbody tr[aria-selected="true"]{background:rgba(150,120,226,.14);}
+/* Aurora 모티프(D-A) — 선택 행 좌측 accent */
+.gtable tbody tr[aria-selected="true"] td:first-child{box-shadow:inset 2px 0 0 var(--nova-aurora-to);}
+.gtable td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.gtable td.edit{cursor:cell;} .gtable td.edit:hover{outline:1px dashed var(--nova-primary);outline-offset:-2px;}
+.delta-up{color:var(--nova-critical-fg);} .delta-dn{color:var(--nova-info-fg);}
+/* T3 조건부서식 히트 셀 — 배경=map 램프(T7 무텍스트 choropleth와 동일 토큰) 그대로 유지.
+   숫자 텍스트만 tier별 대비 확보(전 셀 AA≥5.1 · 다크+라이트 공통):
+   저단(1~2 짙은 보라)=흰 · 고단(3~5 밝은 청/틸)=검정. #fff/#000=팔레트색 아닌 텍스트 온필(가독 최대화). */
+.gtable td.heat-cell{color:#fff;}
+.gtable td.heat-cell.heat-ink{color:#000;}
+.gtable .cell-input{width:70px;border:1px solid var(--nova-primary);border-radius:4px;padding:2px 4px;font-size:12px;
+  font-family:inherit;background:var(--nova-bg-card);color:var(--nova-text);text-align:right;}
+.grid-scroll{max-height:320px;overflow:auto;border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);}
+.grid-scroll.frozen th:first-child,.grid-scroll.frozen td:first-child{position:sticky;left:0;background:var(--nova-bg-card);z-index:1;}
+.grid-scroll.frozen th:first-child{z-index:3;background:var(--nova-bg-surface);}
+/* 지도 */
+.map-wrap{position:relative;}
+.map-wrap svg{width:100%;height:auto;display:block;}
+.map-region{stroke:var(--nova-map-stroke);stroke-width:0.8;cursor:pointer;transition:stroke var(--nova-dur-fast) var(--nova-ease),opacity var(--nova-dur-fast) var(--nova-ease);outline:none;fill-rule:evenodd;}
+.map-inset-frame{fill:none;stroke:var(--nova-map-stroke);stroke-width:1;stroke-dasharray:4 3;}
+.map-inset-label{fill:var(--nova-text-sub);font-size:9px;font-family:var(--nova-font-mono);} /* muted→sub: m0(surface)+dashed-frame 위 인셋 라벨 실측 AA 4.11/4.39→6.73/6.08 (SVG텍스트 스윕 잔여) */
+.map-region:hover{stroke:var(--nova-text-sub);stroke-width:1.5;}
+.map-region:focus-visible{stroke:var(--nova-aurora-to);stroke-width:2;}
+.map-region.sel{stroke:var(--nova-live-base);stroke-width:2.5;}
+.map-region.dim{opacity:.35;}
+.m1{fill:var(--nova-map-1);} .m2{fill:var(--nova-map-2);} .m3{fill:var(--nova-map-3);} .m4{fill:var(--nova-map-4);} .m5{fill:var(--nova-map-5);}
+.m0{fill:var(--nova-bg-surface);}
+.map-marker{fill:var(--nova-live-base);stroke:var(--nova-bg-card);stroke-width:1.5;}
+.map-marker.pulse{animation:nova-pulse 1s var(--nova-ease);transform-origin:center;transform-box:fill-box;}
+.map-legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--nova-text-muted);}
+.map-legend .lg{display:flex;align-items:center;gap:5px;}
+.map-legend .sw{width:14px;height:12px;border-radius:3px;border:1px solid var(--nova-map-stroke);}
+.map-tip{position:absolute;pointer-events:none;background:var(--nova-bg-card);border:1px solid var(--nova-border);
+  border-radius:var(--nova-radius-sm);box-shadow:var(--nova-shadow-md);padding:7px 10px;font-size:12px;z-index:20;display:none;white-space:nowrap;}
+.map-back{position:absolute;top:8px;left:8px;}
+/* SVG 차트 공통 */
+.chart-svg{width:100%;height:auto;display:block;overflow:visible;}
+.chart-svg .axis{stroke:var(--nova-border);stroke-width:1;}
+.chart-svg .grid-l{stroke:var(--nova-border);stroke-width:1;stroke-dasharray:2 3;opacity:.6;}
+.chart-svg .lbl{fill:var(--nova-text-muted);font-size:10px;}
+/* 버블/산점 라벨=마커 채움(반투명 primary) 위에 얹힘 → 축 lbl(카드 위 text-muted)과 달리 text-muted면 대비 미달.
+   전용 클래스로 --nova-text(테마별 near-black/near-white 자동전환) 부여 → 채움 휘도에 맞춰 라이트=검정계·다크=흰계.
+   ⛔ 인라인 fill 속성은 .lbl CSS가 오버라이드하던 근본(노드 라벨과 동일) → 클래스로 지정. */
+.chart-svg .lbl-mark{fill:var(--nova-text);font-size:9px;}
+/* D1: 버블 라벨 할로 — 글리프 주변을 카드배경으로 감싸 스트로크/채움 교차와 무관하게 대비=text vs bg-card 고정(라이트 17:1/다크 15:1) */
+.chart-svg .lbl-halo{paint-order:stroke;stroke:var(--nova-bg-card);stroke-width:3px;stroke-linejoin:round;}
+.chart-svg .ln{fill:none;stroke-width:2;}
+.chart-svg .ln-1{stroke:var(--nova-primary);} .chart-svg .ln-2{stroke:var(--nova-aurora-to);}
+.chart-svg .dot{fill:var(--nova-bg-card);stroke:var(--nova-primary);stroke-width:1.5;}
+.bar-1{fill:var(--nova-primary);} .bar-2{fill:var(--nova-primary-300);} .bar-3{fill:var(--nova-aurora-via);} .bar-4{fill:var(--nova-aurora-to);}
+.chart-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--nova-space-5);}
+.chart-cell{padding:var(--nova-space-4);}
+.chart-cell h4{margin:0 0 4px;font-size:13px;}
+.chart-cell .cc-x{font-size:10.5px;font-family:var(--nova-font-mono);color:var(--nova-text-muted);margin-bottom:10px;}
+/* 마스터-디테일 */
+.md-grid{display:grid;grid-template-columns:1fr 2fr;gap:var(--nova-space-4);}
+.md-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.md-list li button{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:1px solid transparent;
+  background:transparent;color:var(--nova-text-sub);font-size:13px;padding:9px 10px;border-radius:var(--nova-radius-sm);min-height:44px;}
+.md-list li button:hover{background:var(--nova-bg-surface);}
+.md-list li button[aria-current="true"]{background:var(--nova-bg-surface);border-color:var(--nova-border);color:var(--nova-text);box-shadow:inset 2px 0 0 var(--nova-aurora-to);}
+.md-detail{padding:var(--nova-space-4);}
+.kv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;}
+.kv-grid .kv{padding:10px;border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);background:var(--nova-bg-surface);}
+.kv-grid .kv .k{font-size:11px;color:var(--nova-text-muted);} .kv-grid .kv .v{font-size:15px;font-weight:600;margin-top:3px;font-family:var(--nova-font-mono);font-variant-numeric:tabular-nums;}
+/* T15/T17 그래프 */
+.graph-wrap{position:relative;border:1px solid var(--nova-border);border-radius:var(--nova-radius-lg);background:var(--nova-bg-card);overflow:hidden;}
+.graph-wrap svg{width:100%;height:auto;display:block;}
+.gnode rect,.gnode circle{transition:opacity var(--nova-dur-fast) var(--nova-ease);}
+/* 노드 라벨 잉크 = 채움 휘도별 전환(T3 히트셀과 동일 원리). #000/#fff=팔레트색 아닌 텍스트 온필(가독 최대·grep 예외).
+   기본=검정(밝은 채움 파랑/틸/주황/초록/연보라 실측 AA≥4.54 양테마) · .ink-lite=흰(어두운 보라 primary-600 채움 AA≥5.85). 인라인 fill="#fff"는 CSS가 오버라이드하던 근본 → 제거 */
+.gnode text{fill:#000;font-size:10px;}
+.gnode text.ink-lite{fill:#fff;}
+.gnode.dim{opacity:.25;}
+.gedge{fill:none;stroke:var(--nova-border-strong);stroke-width:1.5;}
+.gedge.anim{stroke:var(--nova-primary);stroke-dasharray:5 4;animation:nova-march 1s linear infinite;}
+.gedge.dim{opacity:.15;}
+.graph-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.graph-legend .gl{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--nova-text-sub);}
+.graph-legend .gl .sw{width:11px;height:11px;border-radius:3px;flex:none;}
+.nc-input{fill:var(--nova-info-base);} .nc-llm{fill:var(--nova-primary-600);} .nc-data{fill:var(--nova-aurora-to);} /* llm 채움=primary-600(500→600): 흰 잉크 라이트 4.31→5.85 AA. 보라 아이덴티티 유지(같은 램프 1스텝) */
+.nc-logic{fill:var(--nova-warn-base);} .nc-output{fill:var(--nova-good-base);} .nc-tool{fill:var(--nova-primary-300);}
+.on-proc{fill:var(--nova-primary-600);} .on-mat{fill:var(--nova-aurora-via);} .on-qual{fill:var(--nova-aurora-to);} /* proc 채움=primary-600(500→600): 흰 잉크 AA(nc-llm와 동일 원리) */
+/* 컴포넌트 팔레트 / UI 템플릿 */
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--nova-space-5);}
+.unit{padding:var(--nova-space-4);display:flex;flex-direction:column;gap:10px;}
+.unit h4{margin:0;font-size:13px;} .unit .live{padding:12px;border:1px dashed var(--nova-border);border-radius:var(--nova-radius-md);}
+.unit .code-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ui-input{width:100%;padding:8px 10px;border:1px solid var(--nova-border);border-radius:var(--nova-radius-sm);background:var(--nova-bg-surface);color:var(--nova-text);font-family:inherit;font-size:13px;}
+.ui-btn{padding:8px 14px;border-radius:var(--nova-radius-sm);border:1px solid var(--nova-primary-600);background:var(--nova-primary-600);color:#fff;font-size:13px;} /* 솔리드 채움=primary-600 고정(흰텍스트 AA 7.3:1 · 다크 primary-400 3.45 회피) */
+.ui-btn.ghost{background:transparent;color:var(--nova-primary);border-color:var(--nova-primary);} /* ghost=primary 텍스트/보더 유지(무회귀) */
+.ui-switch{width:40px;height:22px;border-radius:999px;background:var(--nova-border-strong);position:relative;border:0;transition:background var(--nova-dur-fast);}
+.ui-switch[aria-checked="true"]{background:var(--nova-primary);}
+.ui-switch::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:999px;background:#fff;transition:left var(--nova-dur-fast) var(--nova-ease);}
+.ui-switch[aria-checked="true"]::after{left:20px;}
+.tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--nova-space-5);}
+.tmpl{overflow:hidden;} .tmpl .thumb{height:150px;background:var(--nova-bg-surface);border-bottom:1px solid var(--nova-border);position:relative;padding:12px;}
+.tmpl .tinfo{padding:12px 14px;} .tmpl .tinfo h4{margin:0 0 3px;font-size:14px;} .tmpl .tinfo p{margin:0;font-size:12px;color:var(--nova-text-muted);}
+.mini-bar{position:absolute;bottom:12px;background:var(--nova-primary);border-radius:2px 2px 0 0;}
+/* X-ray 전역 */
+.xray-on [data-nova]{outline:1.5px dashed var(--nova-primary);outline-offset:-2px;position:relative;}
+.xray-on [data-nova]::before{content:attr(data-nova-label);position:absolute;top:0;left:0;z-index:40;
+  font-size:9.5px;font-family:var(--nova-font-mono);background:var(--nova-primary-600);color:#fff;padding:1px 5px;
+  border-radius:0 0 var(--nova-radius-sm) 0;pointer-events:none;white-space:nowrap;} /* 라벨 채움=primary-600 고정(흰텍스트 AA · 다크 primary-400 3.45 회피) */
+.xray-strip{display:none;position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:110;
+  background:var(--nova-bg-card);border:1px solid var(--nova-primary);border-radius:999px;box-shadow:var(--nova-shadow-md);
+  padding:7px 16px;font-size:12px;font-family:var(--nova-font-mono);color:var(--nova-text);}
+.xray-on .xray-strip{display:block;}
+.xray-strip b{color:var(--nova-primary);}
+/* 데이터 소스 패널 / 조립코드 패널 */
+.side-panel{position:fixed;top:0;right:0;height:100%;width:360px;max-width:92vw;background:var(--nova-bg-card);
+  border-left:1px solid var(--nova-border);box-shadow:var(--nova-shadow-md);z-index:130;transform:translateX(100%);
+  transition:transform var(--nova-dur-base) var(--nova-ease);display:flex;flex-direction:column;}
+.side-panel.open{transform:translateX(0);}
+.side-panel header{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--nova-border);}
+.side-panel header h3{margin:0;font-size:15px;flex:1;}
+.side-panel .pc{padding:16px;overflow:auto;font-size:13px;color:var(--nova-text-sub);line-height:1.6;}
+.side-panel table{width:100%;border-collapse:collapse;margin-top:12px;font-size:12px;}
+.side-panel td,.side-panel th{padding:7px 6px;border-bottom:1px solid var(--nova-border);text-align:left;}
+.side-panel .wire{font-family:var(--nova-font-mono);color:var(--nova-live-fg);}
+.code-block{background:var(--nova-bg-surface);border:1px solid var(--nova-border);border-radius:var(--nova-radius-md);
+  padding:12px;font-family:var(--nova-font-mono);font-size:11.5px;color:var(--nova-text-sub);white-space:pre;overflow:auto;margin-top:10px;}
+.code-block .cm{color:var(--nova-text-muted);}
+.scrim{position:fixed;inset:0;background:rgba(8,6,20,.4);z-index:125;opacity:0;pointer-events:none;transition:opacity var(--nova-dur-base);}
+.scrim.on{opacity:1;pointer-events:auto;}
+/* 투어 카드 */
+.tour-card{position:fixed;right:24px;bottom:56px;width:320px;background:var(--nova-bg-card);border:1px solid var(--nova-border);
+  border-radius:var(--nova-radius-lg);box-shadow:var(--nova-shadow-md);z-index:115;padding:16px;display:none;}
+.tour-card.open{display:block;}
+.tour-card h4{margin:0 0 6px;font-size:14px;} .tour-card p{margin:0 0 12px;font-size:13px;color:var(--nova-text-sub);}
+.tour-card .tf{display:flex;align-items:center;gap:8px;}
+.tour-card .tf .prog{font-size:12px;color:var(--nova-text-muted);margin-right:auto;}
+.spotlight{outline:2px solid var(--nova-primary)!important;outline-offset:2px;border-radius:var(--nova-radius-md);}
+.tour-done{color:var(--nova-live-fg);font-size:12px;}
+/* 편집 모드 */
+.edit-on .widget{outline:1px dashed var(--nova-primary-300);}
+.edit-on .w-head::before{content:"⠿";color:var(--nova-text-muted);cursor:grab;font-size:14px;margin-right:2px;}
+.w-hide{display:none;border:0;background:transparent;color:var(--nova-text-muted);}
+.edit-on .w-hide{display:inline-flex;}
+.hidden-tray{display:none;grid-column:span 12;padding:10px 14px;background:var(--nova-bg-surface);border:1px dashed var(--nova-border-strong);border-radius:var(--nova-radius-md);font-size:12px;align-items:center;gap:10px;flex-wrap:wrap;}
+.edit-on .hidden-tray{display:flex;}
+.hidden-tray button{border:1px solid var(--nova-border);background:var(--nova-bg-card);border-radius:999px;padding:4px 10px;font-size:11.5px;color:var(--nova-text-sub);}
+.widget.wdragging{opacity:.4;} .widget.wdrop{outline:2px solid var(--nova-primary);}
+/* ═══ 반응형 4단 ═══ */
+@media (max-width:1024px){
+  .body-row{grid-template-columns:0 1fr;}
+  /* ⛔ 회귀 방어(P0 백지): LNB 가 position:fixed 로 그리드 이탈 → stage 가 auto-place 로 0px 첫 열에 배치되어
+     전탭 백지가 되던 결함. stage 를 2열(1fr)에 명시 고정해 폭>0 보장. */
+  .stage{grid-column:2;}
+  .lnb{position:fixed;top:96px;left:0;bottom:32px;width:232px;z-index:80;transform:translateX(-100%);
+    transition:transform var(--nova-dur-base) var(--nova-ease);}
+  .lnb.open{transform:translateX(0);box-shadow:var(--nova-shadow-md);}
+  .widget{grid-column:span 6;}
+}
+@media (max-width:768px){
+  .gnb-menu{display:none;} .gnb-hamb{display:inline-flex!important;}
+  .widget,.w-c8,.w-c5,.w-c7,.w-c6{grid-column:span 12;}
+  .md-grid{grid-template-columns:1fr;} .kpi-strip{grid-template-columns:repeat(2,1fr);}
+  .side-panel{width:100%;}
+}
+@media (max-width:768px){
+  /* ⛔ 회귀 방어: 모바일 레일 폭 — LNB 열림 외 기본은 반드시 translate 로만 숨김(width:100% 방치 금지) */
+  .lnb{width:min(280px,86vw);}
+}
+@media (max-width:640px){
+  /* 프레임 바 축약 = 아이콘 온리(폭 강제 해소 · 툴 클리핑 금지) */
+  .brand-word{display:none;}
+  .frame-tools .tool-btn{font-size:0;gap:0;padding:0 8px;}
+  .frame-tools .tool-btn svg{width:15px;height:15px;}
+  #btnFullDemo{display:none;}
+  .user-chip .un{display:none;}
+}
+@media (max-width:375px){
+  .tabpane{padding:var(--nova-space-4);} .pane-title{font-size:20px;}
+  .tab .t-label{max-width:8ch;}
+}
+.gnb-hamb{display:none;align-items:center;justify-content:center;width:34px;height:34px;border:0;background:transparent;color:var(--nova-text-sub);border-radius:var(--nova-radius-sm);}
+.gnb-hamb svg{width:20px;height:20px;}
+/* @@CSS_COMP@@ */
+</style>
+</head>
+<body>
+<a class="skip-link" href="#stage" id="skipLink">본문으로 건너뛰기</a>
+<div class="ws" data-nova="ui:WorkspaceShell" data-nova-label="NOVA UI · 업무포털 셸">
+
+  <!-- ── 층① 데모 프레임 바 (NOVA 크롬 = 사실 층) ── -->
+  <header class="frame-bar">
+    <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="url(#bm)" stroke-width="2" stroke-linecap="round"><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></g><circle cx="12" cy="12" r="2.2" fill="url(#bm)"/><defs><linearGradient id="bm" x1="0" y1="0" x2="24" y2="24"><stop offset="0" stop-color="var(--nova-aurora-from)"/><stop offset=".5" stop-color="var(--nova-aurora-via)"/><stop offset="1" stop-color="var(--nova-aurora-to)"/></linearGradient></defs></svg>
+    <span class="brand-word">SEbit NOVA 통합 워크스페이스</span>
+    <button class="badge badge-sample" id="sampleBadge" aria-haspopup="dialog" title="이 화면의 데이터 출처 보기">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>예시 데이터</button>
+    <span class="frame-spacer"></span>
+    <div class="frame-tools">
+      <button class="tool-btn" id="btnXray" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12h18M12 3v18" stroke-dasharray="3 3"/></svg>X-ray</button>
+      <button class="tool-btn" id="btnEdit" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>편집</button>
+      <button class="tool-btn" id="btnCode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>&lt;/&gt;</button>
+      <button class="tool-btn" id="btnTheme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg><span id="themeLabel">라이트</span></button>
+      <button class="tool-btn primary" id="btnFullDemo" title="레이어2 제품 데모 사이트(새 창)">전체 데모 ↗</button>
+    </div>
+  </header>
+
+  <!-- ── 층② 회사 GNB (허구 층: 가상사 한올정밀) ── -->
+  <nav class="gnb" aria-label="한올정밀 통합 업무 포털 메뉴">
+    <button class="gnb-hamb" id="gnbHamb" aria-label="메뉴 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <span class="gnb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l8.5 5v10L12 22 3.5 17V7z"/></svg>한올정밀 · 통합 업무 포털</span>
+    <div class="gnb-menu" id="gnbMenu"><!-- JS: CATALOG 로 카테고리+서브메뉴 생성 --></div>
+    <div class="gnb-right">
+      <button class="bell" id="bell" aria-label="알림 3건" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot" id="bellCount">3</span></button>
+      <div class="user-chip"><span class="av">서</span><span class="un">김서연 팀장</span></div>
+    </div>
+    <div class="notif-pop" id="notifPop" role="dialog" aria-label="알림">
+      <h4>알림 3건 · 예시</h4>
+      <ul id="notifList"></ul>
+    </div>
+  </nav>
+
+  <!-- ── 층③ 멀티탭 바 = NOVA UX TabWorkspace (간판 기능) ── -->
+  <div class="tabbar" data-nova="ux:TabWorkspace" data-nova-label="NOVA UX · TabWorkspace">
+    <button class="tabbar-nav" id="tabPrev" aria-label="탭 왼쪽 스크롤" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="tabs-scroll" id="tabsScroll" role="tablist" aria-label="열린 탭"></div>
+    <button class="tabbar-nav" id="tabNext" aria-label="탭 오른쪽 스크롤" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="tabbar-nav" id="tabOverflow" aria-label="넘친 탭 목록" aria-haspopup="true" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="tab-add" id="tabAdd" aria-label="홈(런처)으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg></button>
+  </div>
+
+  <!-- ── 층④ 본문 ── -->
+  <div class="body-row">
+    <aside class="lnb" id="lnb" aria-label="사이드 메뉴">
+      <div class="persona">
+        <span class="av">서</span>
+        <div><div class="greet" id="greet">좋은 아침입니다</div><div class="who">김서연 팀장</div></div>
+      </div>
+      <div><h5>활성 탭 컨텍스트</h5><ul class="lnb-tree" id="lnbCtx"></ul></div>
+      <div class="lnb-ctx"><h5>바로가기</h5><ul class="lnb-tree" id="lnbShort"></ul></div>
+    </aside>
+    <main class="stage" id="stage" tabindex="-1"><!-- JS: 탭 패널 마운트 --></main>
+  </div>
+
+  <!-- ── 층⑥ 푸터 ── -->
+  <footer class="footer">
+    <span class="disc">본 데모의 회사(<b>한올정밀</b>)·인명·수치는 모두 <b>예시</b>입니다 · 정식판에서는 각 위젯이 실데이터 소스에 연결됩니다 · SEbit NOVA v0.9 prototype</span>
+    <div class="telemetry" id="telemetry" aria-label="라이브 텔레메트리(예시 원장 파생)" title="화면 갱신 시각(실시간) · OEE·정시출하 = 예시 원장 파생">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span class="tm"><span class="lbl">갱신</span><span id="tmClock" class="tnum">--:--:--</span></span>
+      <span class="tm opt"><span class="lbl">OEE</span><span id="tmOee" class="tnum">--%</span></span>
+      <span class="tm opt"><span class="lbl">정시출하</span><span id="tmShip" class="tnum">--%</span></span>
+    </div>
+  </footer>
+</div>
+
+<div class="xray-strip" id="xrayStrip" aria-live="off"></div>
+
+<!-- 데이터 소스 패널 -->
+<div class="scrim" id="scrim"></div>
+<aside class="side-panel" id="dsPanel" role="dialog" aria-label="예시 데이터와 라이브 배선" aria-modal="false">
+  <header><h3>예시 데이터와 라이브 배선</h3><button class="tool-btn" data-close-panel aria-label="닫기">✕</button></header>
+  <div class="pc">
+    <p>이 화면의 모든 수치는 단일 예시 원장(<span class="mono">SITES · DIVS · EQUIP · DEFECT · FEED</span>)에서 계산됩니다. 정식판에서는 위젯별 <span class="mono">dataSource</span>에 실 API를 연결합니다.</p>
+    <table>
+      <thead><tr><th>위젯</th><th>예시 원장</th><th>라이브 배선 자리</th></tr></thead>
+      <tbody>
+        <tr><td>지도·그리드·KPI</td><td class="mono">SITES[13]</td><td class="wire">⟵ REST /ops/sites</td></tr>
+        <tr><td>매출 라인·스택바</td><td class="mono">DIVS[4]</td><td class="wire">⟵ REST /sales/divisions</td></tr>
+        <tr><td>게이지·설비</td><td class="mono">EQUIP[6]</td><td class="wire">⟵ WebSocket /equip/stream</td></tr>
+        <tr><td>공지·결재</td><td class="mono">FEED</td><td class="wire">⟵ 그룹웨어 연동 API</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;font-size:12px;color:var(--nova-text-muted);">"라이브 배선 자리"는 아직 연결되지 않은 <b>자리(placeholder)</b>입니다 — 실 URL·실서비스명이 아닙니다.</p>
+  </div>
+</aside>
+
+<!-- 조립 코드 패널 -->
+<aside class="side-panel" id="codePanel" role="dialog" aria-label="조립 코드" aria-modal="false">
+  <header><h3>조립 코드 · <span id="codeTabName" class="mono" style="font-size:12px;color:var(--nova-text-muted)"></span></h3><button class="tool-btn" data-close-panel aria-label="닫기">✕</button></header>
+  <div class="pc"><div class="code-block" id="codeBlock"></div>
+    <p style="margin-top:10px;font-size:12px;color:var(--nova-text-muted);">예시 API — 정식 시그니처는 NOVA Portal 문서 기준. <span class="mono">dataSource</span>에 실 API를 연결하면 이 화면이 그대로 라이브가 됩니다.</p></div>
+</aside>
+
+<!-- 투어 카드 -->
+<div class="tour-card" id="tourCard" role="dialog" aria-label="가이드 투어">
+  <h4 id="tourTitle"></h4><p id="tourText"></p>
+  <div class="tf"><span class="prog" id="tourProg"></span>
+    <button class="tool-btn" id="tourPrev">이전</button>
+    <button class="tool-btn primary" id="tourNext">다음</button>
+    <button class="tool-btn" id="tourClose">닫기</button></div>
+</div>
+
+<div class="map-tip" id="mapTip"></div>
+<div class="sr-only" id="ariaLive" aria-live="polite"></div>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   NOVA 통합 워크스페이스 — 자체완결 런타임 (IIFE 1개 · 외부 요청 0)
+   ⛔ 회귀 방어 주석은 해당 지점에 명시. local 심볼이 window.open/name/status/length
+      등 전역과 충돌하지 않도록 명명(openTab·tabName·statusOf 등).
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function el(tag,attrs,html){var n=document.createElement(tag);if(attrs)for(var k in attrs){if(k==='class')n.className=attrs[k];else if(k==='html')n.innerHTML=attrs[k];else if(k.slice(0,2)==='on')n.addEventListener(k.slice(2),attrs[k]);else if(attrs[k]!=null)n.setAttribute(k,attrs[k]);}if(html!=null)n.innerHTML=html;return n;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function nfmt(n,d){return Number(n).toLocaleString('ko-KR',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
+function say(msg){var a=$('#ariaLive');if(a){a.textContent='';setTimeout(function(){a.textContent=msg;},30);}}
+function flash(node){if(!node)return;node.classList.remove('flash');void node.offsetWidth;node.classList.add('flash');}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── 아이콘 (인라인 SVG 세트, 외부 아이콘 CDN 0) ── */
+var IP={
+  dashboard:'<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/>',
+  grid:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16M15 4v16"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/>',
+  workflow:'<circle cx="5" cy="6" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="12" r="2.5"/><path d="M7.5 6H13a3 3 0 013 3v0M7.5 18H13a3 3 0 003-3"/>',
+  line:'<path d="M3 17l5-6 4 3 6-8M3 21h18"/>',
+  ontology:'<circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 8l3 8M16 8l-3 8M8.5 7h7"/>',
+  ux:'<rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="10" height="10" rx="1"/><rect x="15" y="10" width="6" height="10" rx="1"/>',
+  ui:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 8h18M8 21V8"/>',
+  people:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0112 0M15 6a3 3 0 010 6M21 20a6 6 0 00-4-5.6"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  pin:'<path d="M9 4h6l-1 7 3 3v2H7v-2l3-3-1-7zM12 16v4"/>',
+  refresh:'<path d="M20 12a8 8 0 10-2.3 5.6M20 20v-5h-5"/>',
+  dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',
+  ext:'<path d="M14 4h6v6M20 4l-9 9M18 13v5a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h5"/>',
+  eyeoff:'<path d="M9.9 5.1A9 9 0 0112 5c6 0 9 7 9 7a15 15 0 01-3 3.6M6 6.5A15 15 0 003 12s3 7 9 7a9 9 0 004-.9M3 3l18 18"/>',
+  play:'<path d="M6 4l14 8-14 8z"/>',pause:'<path d="M7 4h4v16H7zM13 4h4v16h-4z"/>',
+  tour:'<path d="M12 2l3 6 6 .9-4.5 4.4L18 20l-6-3-6 3 1.5-6.7L3 8.9 9 8z"/>',
+  check:'<path d="M4 12l5 5L20 6"/>'
+};
+/* ⛔ 회귀(N-1): cls 미전달 = 무치수 svg 가 컨테이너 폭까지 폭주(거대 체크 1000px). 기본 .ic-inline 로 안전치수 보장 */
+function ic(name,cls){return '<svg class="'+(cls||'ic-inline')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(IP[name]||'')+'</svg>';}
+
+/* ══════════ SVG 차트 드로어 (인라인 · 정식판=NOVA Chart/ECharts6, 데모=SVG) ══════════
+   ⛔ 회귀: SVG 요소 표시 토글에 .hidden 프로퍼티 금지 → class/display 사용 (여기선 재생성) */
+function svg(w,h,inner,cls){return '<svg class="chart-svg '+(cls||'')+'" viewBox="0 0 '+w+' '+h+'" role="img">'+inner+'</svg>';}
+function scaleY(v,min,max,top,bot){if(max===min)return (top+bot)/2;return bot-(v-min)/(max-min)*(bot-top);}
+function drawLine(series,opts){ // series:[{data:[],cls}], opts:{w,h,labels,min,max,area}
+  opts=opts||{};var w=opts.w||300,h=opts.h||150,pl=32,pr=8,pt=10,pb=22;
+  var all=[].concat.apply([],series.map(function(s){return s.data;}));
+  var mn=opts.min!=null?opts.min:Math.min.apply(null,all),mx=opts.max!=null?opts.max:Math.max.apply(null,all);
+  var pad=(mx-mn)*0.12||1;mn=opts.min!=null?mn:mn-pad;mx=opts.max!=null?mx:mx+pad;
+  var n=series[0].data.length,g='';
+  for(var i=0;i<4;i++){var yy=pt+(h-pt-pb)*i/3;g+='<line class="grid-l" x1="'+pl+'" y1="'+yy+'" x2="'+(w-pr)+'" y2="'+yy+'"/>';}
+  var xs=function(idx){return pl+(w-pl-pr)*(n<2?0.5:idx/(n-1));};
+  var body='';
+  series.forEach(function(s){
+    var d='',ar='';
+    s.data.forEach(function(v,idx){var x=xs(idx),y=scaleY(v,mn,mx,pt,h-pb);d+=(idx?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)+' ';});
+    if(opts.area){ar='<path d="'+d+'L'+xs(n-1)+' '+(h-pb)+' L'+xs(0)+' '+(h-pb)+' Z" fill="var(--nova-primary)" opacity="0.10"/>';}
+    body+=ar+'<path class="ln '+(s.cls||'ln-1')+'" d="'+d+'"/>';
+    s.data.forEach(function(v,idx){body+='<circle class="dot" cx="'+xs(idx)+'" cy="'+scaleY(v,mn,mx,pt,h-pb)+'" r="2.4"/>';});
+  });
+  var lab='';(opts.labels||[]).forEach(function(t,idx){if(n>8&&idx%2)return;lab+='<text class="lbl" x="'+xs(idx)+'" y="'+(h-6)+'" text-anchor="middle">'+esc(t)+'</text>';});
+  return svg(w,h,g+body+lab);
+}
+function drawDonut(pct,label,cls){var r=34,c=2*Math.PI*r,off=c*(1-clamp(pct,0,100)/100);
+  return svg(90,90,'<g transform="translate(45,45)"><circle r="'+r+'" fill="none" stroke="var(--nova-border)" stroke-width="9"/><circle r="'+r+'" fill="none" stroke="var(--nova-primary)" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90)"/><text text-anchor="middle" y="-1" font-size="15" font-weight="700" fill="var(--nova-text)">'+pct+'%</text><text text-anchor="middle" y="14" font-size="8" fill="var(--nova-text-muted)">'+esc(label||'')+'</text></g>');}
+function miniDonut(pct){var r=17,c=2*Math.PI*r,off=c*(1-clamp(pct,0,100)/100);
+  return '<svg class="donut-mini" viewBox="0 0 44 44" aria-hidden="true"><g transform="translate(22,22)"><circle r="'+r+'" fill="none" stroke="var(--nova-border)" stroke-width="5"/><circle r="'+r+'" fill="none" stroke="var(--nova-primary)" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90)"/></g></svg>';}
+function drawGauge(pct,label){var A0=Math.PI,cx=90,cy=88,r=66;
+  function pt(a){return (cx+r*Math.cos(a)).toFixed(1)+' '+(cy+r*Math.sin(a)).toFixed(1);}
+  function arc(f,t,color,ww){var a0=A0+(1-f)*-Math.PI,a1=A0+(1-t)*-Math.PI;var lg=(t-f)>0.5?1:0;return '<path d="M'+pt(a0)+' A'+r+' '+r+' 0 '+lg+' 1 '+pt(a1)+'" fill="none" stroke="'+color+'" stroke-width="'+ww+'" stroke-linecap="round"/>';}
+  var frac=clamp(pct,0,100)/100,na=A0+(1-frac)*-Math.PI;
+  var nx=cx+(r-14)*Math.cos(na),ny=cy+(r-14)*Math.sin(na);
+  return svg(180,110,
+    arc(0,0.7,'var(--nova-critical-base)',9)+arc(0.7,0.85,'var(--nova-warn-base)',9)+arc(0.85,1,'var(--nova-good-base)',9)+
+    '<line x1="'+cx+'" y1="'+cy+'" x2="'+nx.toFixed(1)+'" y2="'+ny.toFixed(1)+'" stroke="var(--nova-text)" stroke-width="2.5" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="4" fill="var(--nova-text)"/>'+
+    '<text x="'+cx+'" y="72" text-anchor="middle" font-size="22" font-weight="700" fill="var(--nova-text)">'+pct+'</text>'+
+    '<text x="'+cx+'" y="100" text-anchor="middle" font-size="10" fill="var(--nova-text-muted)">'+esc(label||'')+'</text>');
+}
+function drawRadar(axes,series){var cx=95,cy=95,r=68,n=axes.length,g='';
+  function pxy(idx,f){var a=-Math.PI/2+idx/n*2*Math.PI;return [cx+r*f*Math.cos(a),cy+r*f*Math.sin(a)];}
+  for(var ring=1;ring<=4;ring++){var pp='';for(var i=0;i<n;i++){var p=pxy(i,ring/4);pp+=(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)+' ';}g+='<path d="'+pp+'Z" class="grid-l" fill="none"/>';}
+  for(i=0;i<n;i++){var pe=pxy(i,1);g+='<line class="grid-l" x1="'+cx+'" y1="'+cy+'" x2="'+pe[0].toFixed(1)+'" y2="'+pe[1].toFixed(1)+'"/>';var pl2=pxy(i,1.18);g+='<text class="lbl" x="'+pl2[0].toFixed(1)+'" y="'+pl2[1].toFixed(1)+'" text-anchor="middle" dominant-baseline="middle">'+esc(axes[i])+'</text>';}
+  series.forEach(function(s,si){var pp='';s.data.forEach(function(v,i){var p=pxy(i,clamp(v,0,100)/100);pp+=(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)+' ';});g+='<path d="'+pp+'Z" fill="'+(si?'none':'var(--nova-primary)')+'" fill-opacity="0.14" stroke="'+(si?'var(--nova-aurora-to)':'var(--nova-primary)')+'" stroke-width="2" stroke-dasharray="'+(si?'4 3':'0')+'"/>';});
+  return svg(190,200,g);
+}
+function drawHBar(rows){ // rows:[{label,value,cls}] value 0..100
+  var h=rows.length*30+8,w=300,body='';
+  rows.forEach(function(rw,i){var y=i*30+6;body+='<text class="lbl" x="0" y="'+(y+13)+'" font-size="11">'+esc(rw.label)+'</text>'+
+    '<rect x="88" y="'+y+'" width="150" height="16" rx="4" fill="var(--nova-border)" opacity="0.5"/>'+
+    '<rect x="88" y="'+y+'" width="'+(clamp(rw.value,0,100)/100*150).toFixed(1)+'" height="16" rx="4" class="'+(rw.cls||'bar-1')+'"/>'+
+    '<text x="244" y="'+(y+13)+'" font-size="11" fill="var(--nova-text-sub)" font-weight="600">'+rw.value+'%</text>';});
+  return svg(w,h,body);
+}
+function drawStackBar(cats,segs,sel){ // cats:[names], segs:[{name,data:[per cat],cls}], sel=selected cat idx or -1
+  var w=300,h=160,pl=8,pr=8,pt=8,pb=24,n=cats.length;
+  var tot=cats.map(function(_,ci){return segs.reduce(function(a,s){return a+s.data[ci];},0);});
+  var mx=Math.max.apply(null,tot)*1.1,body='',bw=(w-pl-pr)/n*0.6,gap=(w-pl-pr)/n;
+  cats.forEach(function(c,ci){
+    var x=pl+gap*ci+(gap-bw)/2,acc=0,dim=(sel>=0&&sel!==ci);
+    segs.forEach(function(s,si){var val=s.data[ci],hh=val/mx*(h-pt-pb);acc+=hh;
+      body+='<rect x="'+x.toFixed(1)+'" y="'+(h-pb-acc).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hh.toFixed(1)+'" class="'+s.cls+'" opacity="'+(dim?0.3:1)+'"/>';});
+    body+='<text class="lbl" x="'+(x+bw/2).toFixed(1)+'" y="'+(h-8)+'" text-anchor="middle">'+esc(c)+'</text>';
+  });
+  return svg(w,h,body);
+}
+function drawBubble(pts){ // pts:[{x,y,r,label}] x,y=0..1 (호출부 min-max 정규화 — D1)
+  var w=300,h=170,pl=30,pr=10,pt=10,pb=24,body='',lbls='',boxes=[];
+  for(var i=0;i<4;i++){var yy=pt+(h-pt-pb)*i/3;body+='<line class="grid-l" x1="'+pl+'" y1="'+yy+'" x2="'+(w-pr)+'" y2="'+yy+'"/>';}
+  /* D1 라벨 부류 수정: ①충돌회피 배치(중심→버블 위→아래 후보 중 기배치 라벨과 비겹침 첫 위치)
+     ②라벨=전 버블 위 별도 레이어(후행 버블 스트로크가 선행 라벨을 덮는 부류 제거)
+     ③.lbl-halo(bg-card 할로) → 스트로크/채움 교차 무관 대비 고정. fill-opacity 0.22 유지(채움 중첩 옅게) */
+  pts.forEach(function(p){var x=pl+(w-pl-pr)*p.x,y=(h-pb)-(h-pt-pb)*p.y;
+    body+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+p.r+'" fill="var(--nova-primary)" fill-opacity="0.22" stroke="var(--nova-primary)"/>';
+    var lw=p.label.length*9+2,lh=10,cands=[[x,y+3],[x,y-p.r-4],[x,y+p.r+11]],pos=cands[0];
+    for(var c=0;c<cands.length;c++){
+      var cx2=Math.max(lw/2+1,Math.min(w-lw/2-1,cands[c][0])),cy2=Math.max(lh,Math.min(h-3,cands[c][1]));
+      var bx={l:cx2-lw/2,r:cx2+lw/2,t:cy2-lh+2,b:cy2+2};
+      var hit=boxes.some(function(b){return bx.l<b.r&&bx.r>b.l&&bx.t<b.b&&bx.b>b.t;});
+      pos=[cx2,cy2];if(!hit)break;
+    }
+    boxes.push({l:pos[0]-lw/2,r:pos[0]+lw/2,t:pos[1]-lh+2,b:pos[1]+2});
+    lbls+='<text class="lbl-mark lbl-halo" x="'+pos[0].toFixed(1)+'" y="'+pos[1].toFixed(1)+'" text-anchor="middle">'+esc(p.label)+'</text>';});
+  return svg(w,h,body+lbls);
+}
+function drawSpark(data){var w=120,h=32,mn=Math.min.apply(null,data),mx=Math.max.apply(null,data),d='';
+  data.forEach(function(v,i){var x=i/(data.length-1)*w,y=scaleY(v,mn,mx,4,h-4);d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)+' ';});
+  return '<svg viewBox="0 0 '+w+' '+h+'" width="120" height="32" aria-hidden="true"><path d="'+d+'" fill="none" stroke="var(--nova-primary)" stroke-width="1.6"/></svg>';}
+
+/* ══════════════════ 단일 예시 원장 (LEDGER) — 전 위젯 파생 소스 ══════════════════ */
+var LEDGER={
+  targetRev:1980, // 억 (매출 목표)
+  SITES:[
+    {name:'화성 본사공장',sido:'경기',util:92.4,prevUtil:90.1,prod:5200,delay:false},
+    {name:'아산 1공장',sido:'충남',util:96.2,prevUtil:95.0,prod:6100,delay:false},
+    {name:'아산 2공장',sido:'충남',util:91.0,prevUtil:88.5,prod:4800,delay:false},
+    {name:'구미 공장',sido:'경북',util:89.3,prevUtil:87.0,prod:4200,delay:false},
+    {name:'창원 공장',sido:'경남',util:85.6,prevUtil:86.2,prod:3900,delay:false},
+    {name:'부산 1공장',sido:'부산',util:71.4,prevUtil:73.0,prod:3100,delay:true},
+    {name:'부산 2공장',sido:'부산',util:null,prevUtil:70.0,prod:0,delay:true,down:true},
+    {name:'광주 공장',sido:'광주',util:88.0,prevUtil:85.5,prod:4000,delay:false},
+    {name:'대전 연구소',sido:'대전',util:90.5,prevUtil:89.0,prod:2200,delay:false},
+    {name:'청주 공장',sido:'충북',util:86.8,prevUtil:88.0,prod:3400,delay:false},
+    {name:'울산 공장',sido:'울산',util:84.2,prevUtil:82.0,prod:3700,delay:false},
+    {name:'인천 물류센터',sido:'인천',util:93.1,prevUtil:91.5,prod:2800,delay:false},
+    {name:'원주 공장',sido:'강원',util:79.5,prevUtil:81.2,prod:2600,delay:true}
+  ],
+  DIVS:[
+    {name:'반도체부품',q:[120,135,148,160],prev:[110,118,130,140],target:640},
+    {name:'모빌리티',q:[88,102,120,142],prev:[70,80,95,117],target:480},
+    {name:'디스플레이',q:[95,92,98,101],prev:[100,96,99,100],target:410},
+    {name:'산업기기',q:[60,64,66,70],prev:[58,60,63,66],target:290}
+  ],
+  EQUIP:[
+    {id:'CNC-01',name:'CNC 머시닝센터 01',line:'정밀가공 A라인',oee:88.5,status:'good',spark:[85,86,84,87,88,89,88,90,88,87,89,88],alarms:['미세 진동 경고 (해제)']},
+    {id:'CNC-03',name:'CNC 머시닝센터 03',line:'정밀가공 A라인',oee:87.2,status:'good',spark:[82,84,85,83,86,87,88,87,86,88,87,87],alarms:['스핀들 온도 상승','절삭유 압력 저하']},
+    {id:'MILL-02',name:'머시닝 밀 02',line:'밀링 B라인',oee:79.1,status:'warn',spark:[81,80,78,79,77,80,79,78,80,79,78,79],alarms:['공구 마모 임계 근접']},
+    {id:'LATHE-05',name:'CNC 선반 05',line:'선반 C라인',oee:72.4,status:'critical',spark:[76,74,73,71,72,70,73,72,71,73,72,72],alarms:['베어링 이상 진동','정지 3회','윤활 부족']},
+    {id:'PRESS-01',name:'프레스 01',line:'프레스 D라인',oee:91.0,status:'good',spark:[89,90,91,92,90,91,92,91,90,92,91,91],alarms:[]},
+    {id:'WELD-04',name:'로봇 용접 04',line:'용접 E라인',oee:83.6,status:'warn',spark:[85,84,83,82,84,83,82,84,83,82,84,83],alarms:['용접 전류 편차']}
+  ],
+  DEFECT_DAYS:['월','화','수','목','금','토','일'],
+  DEFECT:{ // 설비별 요일 불량 시리즈(개) + agg 파생
+    'CNC-01':[26,15,17,14,20,10,8],'CNC-03':[38,22,25,20,28,15,12],'MILL-02':[44,28,30,26,33,18,15],
+    'LATHE-05':[52,34,36,30,40,22,18],'PRESS-01':[18,11,12,10,15,7,6],'WELD-04':[30,19,21,17,24,12,10]
+  },
+  QUALITY:{axes:['치수','표면','조립','도장','포장'],cur:[95,72,88,84,90],prev:[92,75,85,82,88]},
+  FEED:{
+    notices:[{t:'[필독] 3분기 안전점검 일정 공지',time:'09:12',neu:true},{t:'하계 휴가 신청 안내',time:'어제',neu:true},{t:'품질경영시스템 심사 결과',time:'2일 전'},{t:'사내 교육 프로그램 모집',time:'3일 전'}],
+    alarms:[{t:'부산 1공장 출하 지연 발생',time:'08:41'},{t:'LATHE-05 정지 알람',time:'08:20'},{t:'원주 공장 가동률 하락',time:'07:55'}],
+    approvals:{신규:1,대기:2,반려:1,완료:7,list:[{t:'설비 정비 발주 (부산 2공장)',days:3},{t:'외주 가공 계약 승인',days:1}]},
+    memos:['모빌리티 사업부 Q4 목표 재확인','아산 2공장 증설 검토 미팅 예약']
+  }
+};
+/* ── 파생 계산 (원장 → 지표) : 위젯 사본 배열 없음, 항상 여기서 계산 ── */
+function operSites(){return LEDGER.SITES.filter(function(s){return !s.down;});}
+function avgUtil(sites){var a=sites.filter(function(s){return s.util!=null;});return a.reduce(function(x,s){return x+s.util;},0)/a.length;}
+function totalProd(){return LEDGER.SITES.reduce(function(a,s){return a+s.prod;},0);}
+function delayCount(){return LEDGER.SITES.filter(function(s){return s.delay;}).length;}
+function divTotal(d){return d.q.reduce(function(a,b){return a+b;},0);}
+function divPrevTotal(d){return d.prev.reduce(function(a,b){return a+b;},0);}
+function totalRev(){return LEDGER.DIVS.reduce(function(a,d){return a+divTotal(d);},0);}
+function utilRamp(u){if(u==null)return 0;if(u>=95)return 5;if(u>=90)return 4;if(u>=85)return 3;if(u>=80)return 2;return 1;}
+function statusOf(u){if(u==null)return 'down';if(u>=88)return 'good';if(u>=80)return 'warn';return 'critical';}
+function pill(st){var map={good:['pill-good','정상'],warn:['pill-warn','주의'],critical:['pill-critical','위험'],down:['pill-down','정비중']};var m=map[st]||map.good;return '<span class="pill '+m[0]+'">'+m[1]+'</span>';}
+/* ══════════════════ CATALOG (카테고리 → 채움 탭만 · 미준비 비노출) ══════════════════ */
+var CATALOG=[
+  {id:'c1',name:'통합 상황실',icon:'dashboard',tabs:[
+    {id:'T1',title:'통합 운영 상황실',icon:'dashboard',xtag:'dashboard:NovaDashboard',sub:'조립 대시보드'}]},
+  {id:'c2',name:'데이터 그리드',icon:'grid',tabs:[
+    {id:'T2',title:'기본 편집·CRUD',icon:'grid',xtag:'grid:NovaGrid',sub:'정렬·필터·행 편집'},
+    {id:'T3',title:'조건부서식·틀고정',icon:'grid',xtag:'grid:NovaGrid',sub:'셀 착색·컬럼 고정'}]},
+  {id:'c3',name:'데이터 시각화',icon:'chart',tabs:[
+    {id:'T6',title:'차트 갤러리',icon:'chart',xtag:'chart:ECharts6/gallery',sub:'8종 차트 프리셋'},
+    {id:'T7',title:'대한민국 지도 드릴다운',icon:'map',xtag:'chart:ECharts6/map',sub:'시도 choropleth'},
+    {id:'T15',title:'AI 워크플로우 그래프',icon:'workflow',star:1,xtag:'chart:graph/ai-workflow',sub:'Nexus 19노드 · 엔진 Vue Flow'},
+    {id:'T16',title:'트레이딩 실시간 라인',icon:'line',star:1,xtag:'chart:ECharts6/line-equity',sub:'Stock SkEquityChart'},
+    {id:'T17',title:'온톨로지 인과 그래프',icon:'ontology',star:1,xtag:'chart:graph/ontology',sub:'Sentinel · 엔진 Vue Flow'}]},
+  {id:'c4',name:'업무 시나리오',icon:'ux',tabs:[
+    {id:'T9',title:'급여관리 (마스터-디테일)',icon:'people',xtag:'ux:MasterDetail + grid:NovaGrid',sub:'좌 선택 → 우 상세'}]},
+  {id:'c5',name:'컴포넌트·연계',icon:'ui',tabs:[
+    {id:'T12',title:'컴포넌트 팔레트',icon:'ux',xtag:'ux:ComponentPalette',sub:'라이브 + 코드 복사'},
+    {id:'T14',title:'UI 템플릿 갤러리',icon:'ui',xtag:'ui:TemplateGallery',sub:'업무포털 템플릿 4종'}]}
+];
+var TABDEF={home:{id:'home',title:'홈',icon:'dashboard',xtag:'ui:Launcher'}};
+CATALOG.forEach(function(c){c.tabs.forEach(function(t){t.catId=c.id;TABDEF[t.id]=t;});});
+var RENDERERS={}; // tabId → function(paneEl, tab)
+
+/* ══════════════════════════ TabWorkspace — 탭 라이프사이클 ══════════════════════════ */
+var TABS=[{id:'home',pinned:true,badge:0,mounted:false,pane:null,cleanup:[]}];
+var activeTabId='home';
+var SESSION_KEY='nova-ws-tabs';
+var stage=$('#stage'),tabsScroll=$('#tabsScroll');
+
+function findTab(id){for(var i=0;i<TABS.length;i++)if(TABS[i].id===id)return TABS[i];return null;}
+function tabDef(id){return TABDEF[id]||{id:id,title:id,icon:'grid'};}
+
+function mountPane(tab){
+  if(tab.mounted)return;
+  var def=tabDef(tab.id);
+  var pane=el('section',{'class':'tabpane','role':'tabpanel','id':'pane-'+tab.id,'aria-label':def.title,'hidden':'','inert':''});
+  pane.setAttribute('data-nova',def.xtag||'ui:Pane');pane.setAttribute('data-nova-label','NOVA '+(def.xtag||''));
+  stage.appendChild(pane);
+  tab.pane=pane;tab.cleanup=[];
+  var fn=RENDERERS[tab.id];
+  if(fn){try{fn(pane,tab);}catch(err){pane.innerHTML='<div class="card" style="padding:24px;color:var(--nova-critical-fg)">렌더 오류: '+esc(err.message)+'</div>';/* ⛔ 에러를 로딩으로 위장하지 않음 */}}
+  else pane.innerHTML='<div class="card" style="padding:24px">준비되지 않은 탭</div>';
+  tab.mounted=true;
+}
+function openTab(id){
+  var ex=findTab(id);
+  if(ex){switchTab(id);return;} // 중복 방지 → 전환(재활성 확실)
+  var t={id:id,pinned:false,badge:tabAlertCount(id),mounted:false,pane:null,cleanup:[]};
+  TABS.push(t);
+  renderTabBar();switchTab(id);saveSession();
+  say('탭 열림: '+tabDef(id).title);
+}
+function switchTab(id){
+  var t=findTab(id);if(!t)return;
+  if(activeTabId!==id){var cur=findTab(activeTabId);if(cur){if(cur.onBlur)try{cur.onBlur();}catch(e){}if(cur.pane){cur.pane.hidden=true;cur.pane.setAttribute('inert','');}}}
+  mountPane(t);
+  t.pane.hidden=false;t.pane.removeAttribute('inert');
+  activeTabId=id;
+  updateTabActive();buildLnbContext();scrollActiveIntoView();
+  if(xrayOn)updateXrayStrip(); // ⛔ 거짓지표 방어: 탭 전환 시 X-ray 실계수 재계산(토글 시점 값 고착 금지)
+  if(id!=='home')say('탭 전환: '+tabDef(id).title);
+  saveSession();
+}
+function neighborId(id){var i=TABS.map(function(t){return t.id;}).indexOf(id);var left=TABS[i-1],right=TABS[i+1];return (left&&left.id)||(right&&right.id)||'home';}
+function closeTab(id){
+  if(id==='home')return;var t=findTab(id);if(!t||t.pinned)return;
+  var next=(activeTabId===id)?neighborId(id):activeTabId;
+  (t.cleanup||[]).forEach(function(fn){try{fn();}catch(e){}});
+  if(t.pane&&t.pane.parentNode)t.pane.parentNode.removeChild(t.pane);
+  TABS=TABS.filter(function(x){return x.id!==id;});
+  renderTabBar();switchTab(next);saveSession();
+  say('탭 닫힘: '+tabDef(id).title);
+}
+function closeOthers(id){TABS.slice().forEach(function(t){if(t.id!=='home'&&t.id!==id&&!t.pinned)closeTab(t.id);});switchTab(id);}
+function closeRight(id){var i=TABS.map(function(t){return t.id;}).indexOf(id);TABS.slice(i+1).forEach(function(t){if(!t.pinned)closeTab(t.id);});}
+function closeAll(){TABS.slice().forEach(function(t){if(t.id!=='home'&&!t.pinned)closeTab(t.id);});switchTab('home');}
+function togglePin(id){var t=findTab(id);if(!t||id==='home')return;t.pinned=!t.pinned;reorderPinned();renderTabBar();saveSession();say(tabDef(id).title+(t.pinned?' 고정됨':' 고정 해제'));}
+function reorderPinned(){ // home 먼저, 핀 탭 좌측, 나머지 순서 유지
+  var home=TABS.filter(function(t){return t.id==='home';});
+  var pinned=TABS.filter(function(t){return t.pinned&&t.id!=='home';});
+  var rest=TABS.filter(function(t){return !t.pinned&&t.id!=='home';});
+  TABS=home.concat(pinned,rest);
+}
+function setBadge(id,n){var t=findTab(id);if(t){t.badge=n;renderTabBar();saveSession();}}
+/* 탭 배지 = 실 원장 파생 카운트(D6) — 하드코딩 아님 · 원장 바뀌면 값 변함 */
+function tabAlertCount(id){
+  if(id==='T1')return LEDGER.FEED.alarms.length;                                    // 상황실 = 실시간 알람 수
+  if(id==='T17')return LEDGER.EQUIP.filter(function(e){return e.status==='critical';}).length; // 온톨로지 = CRITICAL 설비 수
+  return 0;
+}
+
+/* ── 세션 지속 (D5) ── */
+function saveSession(){try{localStorage.setItem(SESSION_KEY,JSON.stringify({tabs:TABS.filter(function(t){return t.id!=='home';}).map(function(t){return {id:t.id,pinned:!!t.pinned};}),active:activeTabId}));}catch(e){}}
+function loadSession(){
+  var raw;try{raw=localStorage.getItem(SESSION_KEY);}catch(e){return false;}
+  if(!raw)return false;
+  try{var s=JSON.parse(raw);if(!s||!Array.isArray(s.tabs))throw 0;
+    s.tabs.forEach(function(rec){if(TABDEF[rec.id]&&!findTab(rec.id))TABS.push({id:rec.id,pinned:!!rec.pinned,badge:tabAlertCount(rec.id),mounted:false,pane:null,cleanup:[]});});
+    reorderPinned();renderTabBar();
+    switchTab(TABDEF[s.active]&&findTab(s.active)?s.active:'home');
+    return true;
+  }catch(e){ // 손상 시 홈 초기화(폴백 금지)
+    try{localStorage.removeItem(SESSION_KEY);}catch(_){}return false;}
+}
+
+/* ── 탭 바 렌더 (⛔ 렌더 전 팝오버 선닫기 = detached-node 방어) ── */
+function renderTabBar(){
+  closePopmenu();
+  tabsScroll.innerHTML='';
+  TABS.forEach(function(t){
+    var def=tabDef(t.id);var isHome=t.id==='home';
+    var b=el('button',{'class':'tab'+(isHome?' tab-home':'')+(t.pinned&&!isHome?' tab-pinned':''),'role':'tab','id':'tab-'+t.id,
+      'aria-selected':t.id===activeTabId?'true':'false','aria-controls':'pane-'+t.id,
+      'tabindex':t.id===activeTabId?'0':'-1','draggable':isHome?'false':'true',
+      'aria-label':def.title+(t.pinned&&!isHome?', 고정됨':'')});
+    var inner=ic(def.icon,'t-ico')+'<span class="t-label">'+esc(def.title)+'</span>';
+    if(t.pinned&&!isHome)inner+=ic('pin','t-pin');
+    if(t.badge)inner+='<span class="t-badge tnum" aria-label="알림 '+t.badge+'건">'+t.badge+'</span>';
+    if(!isHome)inner+='<span class="t-close" role="button" aria-label="'+esc(def.title)+' 탭 닫기">'+ic('close')+'</span>';
+    b.innerHTML=inner;
+    b.addEventListener('click',function(e){if(e.target.closest('.t-close')){closeTab(t.id);}else switchTab(t.id);});
+    b.addEventListener('contextmenu',function(e){e.preventDefault();openTabContext(t.id,e.clientX,e.clientY);});
+    b.addEventListener('keydown',function(e){onTabKey(e,t.id);});
+    if(!isHome)wireDrag(b,t.id);
+    tabsScroll.appendChild(b);
+  });
+  updateOverflow();
+}
+function updateTabActive(){$$('.tab',tabsScroll).forEach(function(b){var id=b.id.slice(4);var sel=id===activeTabId;b.setAttribute('aria-selected',sel?'true':'false');b.setAttribute('tabindex',sel?'0':'-1');});}
+function scrollActiveIntoView(){var a=$('#tab-'+activeTabId);if(a&&a.scrollIntoView)a.scrollIntoView({inline:'nearest',block:'nearest'});}
+
+/* ── 오버플로 (D3): 넘치면 ‹ › 스크롤 + ▾ 드롭다운 ── */
+function updateOverflow(){
+  var over=tabsScroll.scrollWidth>tabsScroll.clientWidth+2;
+  ['#tabPrev','#tabNext','#tabOverflow'].forEach(function(sel){var b=$(sel);if(b)b.hidden=!over;});
+}
+window.addEventListener('resize',updateOverflow);
+tabsScroll.addEventListener('scroll',function(){/* keep */});
+$('#tabPrev').addEventListener('click',function(){tabsScroll.scrollBy({left:-160,behavior:'smooth'});});
+$('#tabNext').addEventListener('click',function(){tabsScroll.scrollBy({left:160,behavior:'smooth'});});
+$('#tabOverflow').addEventListener('click',function(e){
+  var items=TABS.map(function(t){var def=tabDef(t.id);return {label:def.title,icon:def.icon,active:t.id===activeTabId,fn:function(){switchTab(t.id);}};});
+  var r=e.currentTarget.getBoundingClientRect();openPopmenu(items,r.right-190,r.bottom+4);
+});
+
+/* ── 우클릭 컨텍스트 메뉴 (D1) ── */
+function openTabContext(id,x,y){
+  var t=findTab(id),isHome=id==='home';
+  var items=[
+    {label:'닫기',icon:'close',disabled:isHome||t.pinned,fn:function(){closeTab(id);}},
+    {label:'다른 탭 닫기',icon:'close',disabled:false,fn:function(){closeOthers(id);}},
+    {label:'오른쪽 탭 닫기',icon:'close',disabled:false,fn:function(){closeRight(id);}},
+    {label:'모두 닫기 (홈 제외)',icon:'close',disabled:false,fn:function(){closeAll();}},
+    {divider:true},
+    {label:t&&t.pinned?'고정 해제':'탭 고정',icon:'pin',disabled:isHome,fn:function(){togglePin(id);}},
+    {divider:true},
+    {label:'새로고침',icon:'refresh',disabled:isHome,fn:function(){refreshTab(id);}},
+    {label:'복제',icon:'dup',disabled:true,fn:function(){}},
+    {label:'이 제품 전체 데모 (정식판)',icon:'ext',disabled:true,fn:function(){}} // 대상 URL 없음 → 빈 창(about:blank) 금지, 비활성 표기
+  ];
+  openPopmenu(items,x,y);
+}
+function refreshTab(id){var t=findTab(id);if(!t||!t.mounted)return;(t.cleanup||[]).forEach(function(fn){try{fn();}catch(e){}});t.mounted=false;if(t.pane&&t.pane.parentNode)t.pane.parentNode.removeChild(t.pane);t.pane=null;mountPane(t);if(activeTabId===id){t.pane.hidden=false;t.pane.removeAttribute('inert');}say('탭 새로고침: '+tabDef(id).title);}
+
+/* ── 팝오버 공통 (detached-node 방어: 라이브 노드 contains + 비동기 부착) ── */
+var _pop=null,_popOut=null;
+function openPopmenu(items,x,y){
+  closePopmenu();
+  var m=el('div',{'class':'popmenu','role':'menu'});
+  items.forEach(function(it){
+    if(it.divider){m.appendChild(el('div',{'class':'divider'}));return;}
+    var b=el('button',{'role':'menuitem'});
+    b.innerHTML=(it.icon?ic(it.icon):'')+'<span>'+esc(it.label)+'</span>'+(it.active?'<span class="mk-active">● 활성</span>':'');
+    if(it.disabled){b.disabled=true;}else b.addEventListener('click',function(){closePopmenu();it.fn();});
+    m.appendChild(b);
+  });
+  document.body.appendChild(m);
+  var vw=innerWidth,vh=innerHeight,r=m.getBoundingClientRect();
+  m.style.left=Math.min(x,vw-r.width-8)+'px';m.style.top=Math.min(y,vh-r.height-8)+'px';
+  _pop=m;
+  var first=m.querySelector('button:not(:disabled)');if(first)first.focus();
+  _popOut=function(e){if(_pop&&!_pop.contains(e.target))closePopmenu();};
+  setTimeout(function(){document.addEventListener('mousedown',_popOut,true);document.addEventListener('contextmenu',_popOut,true);},0);
+}
+function closePopmenu(){if(_pop){if(_pop.parentNode)_pop.parentNode.removeChild(_pop);_pop=null;}if(_popOut){document.removeEventListener('mousedown',_popOut,true);document.removeEventListener('contextmenu',_popOut,true);_popOut=null;}}
+window.addEventListener('blur',closePopmenu);window.addEventListener('resize',closePopmenu);
+
+/* ── 드래그 재배치 (HTML5 DnD · 드롭시 1회 재렌더) ── */
+var _dragId=null;
+function wireDrag(node,id){
+  node.addEventListener('dragstart',function(e){_dragId=id;node.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+  node.addEventListener('dragend',function(){node.classList.remove('dragging');$$('.tab',tabsScroll).forEach(function(x){x.classList.remove('drop-before','drop-after');});_dragId=null;});
+  node.addEventListener('dragover',function(e){e.preventDefault();if(!_dragId||_dragId===id)return;var r=node.getBoundingClientRect();var before=e.clientX<r.left+r.width/2;node.classList.toggle('drop-before',before);node.classList.toggle('drop-after',!before);});
+  node.addEventListener('dragleave',function(){node.classList.remove('drop-before','drop-after');});
+  node.addEventListener('drop',function(e){e.preventDefault();if(!_dragId||_dragId===id)return;var r=node.getBoundingClientRect();var before=e.clientX<r.left+r.width/2;doReorder(_dragId,id,before);});
+}
+function doReorder(fromId,toId,before){
+  var from=findTab(fromId),to=findTab(toId);if(!from||!to||to.id==='home')return;
+  if(from.pinned!==to.pinned)return; // 핀 영역 경계 넘기 금지
+  TABS=TABS.filter(function(t){return t.id!==fromId;});
+  var idx=TABS.map(function(t){return t.id;}).indexOf(toId);
+  TABS.splice(before?idx:idx+1,0,from);
+  renderTabBar();saveSession();say('탭 순서 변경');
+}
+/* ── 탭 키보드 (roving ←→ · Delete 닫기) ── */
+function onTabKey(e,id){
+  var ids=TABS.map(function(t){return t.id;});var i=ids.indexOf(id);
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();var ni=clamp(i+(e.key==='ArrowRight'?1:-1),0,ids.length-1);switchTab(ids[ni]);var nb=$('#tab-'+ids[ni]);if(nb)nb.focus();}
+  else if(e.key==='Delete'){e.preventDefault();closeTab(id);}
+  else if(e.key==='Enter'||e.key===' '){e.preventDefault();switchTab(id);}
+  else if(e.shiftKey&&e.key==='F10'||e.key==='ContextMenu'){e.preventDefault();var r=e.currentTarget.getBoundingClientRect();openTabContext(id,r.left,r.bottom);}
+}
+$('#tabAdd').addEventListener('click',function(){switchTab('home');});
+/* ══════════════════ GNB 카테고리 + 서브메뉴 (hover slideDown · 키보드) ══════════════════ */
+var gnbMenu=$('#gnbMenu'),_openCat=null,_catTimer=null;
+function buildGnb(){
+  CATALOG.forEach(function(c){
+    var wrap=el('div',{'class':'gnb-cat'});
+    var btn=el('button',{'aria-haspopup':'true','aria-expanded':'false','id':'cat-'+c.id});
+    btn.innerHTML=esc(c.name)+'<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    var sm=el('div',{'class':'submenu','role':'menu','aria-label':c.name});
+    c.tabs.forEach(function(t){
+      var mi=el('button',{'role':'menuitem'});
+      mi.innerHTML=ic(t.icon,'mi-ico')+'<span>'+esc(t.title)+(t.sub?'<span class="mi-sub">'+esc(t.sub)+'</span>':'')+'</span>'+(t.star?'<span class="mi-star">★ 차별화</span>':'');
+      mi.addEventListener('click',function(){closeAllSubmenus();openTab(t.id);});
+      sm.appendChild(mi);
+    });
+    wrap.appendChild(btn);wrap.appendChild(sm);
+    btn.addEventListener('click',function(){(sm.classList.contains('open')?closeAllSubmenus:function(){openSubmenu(wrap);})();});
+    wrap.addEventListener('mouseenter',function(){clearTimeout(_catTimer);openSubmenu(wrap);});
+    wrap.addEventListener('mouseleave',function(){_catTimer=setTimeout(closeAllSubmenus,180);});
+    btn.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){e.preventDefault();openSubmenu(wrap);var f=sm.querySelector('button');if(f)f.focus();}else if(e.key==='Escape')closeAllSubmenus();});
+    sm.addEventListener('keydown',function(e){var items=$$('button',sm),i=items.indexOf(document.activeElement);if(e.key==='ArrowDown'){e.preventDefault();(items[i+1]||items[0]).focus();}else if(e.key==='ArrowUp'){e.preventDefault();(items[i-1]||items[items.length-1]).focus();}else if(e.key==='Escape'){e.preventDefault();closeAllSubmenus();btn.focus();}});
+    gnbMenu.appendChild(wrap);
+  });
+}
+function openSubmenu(wrap){closeAllSubmenus();wrap.querySelector('.submenu').classList.add('open');wrap.querySelector('button').setAttribute('aria-expanded','true');_openCat=wrap;}
+function closeAllSubmenus(){if(_openCat){var sm=_openCat.querySelector('.submenu');if(sm)sm.classList.remove('open');var b=_openCat.querySelector('button');if(b)b.setAttribute('aria-expanded','false');_openCat=null;}}
+document.addEventListener('mousedown',function(e){if(_openCat&&!e.target.closest('.gnb-cat'))closeAllSubmenus();});
+
+/* ── 알림 벨 팝오버 ── */
+var notifPop=$('#notifPop');
+function buildNotif(){var ul=$('#notifList');var items=LEDGER.FEED.alarms.map(function(a){return {t:a.t,time:a.time,al:1};}).concat(LEDGER.FEED.notices.slice(0,1).map(function(n){return {t:n.t,time:n.time};}));
+  ul.innerHTML=items.slice(0,4).map(function(it){return '<li><span><b>'+esc(it.t)+'</b><span class="t">'+esc(it.time)+' · 예시</span></span></li>';}).join('');
+  $('#bellCount').textContent=String(LEDGER.FEED.alarms.length);
+}
+$('#bell').addEventListener('click',function(e){e.stopPropagation();notifPop.classList.toggle('open');});
+document.addEventListener('mousedown',function(e){if(notifPop.classList.contains('open')&&!e.target.closest('#notifPop')&&!e.target.closest('#bell'))notifPop.classList.remove('open');});
+
+/* ── 햄버거 (모바일 LNB) ── */
+$('#gnbHamb').addEventListener('click',function(){$('#lnb').classList.toggle('open');});
+
+/* ══════════════════ LNB 컨텍스트 (활성 탭에 따라 전환) ══════════════════ */
+function buildLnbContext(){
+  var t=findTab(activeTabId),ctx=$('#lnbCtx'),sc=$('#lnbShort');
+  var items=(t&&t.lnb)||defaultLnb();
+  ctx.innerHTML='';
+  items.forEach(function(it){var b=el('button',{'aria-current':it.current?'true':'false'});b.innerHTML=ic(it.icon||'grid')+'<span>'+esc(it.label)+'</span>';b.addEventListener('click',it.fn||function(){});ctx.appendChild(b);});
+  sc.innerHTML='';
+  [{label:'결재함',icon:'ux',fn:function(){openTab('T1');}},{label:'전체 데이터 소스',icon:'grid',fn:openDsPanel},{label:'홈 런처',icon:'dashboard',fn:function(){switchTab('home');}}].forEach(function(it){var b=el('button');b.innerHTML=ic(it.icon)+'<span>'+esc(it.label)+'</span>';b.addEventListener('click',it.fn);sc.appendChild(b);});
+}
+function defaultLnb(){
+  if(activeTabId==='home')return CATALOG.map(function(c){return {label:c.name,icon:c.icon,fn:function(){openTab(c.tabs[0].id);}};});
+  var d=tabDef(activeTabId);return [{label:d.title,icon:d.icon,current:true},{label:'홈으로',icon:'dashboard',fn:function(){switchTab('home');}}];
+}
+
+/* ══════════════════ 전역: 테마 · X-ray · 편집 ══════════════════ */
+function applyThemeLabel(){$('#themeLabel').textContent=document.documentElement.dataset.theme==='dark'?'라이트':'다크';}
+$('#btnTheme').addEventListener('click',function(){var cur=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=cur;try{localStorage.setItem('sebit-theme',cur);}catch(e){}applyThemeLabel();say('테마 '+(cur==='dark'?'다크':'라이트')+' 적용');});
+var xrayOn=false;
+$('#btnXray').addEventListener('click',function(){xrayOn=!xrayOn;document.body.classList.toggle('xray-on',xrayOn);this.setAttribute('aria-pressed',xrayOn?'true':'false');if(xrayOn)updateXrayStrip();say(xrayOn?'X-ray 켜짐 — 각 요소의 NOVA 제품 귀속 표시':'X-ray 꺼짐');});
+function updateXrayStrip(){
+  var fam={};$$('[data-nova]').forEach(function(n){if(n.closest('[hidden]'))return;var v=n.getAttribute('data-nova');var prod=v.split(':')[0];fam[prod]=(fam[prod]||0)+1;});
+  var order=['dashboard','chart','grid','ux','ui'],names={dashboard:'Dashboard',chart:'Chart',grid:'Grid',ux:'UX',ui:'UI'};
+  var parts=order.filter(function(k){return fam[k];}).map(function(k){return '<b>'+names[k]+' '+fam[k]+'</b>';});
+  $('#xrayStrip').innerHTML='이 화면 = NOVA '+parts.join(' · ')+' <span style="color:var(--nova-text-muted)">(DOM 실계수)</span>';
+}
+var editOn=false;
+$('#btnEdit').addEventListener('click',function(){editOn=!editOn;document.body.classList.toggle('edit-on',editOn);this.setAttribute('aria-pressed',editOn?'true':'false');var t=findTab(activeTabId);if(t&&t.onEdit)t.onEdit(editOn);say(editOn?'편집 모드 — 위젯 드래그·숨김 가능':'편집 모드 종료');});
+
+/* ══════════════════ 사이드 패널 (데이터 소스 · 조립 코드) ══════════════════ */
+var scrim=$('#scrim');
+function openDsPanel(){$('#dsPanel').classList.add('open');scrim.classList.add('on');closeAllSubmenus();}
+function openCodePanel(){var d=tabDef(activeTabId);$('#codeTabName').textContent=d.xtag||'';
+  $('#codeBlock').innerHTML=codeFor(activeTabId);$('#codePanel').classList.add('open');scrim.classList.add('on');}
+function closePanels(){$$('.side-panel').forEach(function(p){p.classList.remove('open');});scrim.classList.remove('on');}
+$('#sampleBadge').addEventListener('click',openDsPanel);
+$('#btnCode').addEventListener('click',openCodePanel);
+$('#btnFullDemo').addEventListener('click',function(){ // ⛔ 빈 창(about:blank) 금지 — 대상 없으면 정직하게 안내만
+  this.classList.remove('flash');void this.offsetWidth;this.classList.add('flash');
+  say('레이어2 제품 데모 사이트는 정식판에서 연결됩니다 (프로토타입에는 대상 없음)');});
+scrim.addEventListener('click',closePanels);
+$$('[data-close-panel]').forEach(function(b){b.addEventListener('click',closePanels);});
+function codeFor(id){var d=tabDef(id);
+  return '<span class="cm">&lt;!-- '+esc(d.title)+' · NOVA 조립 (예시) --&gt;</span>\n'+
+    '&lt;<b>Nova'+(d.xtag||'').split(':')[0].replace(/^\w/,function(c){return c.toUpperCase();})+'</b>\n'+
+    '  layout="workspace-tab"\n  <span class="cm">dataSource</span>={ /* 라이브 배선 자리 */ }\n  theme="{ dark | light }" /&gt;\n\n'+
+    '<span class="cm">&lt;!-- dataSource 옵션에 실 API를 연결하면 이 탭이 그대로 라이브가 됩니다 --&gt;</span>';
+}
+
+/* ══════════════════ 전역 키보드 ══════════════════ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closePopmenu();closeAllSubmenus();closePanels();if(notifPop.classList.contains('open'))notifPop.classList.remove('open');}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='w'&&activeTabId!=='home'){e.preventDefault();closeTab(activeTabId);}
+});
+/* skip link — 라우터/해시 오염 없이 포커스 이동만 */
+$('#skipLink').addEventListener('click',function(e){e.preventDefault();stage.focus();});
+
+/* ══════════════════ 라이브 텔레메트리 레일(D-A) ══════════════════
+   ⛔ 거짓 LIVE 금지: live-dot 은 실제로 째깍대는 시각에 바인딩(정적 배지 아님).
+   갱신=현재시각(실시간) · OEE/정시출하=예시 원장 파생(footer disclaimer 로 예시 명시). */
+var _telInt=null;
+function startTelemetry(){
+  var oeeEl=$('#tmOee'),shipEl=$('#tmShip'),clk=$('#tmClock');
+  if(!clk)return;
+  var oee=LEDGER.EQUIP.reduce(function(a,e){return a+e.oee;},0)/LEDGER.EQUIP.length; // 설비 OEE 평균
+  var op=operSites(); var ship=op.length?op.filter(function(s){return !s.delay;}).length/op.length*100:0; // 정시출하 = 지연없는 가동 사업장 비율
+  if(oeeEl)oeeEl.textContent=oee.toFixed(1)+'%';
+  if(shipEl)shipEl.textContent=ship.toFixed(0)+'%';
+  function tick(){var d=new Date();function p(n){return (n<10?'0':'')+n;}clk.textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}
+  tick(); if(_telInt)clearInterval(_telInt); _telInt=setInterval(tick,1000);
+}
+/* ══════════════════ 부트 ══════════════════ */
+function boot(){
+  applyThemeLabel();buildGnb();buildNotif();startTelemetry();
+  var h=new Date().getHours();$('#greet').textContent=h<11?'좋은 아침입니다':h<18?'좋은 오후입니다':'좋은 저녁입니다';
+  renderTabBar();
+  var restored=loadSession();
+  if(!restored){openTab('T1');switchTab('home');} // 상황실 선개방(멀티탭 + 실 원장 배지 즉시 시연) → 홈 착지
+  TABS.forEach(function(t){if(t.id!=='home')setBadge(t.id,tabAlertCount(t.id));}); // 배지 = 실 원장 파생 재확정
+  buildLnbContext();
+}
+/* ══════════════════════════ 홈 런처 ══════════════════════════ */
+RENDERERS.home=function(pane){
+  var cards=CATALOG.map(function(c){
+    var links=c.tabs.map(function(t){return '<button data-open="'+t.id+'"><span class="lk"></span><span>'+esc(t.title)+'</span>'+(t.star?'<span class="star">★</span>':'')+'</button>';}).join('');
+    return '<div class="card cat-card"><div class="ch"><span class="ci">'+ic(c.icon)+'</span><div><h3>'+esc(c.name)+'</h3><span class="cn">NOVA '+({c1:'Dashboard',c2:'Grid',c3:'Chart',c4:'UX+Grid+Chart',c5:'UX+UI'}[c.id])+'</span></div></div><div class="cat-links">'+links+'</div></div>';
+  }).join('');
+  pane.innerHTML=
+    '<div class="launcher">'+
+      '<div class="launch-hero" data-nova="ui:LauncherHero" data-nova-label="NOVA UI · Hero"><h1><span class="grad">한올정밀 통합 업무 포털</span></h1><p>NOVA 제품(UX·UI·Grid·Chart·Dashboard·Doc)으로 조립한 실제 업무 워크스페이스입니다. 아래 카테고리에서 화면을 열면 <b>탭으로</b> 추가됩니다 — 우리 업무도 이 안에 탭으로 들어옵니다.</p></div>'+
+      '<div class="cat-grid">'+cards+'</div>'+
+      '<div class="card" style="padding:20px"><div class="coming" style="border-top:0;margin:0;padding:0"><div class="ct">추가 예정 (정식판에서 제공 · 클릭 불가 카탈로그)</div><div class="cbadges">'+
+        ['퇴직연금','청구조회·마감','수금현황','상품조회','보험설계','학기별 시간표','원달러 현물환','세금계산서 발행대장','조직도','축산물 통합정보'].map(function(x){return '<span>'+esc(x)+'</span>';}).join('')+
+      '</div></div></div>'+
+    '</div>';
+  $$('[data-open]',pane).forEach(function(b){b.addEventListener('click',function(){openTab(b.getAttribute('data-open'));});});
+};
+
+/* ══════════════════════════ T1 통합 운영 상황실 ══════════════════════════ */
+RENDERERS.T1=function(pane,tab){
+  // 파생 지원 상수 원장 보강(단일 소스 유지)
+  var DM={'반도체부품':{margin:11.8,backlog:12},'모빌리티':{margin:13.5,backlog:9},'디스플레이':{margin:8.1,backlog:6},'산업기기':{margin:9.4,backlog:5}};
+  LEDGER.DIVS.forEach(function(d){d.margin=DM[d.name].margin;d.backlog=DM[d.name].backlog;});
+  var LKEY='nova-int-layout-v1',MKEY='nova-int-memos-v1';
+  var memos;try{memos=JSON.parse(localStorage.getItem(MKEY))||LEDGER.FEED.memos.slice();}catch(e){memos=LEDGER.FEED.memos.slice();}
+  var layout;try{layout=JSON.parse(localStorage.getItem(LKEY));}catch(e){layout=null;}
+  var DEF_ORDER={1:['W1','W2','W3','W4','W5','W6'],2:['W7','W8','W9','W10'],3:['W11','W12','W13','W14']};
+  var S={view:1,selDiv:-1,selSido:null,selEquip:'CNC-03',period:'분기',feedTab:'공지',
+    order:layout&&layout.order||{1:DEF_ORDER[1].slice(),2:DEF_ORDER[2].slice(),3:DEF_ORDER[3].slice()},
+    hidden:layout&&layout.hidden||{1:[],2:[],3:[]},updated:new Date()};
+  function saveLayout(){try{localStorage.setItem(LKEY,JSON.stringify({order:S.order,hidden:S.hidden}));}catch(e){}}
+  function saveMemos(){try{localStorage.setItem(MKEY,JSON.stringify(memos));}catch(e){}}
+
+  pane.innerHTML=
+    '<div class="pane-head"><div><h2 class="pane-title">통합 운영 상황실</h2><p class="pane-sub">한올정밀 · 전국 13개 사업장 · NOVA Dashboard 조립</p></div>'+
+      '<span class="pane-xtag"><span class="xtag">'+ic('dashboard')+' dashboard:NovaDashboard</span></span></div>'+
+    '<div class="local-bar room-toolbar">'+
+      '<button class="tool-btn" id="t1Demo">'+ic('play')+' 시연</button>'+
+      '<button class="tool-btn" id="t1Tour">'+ic('tour')+' 투어</button>'+
+      '<div class="subviews" role="tablist" aria-label="상황실 서브뷰">'+
+        '<button role="tab" data-v="1" aria-selected="true">경영 현황<span class="prog"></span></button>'+
+        '<button role="tab" data-v="2" aria-selected="false">전국 사업장<span class="prog"></span></button>'+
+        '<button role="tab" data-v="3" aria-selected="false">공정 품질<span class="prog"></span></button>'+
+      '</div>'+
+      '<span class="room-meta">갱신 <span id="t1Time" class="tnum"></span> · 예시</span>'+
+    '</div>'+
+    '<div class="view on" id="v1"></div><div class="view" id="v2"></div><div class="view" id="v3"></div>';
+  var vEl={1:$('#v1',pane),2:$('#v2',pane),3:$('#v3',pane)};
+  function stamp(){S.updated=new Date();$('#t1Time',pane).textContent=S.updated.toTimeString().slice(0,8);}
+  stamp();
+
+  /* ── 위젯 셸 ── */
+  function widget(id,span,title,body,insight,acts){
+    return '<div class="widget '+span+'" data-wid="'+id+'" data-nova="'+wtag(id)+'" data-nova-label="NOVA '+wtag(id)+'" draggable="false">'+
+      '<div class="w-head"><h4>'+esc(title)+'</h4>'+(acts||'')+'<button class="w-hide" data-hide="'+id+'" aria-label="'+esc(title)+' 숨김">'+ic('eyeoff')+'</button></div>'+
+      '<div class="w-body">'+body+'</div>'+(insight!=null?'<div class="w-insight">'+insight+'</div>':'')+'</div>';
+  }
+  function wtag(id){var m={W1:'dashboard:Kpi',W2:'chart:line',W3:'chart:stackbar',W4:'ux:Tabs',W5:'ux:Card',W6:'ux:Textarea',W7:'dashboard:Kpi',W8:'chart:map',W9:'grid:NovaGrid',W10:'chart:bar',W11:'chart:gauge',W12:'chart:radar',W13:'chart:line',W14:'grid:MasterDetail'};return m[id]||'ux:Widget';}
+
+  /* ── 파생 ── */
+  function effDiv(){return S.selDiv>=0?LEDGER.DIVS[S.selDiv]:null;}
+  function revAndTarget(){var d=effDiv();if(d)return [divTotal(d),d.target];return [totalRev(),LEDGER.targetRev];}
+  function otdRate(){var op=operSites();var late=op.filter(function(s){return s.delay;}).length;return (op.length-late)/op.length*100;}
+  function wMargin(){var d=effDiv();if(d)return d.margin;var tr=totalRev();return LEDGER.DIVS.reduce(function(a,x){return a+x.margin*divTotal(x);},0)/tr;}
+  function backlog(){var d=effDiv();return d?d.backlog:LEDGER.DIVS.reduce(function(a,x){return a+x.backlog;},0);}
+  function sidoAgg(){var m={};LEDGER.SITES.forEach(function(s){var o=m[s.sido]||(m[s.sido]={sum:0,cnt:0,prod:0});if(s.util!=null){o.sum+=s.util;o.cnt++;}o.prod+=s.prod;});for(var k in m)m[k].util=m[k].cnt?m[k].sum/m[k].cnt:null;return m;}
+
+  /* ══ 뷰 1: 경영 현황 ══ */
+  function renderV1(){
+    var rt=revAndTarget(),rate=rt[0]/rt[1]*100,gap=rt[1]-rt[0];
+    var W1=widget('W1','w-c12','핵심 KPI'+(S.selDiv>=0?' · '+esc(effDiv().name):''),
+      '<div class="kpi-strip">'+
+        kpi(miniDonut(Math.round(rate)),Math.round(rate)+'%','매출 달성률',null)+
+        kpi(miniDonut(Math.round(wMargin()*5)),wMargin().toFixed(1)+'%','영업이익률',null)+
+        kpi('',backlog()+'건','수주 잔고',null)+
+        kpi(miniDonut(Math.round(otdRate())),otdRate().toFixed(1)+'%','정시 출하율',null)+
+      '</div>',
+      '<b>매출 달성률 '+Math.round(rate)+'%</b> — 목표까지 '+nfmt(gap)+'억');
+    var yr=[1,2,3,4].map(function(_,i){var d=effDiv();return d?d.q[i]:LEDGER.DIVS.reduce(function(a,x){return a+x.q[i];},0);});
+    var pr=[1,2,3,4].map(function(_,i){var d=effDiv();return d?d.prev[i]:LEDGER.DIVS.reduce(function(a,x){return a+x.prev[i];},0);});
+    var mxq=yr.indexOf(Math.max.apply(null,yr));
+    var W2=widget('W2','w-c8','매출 추이'+(S.selDiv>=0?' · '+esc(effDiv().name):' · 전사'),
+      drawLine([{data:yr,cls:'ln-1'},{data:pr,cls:'ln-2'}],{labels:['Q1','Q2','Q3','Q4'],w:400,h:170,area:true}),
+      '<b>Q'+(mxq+1)+' 최고</b> — 전년 동기 대비 +'+((yr[mxq]/pr[mxq]-1)*100).toFixed(1)+'%',
+      periodSeg());
+    var segs=[0,1,2,3].map(function(qi){return {name:'Q'+(qi+1),data:LEDGER.DIVS.map(function(d){return d.q[qi];}),cls:'bar-'+(qi+1)};});
+    var grow=LEDGER.DIVS.map(function(d){return (divTotal(d)/divPrevTotal(d)-1)*100;});
+    var gmax=grow.indexOf(Math.max.apply(null,grow));
+    var W3=widget('W3','w-c4','사업부별 매출',
+      '<div id="w3bars">'+drawStackBar(LEDGER.DIVS.map(function(d){return d.name;}),segs,S.selDiv)+'</div><p style="font-size:11px;color:var(--nova-text-muted);margin:6px 0 0">막대 클릭 = 사업부 선택 · Q별 스택</p>',
+      '<b>성장 견인 = '+esc(LEDGER.DIVS[gmax].name)+'</b> (전년 +'+grow[gmax].toFixed(0)+'%)');
+    var W4=widget('W4','w-c4','공지·알람',feedWidget(),'<b>신규 공지 '+LEDGER.FEED.notices.filter(function(n){return n.neu;}).length+'건</b> · 필독 1건');
+    var ap=LEDGER.FEED.approvals;
+    var W5=widget('W5','w-c4','전자결재',
+      '<div class="appr-grid">'+['신규','대기','반려','완료'].map(function(k){return '<div class="ac"><div class="n tnum">'+ap[k]+'</div><div class="l">'+k+'</div></div>';}).join('')+'</div>',
+      '<b>대기 '+ap.대기+'건</b> — 최장 '+Math.max.apply(null,ap.list.map(function(x){return x.days;}))+'일 경과');
+    var W6=widget('W6','w-c4','포스트 메모',memoWidget(),null,'');
+    vEl[1].innerHTML=orderHtml(1,{W1:W1,W2:W2,W3:W3,W4:W4,W5:W5,W6:W6})+tray(1);
+    wireV1();wireCommon(1);
+  }
+  function periodSeg(){return '<div class="w-act"><div class="seg" role="group" aria-label="기간">'+['월','분기','년'].map(function(p){return '<button data-period="'+p+'" aria-pressed="'+(S.period===p?'true':'false')+'">'+p+'</button>';}).join('')+'</div></div>';}
+  function kpi(donut,val,label,delta){return '<div class="kpi">'+(donut||'')+'<div><div class="kv tnum">'+val+'</div><div class="kl">'+label+'</div>'+(delta?'<div class="kd '+(delta>0?'up':'down')+'">'+(delta>0?'▲':'▼')+Math.abs(delta)+'</div>':'')+'</div></div>';}
+  function feedWidget(){
+    var list=S.feedTab==='공지'?LEDGER.FEED.notices:LEDGER.FEED.alarms;
+    return '<div class="feed-tabs" role="tablist">'+['공지','알람'].map(function(t){return '<button role="tab" data-feed="'+t+'" aria-selected="'+(S.feedTab===t?'true':'false')+'">'+t+' '+ (t==='공지'?LEDGER.FEED.notices.length:LEDGER.FEED.alarms.length)+'</button>';}).join('')+'</div>'+
+      '<ul class="feed-list">'+list.map(function(it){return '<li>'+(it.neu||S.feedTab==='알람'?'<span class="nd"></span>':'<span style="width:6px"></span>')+'<span>'+esc(it.t)+'</span><span class="ft">'+esc(it.time)+'</span></li>';}).join('')+'</ul>';
+  }
+  function memoWidget(){
+    return memos.map(function(m,i){return '<div class="memo-card"><textarea data-memo="'+i+'" rows="2">'+esc(m)+'</textarea><div style="text-align:right"><button class="memo-del" data-memodel="'+i+'">삭제</button></div></div>';}).join('')+
+      '<button class="ui-btn ghost" id="memoAdd" style="width:100%">+ 메모 추가</button><p style="font-size:11px;color:var(--nova-text-muted);margin:6px 0 0">이 브라우저에 저장됩니다</p>';
+  }
+  function wireV1(){
+    var v=vEl[1];
+    $$('[data-period]',v).forEach(function(b){b.addEventListener('click',function(){S.period=b.getAttribute('data-period');select(null);say('기간 '+S.period+' 적용');});});
+    $$('[data-feed]',v).forEach(function(b){b.addEventListener('click',function(){S.feedTab=b.getAttribute('data-feed');renderV1();});});
+    var w3=$('#w3bars',v);if(w3){$$('rect',w3).forEach(function(){});w3.addEventListener('click',function(e){var bars=$$('rect',w3).filter(function(r){return r.getAttribute('class');});
+      // 사업부 클릭 판정: x 위치로 근사 (스택바 그룹)
+      var rect=w3.getBoundingClientRect(),rel=(e.clientX-rect.left)/rect.width;var idx=clamp(Math.floor(rel*4),0,3);
+      S.selDiv=(S.selDiv===idx?-1:idx);select('div');});}
+    $$('[data-memo]',v).forEach(function(t){t.addEventListener('input',function(){memos[+t.getAttribute('data-memo')]=t.value;saveMemos();});});
+    $$('[data-memodel]',v).forEach(function(b){b.addEventListener('click',function(){memos.splice(+b.getAttribute('data-memodel'),1);saveMemos();renderV1();});});
+    var ma=$('#memoAdd',v);if(ma)ma.addEventListener('click',function(){memos.push('');saveMemos();renderV1();});
+  }
+
+  /* ══ 뷰 2: 전국 사업장 ══ */
+  function renderV2(){
+    var op=operSites(),avg=avgUtil(op);
+    var visSites=S.selSido?LEDGER.SITES.filter(function(s){return s.sido===S.selSido;}):LEDGER.SITES;
+    var W7=widget('W7','w-c12','운영 KPI'+(S.selSido?' · '+esc(S.selSido):''),
+      '<div class="kpi-strip">'+
+        kpi('',op.length+'/'+LEDGER.SITES.length,'가동 사업장',null)+
+        kpi(miniDonut(Math.round(avg)),avg.toFixed(1)+'%','평균 가동률',null)+
+        kpi('',nfmt(totalProd()),'금일 생산',null)+
+        kpi('',delayCount()+'건','출하 지연',null)+
+      '</div>',
+      '<b>가동 '+op.length+'/'+LEDGER.SITES.length+'</b> — 부산 2공장 정비 중');
+    var W8=widget('W8','w-c7','대한민국 지도 · 가동률',mapBody(),mapInsight(),
+      S.selSido?'<div class="w-act"><button class="tool-btn" id="mapBack">전국</button></div>':'');
+    var W9=widget('W9','w-c5','사업장 그리드 (조건부서식)',gridBody(visSites),gridInsight(),null);
+    var top5=LEDGER.SITES.filter(function(s){return s.util!=null;}).sort(function(a,b){return b.util-a.util;}).slice(0,5);
+    var W10=widget('W10','w-c5','가동률 TOP5',drawHBar(top5.map(function(s){return {label:s.name.replace(/\s.*/,''),value:s.util,cls:S.selSido&&s.sido===S.selSido?'bar-4':'bar-1'};})),
+      '<b>상위 5곳 평균 '+ (top5.reduce(function(a,s){return a+s.util;},0)/5).toFixed(1)+'%</b>');
+    vEl[2].innerHTML=orderHtml(2,{W7:W7,W8:W8,W9:W9,W10:W10})+tray(2);
+    wireV2();wireCommon(2);
+  }
+  function mapBody(){var agg=sidoAgg();return '<div class="map-wrap" id="mapWrap">'+koreaMapSVG({agg:agg,sel:S.selSido,drill:!!S.selSido})+
+    '<div class="map-legend">'+[1,2,3,4,5].map(function(i){var rng=['~80','80~85','85~90','90~95','95+'][i-1];return '<span class="lg"><span class="sw m'+i+'"></span>'+rng+'%</span>';}).join('')+'<span class="lg"><span class="sw m0"></span>사업장 없음</span></div>'+
+    (S.selSido?'<button class="tool-btn map-back" id="mapBack2">← 전국</button>':'')+'</div>';}
+  function mapInsight(){var agg=sidoAgg(),arr=Object.keys(agg).filter(function(k){return agg[k].util!=null;}).map(function(k){return {k:k,u:agg[k].util};});arr.sort(function(a,b){return b.u-a.u;});var hi=arr[0],lo=arr[arr.length-1];return '<b>가동률 1위 '+esc(hi.k)+' '+hi.u.toFixed(1)+'%</b> · 최하 '+esc(lo.k)+' '+lo.u.toFixed(1)+'%';}
+  function gridBody(sites){
+    return '<div class="grid-scroll frozen"><table class="gtable" id="w9grid"><thead><tr>'+
+      '<th data-sort="name" aria-sort="none">사업장</th><th data-sort="sido" aria-sort="none">시도</th>'+
+      '<th data-sort="util" aria-sort="none" class="num">가동률</th><th data-sort="prod" aria-sort="none" class="num">생산량</th>'+
+      '<th class="num">전월대비</th><th>상태</th></tr></thead><tbody>'+
+      sites.map(function(s){var gi=LEDGER.SITES.indexOf(s);var dv=s.util!=null?(s.util-s.prevUtil):null;
+        return '<tr data-row="'+gi+'"'+(S.selSido&&s.sido===S.selSido?' aria-selected="true"':'')+'>'+
+          '<td>'+esc(s.name)+'</td><td>'+esc(s.sido)+'</td>'+
+          '<td class="num edit" data-edit="'+gi+'" tabindex="0">'+(s.util!=null?s.util.toFixed(1):'—')+'</td>'+
+          '<td class="num tnum">'+nfmt(s.prod)+'</td>'+
+          '<td class="num '+(dv==null?'':dv>=0?'delta-up':'delta-dn')+'">'+(dv==null?'—':(dv>=0?'▲':'▼')+Math.abs(dv).toFixed(1))+'</td>'+
+          '<td>'+pill(s.down?'down':statusOf(s.util))+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+  }
+  function gridInsight(){var arr=LEDGER.SITES.filter(function(s){return s.util!=null;});var imp=arr.filter(function(s){return s.util>=s.prevUtil;}).length,wor=arr.length-imp;
+    var best=arr.slice().sort(function(a,b){return (b.util-b.prevUtil)-(a.util-a.prevUtil);})[0];
+    return '<b>개선 '+imp+'곳 · 악화 '+wor+'곳</b> — 최대 개선 '+esc(best.name.replace(/\s.*/,''))+' +'+(best.util-best.prevUtil).toFixed(1)+'%p';}
+  var _sortKey=null,_sortAsc=true;
+  function wireV2(){
+    var v=vEl[2];
+    var mw=$('#mapWrap',v);if(mw){
+      $$('.map-region',mw).forEach(function(r){
+        r.addEventListener('click',function(){var sd=r.getAttribute('data-sido');S.selSido=(S.selSido===sd?null:sd);select('sido');});
+        r.addEventListener('mouseenter',function(e){showMapTip(e,r);});
+        r.addEventListener('mousemove',moveMapTip);
+        r.addEventListener('mouseleave',hideMapTip);
+        r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();var sd=r.getAttribute('data-sido');S.selSido=(S.selSido===sd?null:sd);select('sido');}});
+      });
+    }
+    var mb=$('#mapBack',v)||$('#mapBack2',v);if(mb)mb.addEventListener('click',function(){S.selSido=null;select('sido');});
+    // 그리드 정렬
+    $$('#w9grid th[data-sort]',v).forEach(function(th){th.addEventListener('click',function(){var k=th.getAttribute('data-sort');_sortAsc=_sortKey===k?!_sortAsc:true;_sortKey=k;LEDGER.SITES.sort(function(a,b){var x=a[k],y=b[k];if(x==null)return 1;if(y==null)return -1;return (x>y?1:x<y?-1:0)*(_sortAsc?1:-1);});renderV2();});});
+    // 행 클릭 → 지도 하이라이트 (X3)
+    $$('#w9grid tr[data-row]',v).forEach(function(tr){tr.addEventListener('click',function(e){if(e.target.closest('.edit'))return;var s=LEDGER.SITES[+tr.getAttribute('data-row')];S.selSido=s.sido;select('sido');});});
+    // 셀 편집 (X4)
+    $$('#w9grid .edit',v).forEach(function(td){
+      function beginEdit(){var gi=+td.getAttribute('data-edit');var s=LEDGER.SITES[gi];if(s.down)return;
+        var old=s.util;var inp=el('input',{'class':'cell-input tnum','type':'number','step':'0.1','value':old});
+        td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+        function commit(){var nv=parseFloat(inp.value);if(!isNaN(nv)){s.util=clamp(nv,0,100);}renderV2();say('사업장 데이터가 수정되어 지도·KPI·인사이트가 갱신되었습니다');dispatch('edit');}
+        inp.addEventListener('blur',commit);
+        inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();commit();}else if(e.key==='Escape'){s.util=old;renderV2();}});
+      }
+      td.addEventListener('dblclick',beginEdit);
+      td.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();beginEdit();}});
+    });
+  }
+
+  /* ══ 뷰 3: 공정 품질 ══ */
+  function renderV3(){
+    var eq=LEDGER.EQUIP.filter(function(e){return e.id===S.selEquip;})[0]||LEDGER.EQUIP[0];
+    var W11=widget('W11','w-c4',eq.id+' OEE',drawGauge(Math.round(eq.oee),eq.id+' 종합효율'),
+      '<b>OEE '+eq.oee.toFixed(1)+'%</b> — 목표 85% '+(eq.oee>=85?'상회':'미달'));
+    var q=LEDGER.QUALITY,mxa=q.cur.indexOf(Math.max.apply(null,q.cur)),mna=q.cur.indexOf(Math.min.apply(null,q.cur));
+    var W12=widget('W12','w-c4','품질 레이더',drawRadar(q.axes,[{data:q.cur},{data:q.prev}]),
+      '<b>강점 = '+esc(q.axes[mxa])+'</b> · 취약 = '+esc(q.axes[mna]));
+    var dseries=LEDGER.DEFECT[S.selEquip]||LEDGER.DEFECT['CNC-01'];var mxd=dseries.indexOf(Math.max.apply(null,dseries));var mean=dseries.reduce(function(a,b){return a+b;},0)/7;
+    var W13=widget('W13','w-c4','요일별 불량 · '+eq.id,drawLine([{data:dseries,cls:'ln-1'}],{labels:LEDGER.DEFECT_DAYS,w:280,h:150,area:true,min:0}),
+      '<b>위험 요일 = '+esc(LEDGER.DEFECT_DAYS[mxd])+'요일</b> (평균 +'+((dseries[mxd]/mean-1)*100).toFixed(0)+'%)');
+    var W14=widget('W14','w-c12','설비 마스터-디테일',mdBody(eq),'<b>'+eq.id+'</b> — 최근 24시간 알람 '+eq.alarms.length+'건',null);
+    vEl[3].innerHTML=orderHtml(3,{W11:W11,W12:W12,W13:W13,W14:W14})+tray(3);
+    wireV3();wireCommon(3);
+  }
+  function mdBody(eq){
+    return '<div class="md-grid"><ul class="md-list">'+LEDGER.EQUIP.map(function(e){return '<li><button data-eq="'+e.id+'" aria-current="'+(e.id===S.selEquip?'true':'false')+'"><span>'+esc(e.id)+' · '+esc(e.line)+'</span>'+pill(e.status)+'</button></li>';}).join('')+'</ul>'+
+      '<div class="card md-detail"><h4 style="margin:0 0 4px">'+esc(eq.name)+' <span style="font-size:12px;color:var(--nova-text-muted)">'+esc(eq.line)+'</span></h4>'+
+      '<div class="kv-grid">'+[['OEE',eq.oee.toFixed(1)+'%'],['상태',{good:'정상',warn:'주의',critical:'위험'}[eq.status]],['라인',eq.line.replace(/\s.*/,'')],['알람',eq.alarms.length+'건'],['설비ID',eq.id],['가동','24h']].map(function(kv){return '<div class="kv"><div class="k">'+kv[0]+'</div><div class="v">'+esc(kv[1])+'</div></div>';}).join('')+'</div>'+
+      '<div style="margin:8px 0"><span style="font-size:11px;color:var(--nova-text-muted)">최근 12h OEE 추이</span><br>'+drawSpark(eq.spark)+'</div>'+
+      '<div><span style="font-size:11px;color:var(--nova-text-muted)">최근 알람</span><ul class="feed-list">'+(eq.alarms.length?eq.alarms.map(function(a){return '<li><span class="nd"></span>'+esc(a)+'</li>';}).join(''):'<li style="color:var(--nova-text-muted)">알람 없음</li>')+'</ul></div></div></div>';
+  }
+  function wireV3(){var v=vEl[3];$$('[data-eq]',v).forEach(function(b){b.addEventListener('click',function(){S.selEquip=b.getAttribute('data-eq');select('equip');});});}
+
+  /* ── 크로스필터 디스패처 ── */
+  var _detectSubs=[];
+  function dispatch(name){_detectSubs.forEach(function(fn){fn(name);});}
+  function select(type){
+    if(type==='div')dispatch('X1'); if(type==='sido')dispatch('X2');
+    renderView(S.view);
+    // 갱신 위젯 플래시
+    $$('.widget',vEl[S.view]).forEach(flash);
+  }
+  function renderView(n){({1:renderV1,2:renderV2,3:renderV3})[n]();}
+  function switchView(n){if(n===S.view)return;stopRotation();S.view=n;$$('.view',pane).forEach(function(x){x.classList.remove('on');});vEl[n].classList.add('on');
+    $$('.subviews button',pane).forEach(function(b){b.setAttribute('aria-selected',b.getAttribute('data-v')==String(n)?'true':'false');});
+    renderView(n);buildLnbContext();say('뷰 전환: '+({1:'경영 현황',2:'전국 사업장',3:'공정 품질'}[n]));}
+  $$('.subviews button',pane).forEach(function(b){b.addEventListener('click',function(){switchView(+b.getAttribute('data-v'));});});
+
+  /* ── 편집 모드 (숨김/복원 + 드래그) ── */
+  function orderHtml(n,map){return S.order[n].filter(function(id){return S.hidden[n].indexOf(id)<0;}).map(function(id){return map[id];}).join('');}
+  function tray(n){if(!S.hidden[n].length)return '<div class="hidden-tray"></div>';return '<div class="hidden-tray">숨긴 위젯 ('+S.hidden[n].length+'): '+S.hidden[n].map(function(id){return '<button data-restore="'+id+'">'+wLabel(id)+' +</button>';}).join('')+' <button data-reset style="margin-left:auto">기본 배치로</button></div>';}
+  function wLabel(id){return {W1:'KPI',W2:'매출추이',W3:'사업부',W4:'공지',W5:'결재',W6:'메모',W7:'운영KPI',W8:'지도',W9:'그리드',W10:'TOP5',W11:'게이지',W12:'레이더',W13:'불량',W14:'설비'}[id]||id;}
+  function wireCommon(n){
+    var v=vEl[n];
+    $$('[data-hide]',v).forEach(function(b){b.addEventListener('click',function(){var id=b.getAttribute('data-hide');if(S.hidden[n].indexOf(id)<0)S.hidden[n].push(id);saveLayout();renderView(n);say(wLabel(id)+' 위젯 숨김');});});
+    $$('[data-restore]',v).forEach(function(b){b.addEventListener('click',function(){var id=b.getAttribute('data-restore');S.hidden[n]=S.hidden[n].filter(function(x){return x!==id;});saveLayout();renderView(n);});});
+    var rb=$('[data-reset]',v);if(rb)rb.addEventListener('click',function(){S.order[n]=DEF_ORDER[n].slice();S.hidden[n]=[];saveLayout();renderView(n);say('기본 배치로 복원');});
+    if(editOn)applyEdit(n,true);
+  }
+  var _wdrag=null;
+  function applyEdit(n,on){
+    var v=vEl[n];
+    $$('.widget',v).forEach(function(w){
+      w.setAttribute('draggable',on?'true':'false');
+      if(on&&!w._wired){w._wired=1;
+        w.addEventListener('dragstart',function(e){_wdrag=w.getAttribute('data-wid');w.classList.add('wdragging');e.dataTransfer.effectAllowed='move';});
+        w.addEventListener('dragend',function(){w.classList.remove('wdragging');$$('.widget',v).forEach(function(x){x.classList.remove('wdrop');});});
+        w.addEventListener('dragover',function(e){e.preventDefault();w.classList.add('wdrop');});
+        w.addEventListener('dragleave',function(){w.classList.remove('wdrop');});
+        w.addEventListener('drop',function(e){e.preventDefault();var to=w.getAttribute('data-wid');if(_wdrag&&_wdrag!==to){var o=S.order[n];o.splice(o.indexOf(_wdrag),1);o.splice(o.indexOf(to),0,_wdrag);saveLayout();renderView(n);say('위젯 배치가 저장되었습니다');}});
+        var handleKey=function(e){if(!editOn)return;var id=w.getAttribute('data-wid'),o=S.order[n],i=o.indexOf(id);if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();var ni=clamp(i+(e.key==='ArrowRight'?1:-1),0,o.length-1);o.splice(i,1);o.splice(ni,0,id);saveLayout();renderView(n);}else if(e.key==='Delete'){e.preventDefault();if(S.hidden[n].indexOf(id)<0)S.hidden[n].push(id);saveLayout();renderView(n);}};
+        w.querySelector('.w-head').setAttribute('tabindex','0');w.querySelector('.w-head').addEventListener('keydown',handleKey);
+      }
+    });
+  }
+  tab.onEdit=function(on){applyEdit(S.view,on);};
+
+  /* ── 지도 툴팁 ── */
+  var mapTip=$('#mapTip');
+  function showMapTip(e,r){var sd=r.getAttribute('data-sido');var agg=sidoAgg()[sd];mapTip.innerHTML='<b>'+esc(sd)+'</b> · '+(agg&&agg.util!=null?'가동률 '+agg.util.toFixed(1)+'% · '+agg.cnt+'개소':'사업장 없음');mapTip.style.display='block';moveMapTip(e);}
+  function moveMapTip(e){mapTip.style.left=(e.clientX+12)+'px';mapTip.style.top=(e.clientY+12)+'px';}
+  function hideMapTip(){mapTip.style.display='none';}
+  tab.cleanup.push(hideMapTip);
+
+  /* ── 자동 로테이션 (시연) ── */
+  /* ⛔ 회귀(타이머 누수): rot.timer 단일 핸들에 3200/7000ms 를 덮어써 3200 핸들 유실 →
+     stopRotation 후에도 3200 콜백이 select() 발화. 핸들 배열로 분리 저장·전부 clear·콜백 running 가드. */
+  var rot={running:false,timers:[]};
+  var demoBtn=$('#t1Demo',pane);
+  function clearRotTimers(){rot.timers.forEach(function(h){clearTimeout(h);});rot.timers=[];}
+  function stopRotation(){rot.running=false;clearRotTimers();$$('.subviews .prog',pane).forEach(function(p){p.style.transition='none';p.style.width='0';});if(demoBtn){demoBtn.innerHTML=ic('play')+' 시연';demoBtn.setAttribute('aria-pressed','false');}}
+  function startRotation(){
+    if(RM){say('모션 감소 설정에서는 자동 시연이 꺼집니다');return;}
+    if(tourOpen)closeTour();
+    rot.running=true;demoBtn.innerHTML=ic('pause')+' 일시정지';demoBtn.setAttribute('aria-pressed','true');
+    var scripts={1:function(){S.selDiv=1;select('div');},2:function(){S.selSido='경기';select('sido');},3:function(){S.selEquip='CNC-03';select('equip');}};
+    function step(){
+      if(!rot.running)return;
+      var prog=vEl[S.view]?$('.subviews button[data-v="'+S.view+'"] .prog',pane):null;
+      $$('.subviews .prog',pane).forEach(function(p){p.style.transition='none';p.style.width='0';});
+      if(prog){void prog.offsetWidth;prog.style.transition='width 7s linear';prog.style.width='100%';}
+      rot.timers.push(setTimeout(function(){if(!rot.running)return;var sc=scripts[S.view];if(sc)sc();},3200));
+      rot.timers.push(setTimeout(function(){if(!rot.running)return;switchViewNoStop((S.view%3)+1);step();},7000));
+    }
+    step();
+  }
+  function switchViewNoStop(n){S.view=n;$$('.view',pane).forEach(function(x){x.classList.remove('on');});vEl[n].classList.add('on');$$('.subviews button',pane).forEach(function(b){b.setAttribute('aria-selected',b.getAttribute('data-v')==String(n)?'true':'false');});renderView(n);}
+  demoBtn.addEventListener('click',function(){rot.running?stopRotation():startRotation();});
+  // 사용자 조작 시 자동 일시정지
+  /* ⛔ 시연 버튼 제외: 캡처 pointerdown이 먼저 stop→이어진 click이 start로 재시작해 '무정지' 됨.
+     버튼 자체 조작은 click 토글에 위임(그 외 요소 조작 시에만 자동 일시정지). */
+  var pausOnAct=function(e){if(e.target.closest('#t1Demo'))return;if(rot.running)stopRotation();};
+  pane.addEventListener('pointerdown',pausOnAct,true);pane.addEventListener('keydown',pausOnAct,true);
+  tab.cleanup.push(stopRotation);tab.onBlur=function(){stopRotation();};
+
+  /* ── 가이드 투어 ── */
+  var STEPS=[
+    {t:'상황실 소개',x:'#v1',d:'한올정밀의 통합 운영 상황실입니다. 모든 위젯이 NOVA 제품으로 조립돼 있습니다.',det:null},
+    {t:'크로스필터',x:'[data-wid=W3]',d:'사업부 막대를 클릭해 보세요 — KPI와 매출 추이가 따라 바뀝니다.',det:'X1',v:1},
+    {t:'지도 드릴다운',x:'[data-wid=W8]',d:'지도에서 시도를 클릭해 보세요 — 사업장 그리드가 필터됩니다.',det:'X2',v:2},
+    {t:'그리드 편집',x:'[data-wid=W9]',d:'가동률 셀을 더블클릭해 값을 고쳐보세요 — 지도 색과 KPI, 인사이트까지 다시 계산됩니다.',det:'edit',v:2},
+    {t:'마스터-디테일',x:'[data-wid=W14]',d:'설비를 선택하면 상세와 게이지가 함께 바뀝니다.',det:'equip',v:3},
+    {t:'위젯 편집',x:'.room-toolbar',d:'상단 [편집]을 켜고 위젯을 드래그해 보세요 — 배치가 저장됩니다.',det:null},
+    {t:'X-ray',x:'.pane-xtag',d:'상단 [X-ray]를 켜 보세요 — 어느 위젯이 어느 NOVA 제품인지 보입니다.',det:null}
+  ];
+  var tourOpen=false,tstep=0,_spot=null;
+  var tourCard=$('#tourCard');
+  function openTour(){stopRotation();tourOpen=true;tstep=0;tourCard.classList.add('open');showStep();}
+  function closeTour(){tourOpen=false;tourCard.classList.remove('open');clearSpot();}
+  function clearSpot(){if(_spot){_spot.classList.remove('spotlight');_spot=null;}}
+  function showStep(){var st=STEPS[tstep];if(st.v&&st.v!==S.view)switchView(st.v);
+    $('#tourTitle').textContent=st.t;$('#tourText').textContent=st.d;$('#tourProg').textContent=(tstep+1)+' / '+STEPS.length;
+    clearSpot();var tgt=$(st.x,pane);if(tgt){_spot=tgt;tgt.classList.add('spotlight');if(tgt.scrollIntoView)tgt.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});}
+    $('#tourPrev').disabled=tstep===0;$('#tourNext').textContent=tstep===STEPS.length-1?'완료':'다음';$('#tourNext').focus();
+  }
+  $('#tourNext').addEventListener('click',function(){if(tstep<STEPS.length-1){tstep++;showStep();}else closeTour();});
+  $('#tourPrev').addEventListener('click',function(){if(tstep>0){tstep--;showStep();}});
+  $('#tourClose').addEventListener('click',closeTour);
+  $('#t1Tour',pane).addEventListener('click',openTour);
+  _detectSubs.push(function(name){if(tourOpen){var st=STEPS[tstep];if(st.det===name){$('#tourText').innerHTML='<span class="tour-done">'+ic('check')+' 직접 해보셨네요</span>';setTimeout(function(){if(tourOpen&&tstep<STEPS.length-1){tstep++;showStep();}},1200);}}});
+  tab.cleanup.push(closeTour);
+
+  /* ── LNB 서브뷰 트리 ── */
+  tab.lnb=[
+    {label:'경영 현황',icon:'dashboard',current:S.view===1,fn:function(){switchView(1);buildLnbContext();}},
+    {label:'전국 사업장',icon:'map',current:S.view===2,fn:function(){switchView(2);buildLnbContext();}},
+    {label:'공정 품질',icon:'chart',current:S.view===3,fn:function(){switchView(3);buildLnbContext();}}
+  ];
+
+  renderV1();
+};
+function paneHead(title,sub,tagIcon,tag){return '<div class="pane-head"><div><h2 class="pane-title">'+esc(title)+'</h2><p class="pane-sub">'+sub+'</p></div><span class="pane-xtag"><span class="xtag">'+ic(tagIcon)+' '+esc(tag)+'</span></span></div>';}
+function exNote(t){return '<p style="font-size:11.5px;color:var(--nova-text-muted);margin:10px 0 0">'+ic('check')+' '+esc(t)+' · <b>예시 데이터</b></p>';}
+
+/* ══ T2 기본 편집·CRUD ══ */
+RENDERERS.T2=function(pane){
+  var rows=[
+    {no:'PO-2401',cust:'대성기계',item:'베어링 유닛',qty:120,price:8500,st:'진행'},
+    {no:'PO-2402',cust:'한빛정공',item:'샤프트 어셈블리',qty:80,price:14200,st:'완료'},
+    {no:'PO-2403',cust:'동방전자',item:'커넥터 하우징',qty:300,price:3200,st:'대기'},
+    {no:'PO-2404',cust:'대성기계',item:'기어 세트',qty:45,price:26000,st:'진행'},
+    {no:'PO-2405',cust:'서진산업',item:'브래킷',qty:210,price:5400,st:'완료'},
+    {no:'PO-2406',cust:'한빛정공',item:'밸브 바디',qty:60,price:18800,st:'대기'}
+  ];
+  var sortKey=null,asc=true,filter='';
+  pane.innerHTML=paneHead('기본 편집·CRUD','NOVA Grid · 정렬 · 필터 · 인라인 편집 · 행 추가/삭제','grid','grid:NovaGrid')+
+    '<div class="local-bar"><input class="ui-input" id="t2Filter" placeholder="거래처·품목 검색" style="max-width:220px"><button class="ui-btn" id="t2Add">+ 행 추가</button><span class="lb-note">셀 더블클릭 = 편집 · 헤더 클릭 = 정렬</span></div>'+
+    '<div class="card" style="padding:0"><div class="grid-scroll" style="max-height:none"><table class="gtable" id="t2grid"></table></div></div>'+exNote('발주 원장');
+  function draw(){
+    var view=rows.filter(function(r){return !filter||(r.cust+r.item).toLowerCase().indexOf(filter.toLowerCase())>=0;});
+    if(sortKey)view.sort(function(a,b){var x=a[sortKey],y=b[sortKey];return (x>y?1:x<y?-1:0)*(asc?1:-1);});
+    var cols=[['no','주문번호'],['cust','거래처'],['item','품목'],['qty','수량',1],['price','단가',1],['st','상태']];
+    var html='<thead><tr>'+cols.map(function(c){return '<th data-k="'+c[0]+'"'+(c[2]?' class="num"':'')+' aria-sort="'+(sortKey===c[0]?(asc?'ascending':'descending'):'none')+'">'+c[1]+'</th>';}).join('')+'<th></th></tr></thead><tbody>'+
+      view.map(function(r){var gi=rows.indexOf(r);return '<tr data-r="'+gi+'"><td>'+esc(r.no)+'</td><td>'+esc(r.cust)+'</td><td>'+esc(r.item)+'</td>'+
+        '<td class="num edit tnum" data-f="qty">'+nfmt(r.qty)+'</td><td class="num edit tnum" data-f="price">'+nfmt(r.price)+'</td>'+
+        '<td>'+pillSt(r.st)+'</td><td class="num"><button class="memo-del" data-del="'+gi+'">삭제</button></td></tr>';}).join('')+'</tbody>';
+    $('#t2grid',pane).innerHTML=html;wire();
+  }
+  function pillSt(s){var m={진행:'pill-warn',완료:'pill-good',대기:'pill-down'};return '<span class="pill '+(m[s]||'pill-down')+'">'+esc(s)+'</span>';}
+  function wire(){
+    $$('#t2grid th[data-k]',pane).forEach(function(th){th.addEventListener('click',function(){var k=th.getAttribute('data-k');asc=sortKey===k?!asc:true;sortKey=k;draw();});});
+    $$('#t2grid .edit',pane).forEach(function(td){td.addEventListener('dblclick',function(){var tr=td.closest('tr'),r=rows[+tr.getAttribute('data-r')],f=td.getAttribute('data-f'),old=r[f];
+      var inp=el('input',{'class':'cell-input tnum','type':'number','value':old});td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+      function commit(){var nv=parseInt(inp.value,10);if(!isNaN(nv))r[f]=Math.max(0,nv);draw();}
+      inp.addEventListener('blur',commit);inp.addEventListener('keydown',function(e){if(e.key==='Enter')commit();else if(e.key==='Escape')draw();});});});
+    $$('#t2grid [data-del]',pane).forEach(function(b){b.addEventListener('click',function(){rows.splice(+b.getAttribute('data-del'),1);draw();say('행 삭제');});});
+  }
+  $('#t2Filter',pane).addEventListener('input',function(){filter=this.value;draw();});
+  $('#t2Add',pane).addEventListener('click',function(){rows.push({no:'PO-'+(2407+rows.length),cust:'신규 거래처',item:'신규 품목',qty:0,price:0,st:'대기'});draw();say('행 추가');});
+  draw();
+};
+
+/* ══ T3 조건부서식·틀고정 ══ */
+RENDERERS.T3=function(pane){
+  var frozen=true;
+  pane.innerHTML=paneHead('조건부서식·틀고정','NOVA Grid · 전월대비 ▲적/▼청 착색 · 가동률 히트 · 첫 컬럼 고정','grid','grid:NovaGrid')+
+    '<div class="local-bar"><button class="tool-btn" id="t3freeze" aria-pressed="true">틀고정</button><span class="lb-note">가동률 셀 배경 = 5단 히트(값↑ 고채도) · 전월대비 부호 착색</span></div>'+
+    '<div class="card" style="padding:0"><div class="grid-scroll frozen" id="t3scroll" style="max-height:none"><table class="gtable" id="t3grid"></table></div></div>'+exNote('사업장 원장 (T1 상황실 W9와 동일 원장 SITES)');
+  function draw(){
+    var html='<thead><tr><th>사업장</th><th>시도</th><th class="num">가동률</th><th class="num">전월</th><th class="num">전월대비</th><th class="num">생산량</th><th>상태</th></tr></thead><tbody>'+
+      LEDGER.SITES.map(function(s){var dv=s.util!=null?s.util-s.prevUtil:null;var ramp=utilRamp(s.util);
+        return '<tr><td>'+esc(s.name)+'</td><td>'+esc(s.sido)+'</td>'+
+        '<td class="num tnum heat-cell'+(ramp>=3?' heat-ink':'')+'" style="background:var(--nova-map-'+(ramp||1)+')">'+(s.util!=null?s.util.toFixed(1):'—')+'</td>'+
+        '<td class="num tnum">'+(s.prevUtil!=null?s.prevUtil.toFixed(1):'—')+'</td>'+
+        '<td class="num '+(dv==null?'':dv>=0?'delta-up':'delta-dn')+'">'+(dv==null?'—':(dv>=0?'▲':'▼')+Math.abs(dv).toFixed(1))+'</td>'+
+        '<td class="num tnum">'+nfmt(s.prod)+'</td><td>'+pill(s.down?'down':statusOf(s.util))+'</td></tr>';}).join('')+'</tbody>';
+    $('#t3grid',pane).innerHTML=html;
+  }
+  $('#t3freeze',pane).addEventListener('click',function(){frozen=!frozen;$('#t3scroll',pane).classList.toggle('frozen',frozen);this.setAttribute('aria-pressed',frozen?'true':'false');});
+  draw();
+};
+
+/* ══ T6 차트 갤러리 (8종) ══ */
+RENDERERS.T6=function(pane){
+  var divTot=LEDGER.DIVS.map(function(d){return divTotal(d);});
+  var cells=[
+    ['line','매출 추이 (라인)','chart:ECharts6/line',drawLine([{data:[1,2,3,4].map(function(_,i){return LEDGER.DIVS.reduce(function(a,d){return a+d.q[i];},0);}),cls:'ln-1'}],{labels:['Q1','Q2','Q3','Q4'],w:300,h:150,area:true})],
+    ['bar','사업부 매출 (막대)','chart:ECharts6/bar',drawHBar(LEDGER.DIVS.map(function(d,i){return {label:d.name,value:Math.round(divTot[i]/Math.max.apply(null,divTot)*100),cls:'bar-'+(i+1)};}))],
+    ['donut','달성률 (도넛)','chart:ECharts6/pie',drawDonut(Math.round(totalRev()/LEDGER.targetRev*100),'매출 달성')],
+    ['stackbar','분기 스택 (스택바)','chart:ECharts6/bar+stack',drawStackBar(LEDGER.DIVS.map(function(d){return d.name.slice(0,3);}),[0,1,2,3].map(function(qi){return {name:'Q'+(qi+1),data:LEDGER.DIVS.map(function(d){return d.q[qi];}),cls:'bar-'+(qi+1)};}),-1)],
+    ['gauge','설비 OEE (게이지)','chart:ECharts6/gauge',drawGauge(87,'평균 OEE')],
+    ['radar','품질 (레이더)','chart:ECharts6/radar',drawRadar(LEDGER.QUALITY.axes,[{data:LEDGER.QUALITY.cur},{data:LEDGER.QUALITY.prev}])],
+    ['area','요일별 불량 (영역)','chart:ECharts6/line+area',drawLine([{data:LEDGER.DEFECT['CNC-03'],cls:'ln-1'}],{labels:LEDGER.DEFECT_DAYS,w:300,h:150,area:true,min:0})],
+    ['bubble','사업장 분포 (버블)','chart:ECharts6/scatter',(function(){
+      /* D1: 절대 정규화(util/100·prod/6500)는 x 0.71~0.96 밀집 → 라벨 물리적 겹침. min-max 정규화 + 8% 패딩으로 산포 */
+      var ss=LEDGER.SITES.filter(function(s){return s.util!=null;}).slice(0,7);
+      var u0=Math.min.apply(null,ss.map(function(s){return s.util;})),u1=Math.max.apply(null,ss.map(function(s){return s.util;}));
+      var p0=Math.min.apply(null,ss.map(function(s){return s.prod;})),p1=Math.max.apply(null,ss.map(function(s){return s.prod;}));
+      return drawBubble(ss.map(function(s){return {x:.08+.84*(s.util-u0)/((u1-u0)||1),y:.08+.84*(s.prod-p0)/((p1-p0)||1),r:6+s.prod/900,label:s.sido};}));
+    })()]
+  ];
+  pane.innerHTML=paneHead('차트 갤러리','NOVA Chart · ECharts 6.0 커버리지 (데모=인라인 SVG 드로어)','chart','chart:ECharts6')+
+    '<div class="chart-gallery">'+cells.map(function(c){return '<div class="card chart-cell" data-nova="'+c[2]+'" data-nova-label="NOVA '+c[2]+'"><h4>'+esc(c[1])+'</h4><div class="cc-x">'+c[2]+' · native</div>'+c[3]+'</div>';}).join('')+'</div>'+
+    exNote('전 차트 예시 데이터 · 정식판 = NOVA Chart(ECharts 6.0) native');
+};
+
+/* ══ T7 대한민국 지도 드릴다운 ══ */
+RENDERERS.T7=function(pane){
+  var sel=null;
+  function sidoAgg(){var m={};LEDGER.SITES.forEach(function(s){var o=m[s.sido]||(m[s.sido]={sum:0,cnt:0});if(s.util!=null){o.sum+=s.util;o.cnt++;}});for(var k in m)m[k].util=m[k].cnt?m[k].sum/m[k].cnt:null;return m;}
+  pane.innerHTML=paneHead('대한민국 지도 드릴다운','NOVA Chart · 시도 choropleth(가동률) · 색약 대응 = 툴팁+범례+표 채널','map','chart:ECharts6/map')+
+    '<div class="local-bar"><span id="t7back"></span><span class="lb-note">시도 클릭 = 드릴다운 · 실 행정경계(통계청 KOSTAT · KOGL) · 제주 인셋 · Aurora 램프</span></div>'+
+    '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px" id="t7grid">'+
+      '<div class="card" style="padding:16px" id="t7map"></div>'+
+      '<div class="card" style="padding:16px" id="t7tbl"></div></div>'+exNote('사업장 가동률 (원장 SITES)');
+  function draw(){
+    var agg=sidoAgg();
+    $('#t7map',pane).innerHTML='<div class="map-wrap" id="t7wrap">'+koreaMapSVG({agg:agg,sel:sel,drill:!!sel})+
+      '<div class="map-legend">'+[1,2,3,4,5].map(function(i){return '<span class="lg"><span class="sw m'+i+'"></span>'+['~80','80~85','85~90','90~95','95+'][i-1]+'%</span>';}).join('')+'<span class="lg"><span class="sw m0"></span>없음</span></div>'+
+      (sel?'<button class="tool-btn map-back" id="t7back2">← 전국</button>':'')+'</div>';
+    var arr=Object.keys(agg).map(function(k){return {k:k,u:agg[k].util,c:agg[k].cnt};}).sort(function(a,b){return (b.u||0)-(a.u||0);});
+    $('#t7tbl',pane).innerHTML='<h4 style="margin:0 0 8px;font-size:14px">시도별 가동률 (표 채널)</h4><table class="gtable"><thead><tr><th>시도</th><th class="num">가동률</th><th class="num">사업장</th></tr></thead><tbody>'+
+      arr.map(function(r){return '<tr data-sido="'+esc(r.k)+'"'+(sel===r.k?' aria-selected="true"':'')+'><td>'+esc(r.k)+'</td><td class="num tnum">'+(r.u!=null?r.u.toFixed(1):'—')+'</td><td class="num tnum">'+r.c+'</td></tr>';}).join('')+'</tbody></table>';
+    $('#t7back',pane).innerHTML=sel?'<button class="tool-btn" id="t7back3">← 전국</button>':'';
+    wire();
+  }
+  function wire(){
+    var mw=$('#t7wrap',pane);var mapTip=$('#mapTip'),agg=sidoAgg();
+    $$('.map-region',mw).forEach(function(r){
+      r.addEventListener('click',function(){var sd=r.getAttribute('data-sido');sel=sel===sd?null:sd;draw();say('드릴다운: '+sd);});
+      r.addEventListener('mouseenter',function(e){var sd=r.getAttribute('data-sido'),a=agg[sd];mapTip.innerHTML='<b>'+esc(sd)+'</b> · '+(a&&a.util!=null?'가동률 '+a.util.toFixed(1)+'% · '+a.cnt+'개소':'사업장 없음');mapTip.style.display='block';mapTip.style.left=(e.clientX+12)+'px';mapTip.style.top=(e.clientY+12)+'px';});
+      r.addEventListener('mousemove',function(e){mapTip.style.left=(e.clientX+12)+'px';mapTip.style.top=(e.clientY+12)+'px';});
+      r.addEventListener('mouseleave',function(){mapTip.style.display='none';});
+      r.setAttribute('tabindex','0');r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();var sd=r.getAttribute('data-sido');sel=sel===sd?null:sd;draw();}});
+    });
+    ['#t7back2','#t7back3'].forEach(function(s){var b=$(s,pane);if(b)b.addEventListener('click',function(){sel=null;draw();});});
+    $$('#t7tbl tr[data-sido]',pane).forEach(function(tr){tr.addEventListener('click',function(){var sd=tr.getAttribute('data-sido');sel=sel===sd?null:sd;draw();});});
+  }
+  draw();
+};
+
+/* ══ T9 급여관리 마스터-디테일 ══ */
+RENDERERS.T9=function(pane){
+  var EMP=[
+    {id:'E-1024',name:'김서연',dept:'생산운영팀',pos:'팀장',base:5200000,ot:180000,bonus:900000,ded:640000},
+    {id:'E-1088',name:'박준호',dept:'정밀가공',pos:'선임',base:4100000,ot:320000,bonus:400000,ded:498000},
+    {id:'E-1131',name:'이도윤',dept:'품질보증',pos:'책임',base:4700000,ot:150000,bonus:600000,ded:571000},
+    {id:'E-1205',name:'최유진',dept:'설비보전',pos:'주임',base:3600000,ot:410000,bonus:250000,ded:441000},
+    {id:'E-1260',name:'정민석',dept:'물류',pos:'사원',base:3200000,ot:280000,bonus:200000,ded:372000}
+  ];
+  var selId=EMP[0].id;
+  pane.innerHTML=paneHead('급여관리 (마스터-디테일)','NOVA UX + Grid · 좌측 선택 → 우측 급여 명세','people','ux:MasterDetail')+
+    '<div class="local-bar"><span class="lb-note">좌측 사원을 선택하면 우측 명세가 바뀝니다 (home.sb 급여관리 대응)</span></div>'+
+    '<div class="md-grid" id="t9"></div>'+exNote('급여 명세');
+  function draw(){
+    var e=EMP.filter(function(x){return x.id===selId;})[0];var gross=e.base+e.ot+e.bonus,net=gross-e.ded;
+    $('#t9',pane).innerHTML='<ul class="md-list">'+EMP.map(function(x){return '<li><button data-e="'+x.id+'" aria-current="'+(x.id===selId?'true':'false')+'"><span>'+esc(x.name)+' · '+esc(x.dept)+'</span><span style="font-size:11px;color:var(--nova-text-muted)">'+esc(x.pos)+'</span></button></li>';}).join('')+'</ul>'+
+      '<div class="card md-detail"><h4 style="margin:0 0 2px">'+esc(e.name)+' <span style="font-size:12px;color:var(--nova-text-muted)">'+esc(e.id)+' · '+esc(e.dept)+' '+esc(e.pos)+'</span></h4>'+
+      '<div class="kv-grid">'+[['기본급',e.base],['연장수당',e.ot],['상여',e.bonus],['공제계',e.ded],['지급총액',gross],['실수령',net]].map(function(kv){return '<div class="kv"><div class="k">'+kv[0]+'</div><div class="v tnum">'+nfmt(kv[1])+'</div></div>';}).join('')+'</div>'+
+      '<table class="gtable" style="margin-top:8px"><thead><tr><th>항목</th><th class="num">금액</th></tr></thead><tbody>'+
+      [['기본급',e.base],['연장근로수당',e.ot],['상여금',e.bonus],['공제 합계',-e.ded]].map(function(rw){return '<tr><td>'+rw[0]+'</td><td class="num tnum '+(rw[1]<0?'delta-dn':'')+'">'+nfmt(rw[1])+'</td></tr>';}).join('')+
+      '<tr style="font-weight:700"><td>실수령액</td><td class="num tnum">'+nfmt(net)+'</td></tr></tbody></table></div>';
+    $$('[data-e]',pane).forEach(function(b){b.addEventListener('click',function(){selId=b.getAttribute('data-e');draw();say(EMP.filter(function(x){return x.id===selId;})[0].name+' 명세');});});
+  }
+  draw();
+};
+/* ══ T12 컴포넌트 팔레트 ══ */
+RENDERERS.T12=function(pane){
+  var units=[
+    {t:'입력 필드',code:'<NovaInput placeholder="검색" />',live:'<input class="ui-input" placeholder="검색어 입력">'},
+    {t:'버튼',code:'<NovaButton variant="primary">저장</NovaButton>',live:'<div style="display:flex;gap:8px"><button class="ui-btn">저장</button><button class="ui-btn ghost">취소</button></div>'},
+    {t:'스위치',code:'<NovaSwitch v-model="on" />',live:'<button class="ui-switch" role="switch" aria-checked="false" data-sw></button>'},
+    {t:'배지·상태',code:'<NovaBadge tone="good">정상</NovaBadge>',live:'<div style="display:flex;gap:6px"><span class="pill pill-good">정상</span><span class="pill pill-warn">주의</span><span class="pill pill-critical">위험</span></div>'},
+    {t:'세그먼트',code:'<NovaSegmented :items="[..]" />',live:'<div class="seg"><button aria-pressed="true">일</button><button aria-pressed="false">주</button><button aria-pressed="false">월</button></div>'},
+    {t:'미니 도넛',code:'<NovaProgressRing :value="72" />',live:miniDonut(72)}
+  ];
+  pane.innerHTML=paneHead('컴포넌트 팔레트','NOVA UX · 라이브 프리뷰 + 코드 복사','ux','ux:ComponentPalette')+
+    '<div class="palette">'+units.map(function(u,i){return '<div class="card unit"><h4>'+esc(u.t)+'</h4><div class="live">'+u.live+'</div><div class="code-row"><code class="mono" style="font-size:11px;color:var(--nova-text-muted)">'+esc(u.code)+'</code><button class="tool-btn" data-copy="'+i+'">복사</button></div></div>';}).join('')+'</div>'+exNote('컴포넌트 프리뷰');
+  $$('[data-sw]',pane).forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-checked')==='true';b.setAttribute('aria-checked',on?'false':'true');});});
+  /* ⛔ D6: 복사=실제 성패 판정. 거짓 성공·조용한 실패 금지. clipboard 실패/부재 → execCommand 재시도(성패도 판정) → 최종 실패 시 코드 선택 유지=수동 복사 경로 */
+  $$('[data-copy]',pane).forEach(function(b){b.addEventListener('click',function(){
+    var c=units[+b.getAttribute('data-copy')].code,codeEl=$('code',b.closest('.code-row'));
+    function done(ok){b.textContent=ok?'복사됨':'복사 실패';b.classList.toggle('copy-fail',!ok);
+      say(ok?'코드 복사됨':'코드 복사 실패. 코드가 선택되어 있으니 Ctrl+C로 직접 복사하세요');
+      setTimeout(function(){b.textContent='복사';b.classList.remove('copy-fail');},ok?1200:2600);}
+    function legacy(){var ok=false,sel=null;
+      try{var r=document.createRange();r.selectNodeContents(codeEl);sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);ok=document.execCommand('copy')===true;}catch(e){ok=false;}
+      if(ok&&sel)sel.removeAllRanges(); /* 성공=선택 해제 · 실패=선택 유지(수동 복사) */
+      done(ok);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(c).then(function(){done(true);},legacy);}
+    else legacy();
+  });});
+};
+
+/* ══ T14 UI 템플릿 갤러리 ══ */
+RENDERERS.T14=function(pane){
+  var tm=[
+    {t:'업무 대시보드',d:'KPI 스트립 + 차트 + 그리드 조합',thumb:'<div class="mini-bar" style="left:16px;width:22px;height:40px"></div><div class="mini-bar" style="left:46px;width:22px;height:70px;background:var(--nova-primary-300)"></div><div class="mini-bar" style="left:76px;width:22px;height:55px;background:var(--nova-aurora-via)"></div><div style="position:absolute;top:12px;left:16px;right:16px;height:14px;background:var(--nova-border);border-radius:4px"></div>'},
+    {t:'조회 화면',d:'검색 조건 → 그리드 → 상세',thumb:'<div style="position:absolute;top:12px;left:16px;right:16px;height:22px;background:var(--nova-border);border-radius:6px"></div><div style="position:absolute;top:46px;left:16px;right:16px;bottom:14px;background:var(--nova-bg-card);border:1px solid var(--nova-border);border-radius:6px"></div>'},
+    {t:'리포트 장표',d:'폼 + 표 + 서명란',thumb:'<div style="position:absolute;top:12px;left:16px;width:90px;height:12px;background:var(--nova-border);border-radius:4px"></div><div style="position:absolute;top:34px;left:16px;right:16px;bottom:14px;border:1px solid var(--nova-border);border-radius:6px"></div>'},
+    {t:'업무 포털',d:'GNB + LNB + 멀티탭 (이 화면 셸)',thumb:'<div style="position:absolute;top:0;left:0;right:0;height:14px;background:var(--nova-primary)"></div><div style="position:absolute;top:14px;left:0;width:40px;bottom:0;background:var(--nova-bg-card);border-right:1px solid var(--nova-border)"></div><div style="position:absolute;top:22px;left:48px;width:40px;height:12px;background:var(--nova-primary-300);border-radius:4px"></div>'}
+  ];
+  pane.innerHTML=paneHead('UI 템플릿 갤러리','NOVA UI · 업무 포털 템플릿 (이 워크스페이스 셸이 실전 투입된 모습)','ui','ui:TemplateGallery')+
+    '<div class="tmpl-grid">'+tm.map(function(x){return '<div class="card tmpl"><div class="thumb">'+x.thumb+'</div><div class="tinfo"><h4>'+esc(x.t)+'</h4><p>'+esc(x.d)+'</p></div></div>';}).join('')+'</div>'+exNote('템플릿 썸네일');
+};
+
+/* ══ T15 AI 워크플로우 노드 그래프 (Nexus 19노드 · 엔진 Vue Flow) ══ */
+RENDERERS.T15=function(pane){
+  var NC={input:'nc-input',data:'nc-data',llm:'nc-llm',logic:'nc-logic',tool:'nc-tool',output:'nc-output'};
+  var CN={input:'입력',data:'데이터',llm:'LLM',logic:'로직',tool:'도구',output:'출력'};
+  var N=[
+    ['input','input','입력',60,60],['webhook','input','웹훅',60,350],
+    ['parser','data','파서',180,55],['splitter','data','스플리터',180,150],['batch-processor','data','배치',180,290],
+    ['embedding','data','임베딩',300,55],['retrieval','data','검색',300,150],['memory','data','메모리',300,250],
+    ['prompt','llm','프롬프트',430,105],['transformer','data','변환',430,270],
+    ['llm','llm','LLM',555,105],['chain','llm','체인',555,255],
+    ['classifier','logic','분류',680,55],['router','logic','라우터',680,160],['decision','logic','의사결정',680,270],
+    ['tool','tool','툴콜',805,110],['oracle-connector','tool','오라클',805,225],['aggregator','data','집계',805,330],
+    ['output','output','출력',925,180]
+  ];
+  var E=[['input','parser'],['webhook','batch-processor'],['parser','splitter'],['parser','embedding'],['splitter','embedding'],['embedding','retrieval'],['retrieval','memory'],['retrieval','prompt'],['memory','prompt'],['prompt','llm'],['llm','chain'],['llm','classifier'],['classifier','router'],['router','decision'],['decision','tool'],['decision','oracle-connector'],['chain','transformer'],['transformer','aggregator'],['tool','aggregator'],['aggregator','output'],['decision','output']];
+  var pos={};N.forEach(function(n){pos[n[0]]={x:n[3],y:n[4],cat:n[1]};});
+  var W=96,H=30;
+  function edgePath(a,b){var A=pos[a],B=pos[b];var x1=A.x+W,y1=A.y+H/2,x2=B.x,y2=B.y+H/2;var mx=(x1+x2)/2;return 'M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2;}
+  var edges=E.map(function(e){return '<path class="gedge" data-a="'+e[0]+'" data-b="'+e[1]+'" d="'+edgePath(e[0],e[1])+'"/>';}).join('');
+  var nodes=N.map(function(n){return '<g class="gnode" data-id="'+n[0]+'" transform="translate('+n[3]+','+n[4]+')"><rect width="'+W+'" height="'+H+'" rx="8" class="'+NC[n[1]]+'" fill-opacity="0.9"/><text x="'+(W/2)+'" y="'+(H/2+3)+'" text-anchor="middle" class="'+(n[1]==='llm'?'ink-lite':'')+'" font-weight="600">'+esc(n[2])+'</text></g>';}).join('');
+  pane.innerHTML=paneHead('AI 워크플로우 노드 그래프','NOVA Chart(그래프 계열) · Nexus 19종 노드 · 실자산 엔진 = Vue Flow','workflow','chart:graph/ai-workflow')+
+    '<div class="local-bar"><button class="tool-btn" id="t15fit">fit-view</button><span class="lb-note">노드 hover = 연결 하이라이트 · 정식판 = ECharts6 series:graph 또는 Vue Flow 통합</span></div>'+
+    '<div class="graph-wrap" style="padding:8px"><svg viewBox="0 0 1040 420" role="img" aria-label="AI 워크플로우 노드 그래프"><g id="t15edges">'+edges+'</g><g id="t15nodes">'+nodes+'</g></svg></div>'+
+    '<div class="graph-legend">'+Object.keys(CN).map(function(k){return '<span class="gl"><span class="sw '+NC[k]+'"></span>'+CN[k]+'</span>';}).join('')+'</div>'+
+    exNote('Nexus AI 엔진 노드 카탈로그 (server/engine/ai/nodes/*.ts 19종)');
+  var svgEl=$('.graph-wrap svg',pane); // ⛔ 회귀: $('svg',pane) 는 pane-head xtag 아이콘 SVG를 잡음 → 그래프 SVG 명시
+  function highlight(id){$$('.gnode',svgEl).forEach(function(g){g.classList.toggle('dim',id&&g.getAttribute('data-id')!==id&&!isConn(g.getAttribute('data-id'),id));});
+    $$('.gedge',svgEl).forEach(function(e){var on=!id||e.getAttribute('data-a')===id||e.getAttribute('data-b')===id;e.classList.toggle('anim',!!id&&on);e.classList.toggle('dim',!!id&&!on);});}
+  function isConn(a,id){return E.some(function(e){return (e[0]===a&&e[1]===id)||(e[1]===a&&e[0]===id);});}
+  $$('.gnode',svgEl).forEach(function(g){g.addEventListener('mouseenter',function(){highlight(g.getAttribute('data-id'));});g.addEventListener('mouseleave',function(){highlight(null);});});
+  $('#t15fit',pane).addEventListener('click',function(){highlight(null);say('fit-view');});
+};
+
+/* ══ T16 트레이딩 실시간 라인 (Stock SkEquityChart 이식) ══ */
+RENDERERS.T16=function(pane){
+  var CAP=100000,seed=42;function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;}
+  var eq=[],v=CAP;for(var i=0;i<60;i++){v+=(rnd()-0.46)*2600;v=Math.max(70000,v);eq.push(Math.round(v));}
+  var showBase=true,zs=0,ze=60;
+  pane.innerHTML=paneHead('트레이딩 실시간 라인','NOVA Chart(라인 계열) · Stock SkEquityChart 이식 · dataZoom · 원금 markLine · 손익 툴팁','line','chart:ECharts6/line-equity')+
+    '<div class="local-bar"><button class="tool-btn" id="t16base" aria-pressed="true">원금 기준선</button><span class="lb-note">하단 슬라이더 = dataZoom · 그래프 hover = 손익 툴팁</span></div>'+
+    '<div class="card" style="padding:16px"><div id="t16chart" style="position:relative"></div>'+
+    '<div style="margin-top:10px"><input type="range" id="t16s" min="0" max="59" value="0" style="width:48%"> <input type="range" id="t16e" min="1" max="60" value="60" style="width:48%"></div></div>'+
+    exNote('자산 곡선 (예시 · 원금 $'+nfmt(CAP)+')');
+  function draw(){
+    var view=eq.slice(zs,ze),w=560,h=240,pl=52,pr=14,pt=12,pb=24;
+    var mn=Math.min.apply(null,view.concat([CAP])),mx=Math.max.apply(null,view.concat([CAP]));var pad=(mx-mn)*0.1;mn-=pad;mx+=pad;
+    function X(i){return pl+(w-pl-pr)*(view.length<2?0.5:i/(view.length-1));}
+    function Y(val){return scaleY(val,mn,mx,pt,h-pb);}
+    var g='';for(var k=0;k<4;k++){var yy=pt+(h-pt-pb)*k/3;g+='<line class="grid-l" x1="'+pl+'" y1="'+yy+'" x2="'+(w-pr)+'" y2="'+yy+'"/><text class="lbl" x="6" y="'+(yy+3)+'">$'+Math.round((mx-(mx-mn)*k/3)/1000)+'k</text>';}
+    var d='',ar='';view.forEach(function(val,i){d+=(i?'L':'M')+X(i).toFixed(1)+' '+Y(val).toFixed(1)+' ';});
+    ar='<path d="'+d+'L'+X(view.length-1)+' '+(h-pb)+' L'+X(0)+' '+(h-pb)+' Z" fill="url(#eqg)" opacity="0.9"/>';
+    var base=showBase&&CAP>=mn&&CAP<=mx?'<line x1="'+pl+'" y1="'+Y(CAP)+'" x2="'+(w-pr)+'" y2="'+Y(CAP)+'" stroke="var(--nova-warn-base)" stroke-width="1" stroke-dasharray="4 3"/><text x="'+(w-pr)+'" y="'+(Y(CAP)-4)+'" text-anchor="end" class="lbl" fill="var(--nova-warn-fg)">원금 $'+nfmt(CAP)+'</text>':'';
+    $('#t16chart',pane).innerHTML='<svg class="chart-svg" viewBox="0 0 '+w+' '+h+'" id="t16svg"><defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--nova-live-base)" stop-opacity="0.35"/><stop offset="1" stop-color="var(--nova-live-base)" stop-opacity="0"/></linearGradient></defs>'+g+ar+base+'<path d="'+d+'" fill="none" stroke="var(--nova-live-base)" stroke-width="2"/><line id="t16cur" x1="0" y1="'+pt+'" x2="0" y2="'+(h-pb)+'" stroke="var(--nova-primary)" stroke-width="1" opacity="0"/></svg><div class="map-tip" id="t16tip"></div>';
+    var svgc=$('#t16svg',pane),tip=$('#t16tip',pane),cur=$('#t16cur',pane);
+    svgc.addEventListener('mousemove',function(e){var r=svgc.getBoundingClientRect();var rx=(e.clientX-r.left)/r.width*w;var idx=clamp(Math.round((rx-pl)/(w-pl-pr)*(view.length-1)),0,view.length-1);var val=view[idx];var pnl=val-CAP;
+      cur.setAttribute('x1',X(idx));cur.setAttribute('x2',X(idx));cur.setAttribute('opacity','0.6');
+      tip.style.display='block';tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';
+      tip.innerHTML='<div>자산: <b>$'+nfmt(val)+'</b></div><div style="color:'+(pnl>=0?'var(--nova-good-fg)':'var(--nova-critical-fg)')+'">수익: <b>$'+nfmt(pnl)+'</b> ('+(pnl/CAP*100).toFixed(2)+'%)</div>';});
+    svgc.addEventListener('mouseleave',function(){tip.style.display='none';cur.setAttribute('opacity','0');});
+  }
+  $('#t16base',pane).addEventListener('click',function(){showBase=!showBase;this.setAttribute('aria-pressed',showBase?'true':'false');draw();});
+  $('#t16s',pane).addEventListener('input',function(){zs=Math.min(+this.value,ze-2);draw();});
+  $('#t16e',pane).addEventListener('input',function(){ze=Math.max(+this.value,zs+2);draw();});
+  draw();
+};
+
+/* ══ T17 온톨로지 인과 그래프 (Sentinel 이식 · animated edge) ══ */
+RENDERERS.T17=function(pane){
+  var N=[
+    ['MAT_PCW','on-mat','PCW',60,60],['MAT_UPW','on-mat','UPW',60,170],['MAT_N2','on-mat','N2',60,290],
+    ['PROC_PCW','on-proc','PCW 공급 공정',260,55],['PROC_UPW','on-proc','UPW 생산 공정',260,165],['PROC_COOL','on-proc','냉각 공정',260,285],
+    ['QUAL_PRESS','on-qual','압력 품질',480,50],['QUAL_PURITY','on-qual','순도 품질',480,150],['QUAL_TEMP','on-qual','온도 품질',480,250],['QUAL_DEW','on-qual','이슬점 품질',480,340]
+  ];
+  var E=[['MAT_PCW','PROC_PCW'],['MAT_UPW','PROC_UPW'],['MAT_N2','PROC_COOL'],['PROC_PCW','QUAL_PRESS'],['PROC_PCW','QUAL_TEMP'],['PROC_UPW','QUAL_PURITY'],['PROC_UPW','QUAL_DEW'],['PROC_COOL','QUAL_TEMP'],['PROC_COOL','QUAL_PRESS']];
+  var pos={};N.forEach(function(n){pos[n[0]]={x:n[3],y:n[4]};});var W=120,H=34;
+  function ep(a,b){var A=pos[a],B=pos[b];var x1=A.x+W,y1=A.y+H/2,x2=B.x,y2=B.y+H/2,mx=(x1+x2)/2;return 'M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2;}
+  var anim=true;
+  var edges=E.map(function(e){return '<path class="gedge anim" data-a="'+e[0]+'" data-b="'+e[1]+'" d="'+ep(e[0],e[1])+'"/>';}).join('');
+  var nodes=N.map(function(n){return '<g class="gnode" data-id="'+n[0]+'" transform="translate('+n[3]+','+n[4]+')"><rect width="'+W+'" height="'+H+'" rx="8" class="'+n[1]+'" fill-opacity="0.9"/><text x="'+(W/2)+'" y="'+(H/2+3)+'" text-anchor="middle" class="'+(n[1]==='on-proc'?'ink-lite':'')+'" font-weight="600" font-size="11">'+esc(n[2])+'</text></g>';}).join('');
+  pane.innerHTML=paneHead('온톨로지 인과 그래프','NOVA Chart(그래프 계열) · Sentinel 유틸리티 온톨로지 · 실자산 엔진 = Vue Flow','ontology','chart:graph/ontology')+
+    '<div class="local-bar"><button class="tool-btn" id="t17anim" aria-pressed="true">애니메이션 엣지</button><button class="tool-btn" id="t17fit">fit-view</button><span class="lb-note">Material →(공급)→ Process →(영향)→ Quality · 인과 흐름</span></div>'+
+    '<div class="graph-wrap" style="padding:8px"><svg viewBox="0 0 640 400" role="img" aria-label="온톨로지 인과 그래프"><g id="t17e">'+edges+'</g><g>'+nodes+'</g></svg></div>'+
+    '<div class="graph-legend"><span class="gl"><span class="sw on-mat"></span>Material(물질)</span><span class="gl"><span class="sw on-proc"></span>Process(공정)</span><span class="gl"><span class="sw on-qual"></span>Quality(품질)</span></div>'+
+    exNote('Sentinel UT 도메인 온톨로지 (server/engine/rag/graph 발췌)');
+  var svgEl=$('.graph-wrap svg',pane); // ⛔ 회귀: $('svg',pane) 는 pane-head xtag 아이콘 SVG를 잡음 → 그래프 SVG 명시
+  $('#t17anim',pane).addEventListener('click',function(){anim=!anim;this.setAttribute('aria-pressed',anim?'true':'false');$$('.gedge',svgEl).forEach(function(e){e.classList.toggle('anim',anim);});});
+  $('#t17fit',pane).addEventListener('click',function(){$$('.gnode',svgEl).forEach(function(g){g.classList.remove('dim');});$$('.gedge',svgEl).forEach(function(e){e.classList.remove('dim');});say('fit-view');});
+  $$('.gnode',svgEl).forEach(function(g){g.addEventListener('mouseenter',function(){var id=g.getAttribute('data-id');$$('.gnode',svgEl).forEach(function(x){x.classList.toggle('dim',x.getAttribute('data-id')!==id&&!E.some(function(e){return (e[0]===id&&e[1]===x.getAttribute('data-id'))||(e[1]===id&&e[0]===x.getAttribute('data-id'));}));});$$('.gedge',svgEl).forEach(function(e){e.classList.toggle('dim',e.getAttribute('data-a')!==id&&e.getAttribute('data-b')!==id);});});g.addEventListener('mouseleave',function(){$$('.gnode',svgEl).forEach(function(x){x.classList.remove('dim');});$$('.gedge',svgEl).forEach(function(e){e.classList.remove('dim');});});});
+};
+
+/* ══════════════════ 대한민국 지도 (실 행정경계 · 시도 17 choropleth) ══════════════════
+   ⛔ 정직/출처: 실제 행정구역 경계입니다 (저폴리곤·헥스 아님).
+     · 원천: 통계청(KOSTAT) 센서스용 행정구역경계 → southkorea-maps(github.com/southkorea/southkorea-maps) 가공본
+     · 라이선스: 공공데이터(KOGL 제1유형 계열) — 출처표시 조건 자유이용
+     · 파이프라인(빌드타임): GeoJSON → mapshaper 위상보존 단순화(Visvalingam) — 공유 경계는 동일 arc 로 단순화되어
+       시도간 틈새 0(테셀레이션 보장) → 각 시도 최대 폴리곤+홀만 유지(부속 도서 생략 · 광역시 홀=주변 도 안에 정확 표시)
+       → 등거리(cos φ) 투영 → 좌표 반올림/중복 제거
+     · 런타임 CDN 0 유지: 위 산출물을 아래 인라인 path 로 임베드(≈25KB). 외부 요청 없음.
+     · 제주 = 인셋: 실형상 그대로, 남해 빈 여백만 축소해 전남 남쪽에 배치(점선 프레임으로 인셋 명시).
+     · KMAP_VB / KMAP_JEJU_INSET = 빌드 산출값. */
+var KMAP_VB='0 0 536 895';
+var KMAP_JEJU_INSET={x:9,y:812,w:126,h:81};
+var KMAP=[
+  {c:'경기',d:'M144 177L146 178L153 178L154 179L155 179L155 180L155 181L155 183L155 184L155 187L157 187L158 188L158 189L158 190L157 190L157 191L159 195L156 200L156 203L157 203L158 203L159 203L159 202L167 199L167 200L168 201L168 202L168 203L168 204L168 205L169 206L168 205L165 206L164 207L164 208L163 209L163 210L163 211L162 211L162 212L162 213L163 213L164 213L164 214L165 213L165 214L165 215L165 216L163 217L163 218L163 219L157 221L154 224L153 225L152 225L151 227L150 227L149 227L148 227L147 225L146 225L147 225L147 224L147 223L146 223L146 222L147 222L146 221L146 220L145 222L143 222L142 222L142 221L141 220L135 225L130 223L127 226L126 226L126 225L125 224L125 223L124 221L123 219L121 215L118 219L115 218L114 218L114 219L113 219L113 218L114 218L114 217L114 216L114 214L114 213L114 212L115 212L115 211L115 210L115 209L114 206L113 206L112 206L111 206L111 207L110 207L110 206L109 205L108 205L107 205L106 204L106 205L105 207L102 212L102 216L108 219L106 227L104 229L94 245L83 248L78 252L76 255L73 255L76 263L73 263L73 268L75 271L78 265L83 268L81 264L84 264L88 267L89 265L87 259L78 252L83 248L92 246L93 247L106 252L112 252L112 257L110 257L110 261L93 258L90 254L88 255L90 266L89 272L90 276L95 278L92 281L94 286L105 296L102 299L110 301L109 307L115 308L119 316L121 319L127 320L128 324L140 318L145 319L154 316L158 312L163 312L171 315L173 319L182 322L184 326L187 319L193 315L197 316L201 312L199 309L200 307L205 306L210 303L211 296L217 297L219 296L224 299L228 292L231 294L231 290L236 288L237 280L244 281L248 272L253 267L255 256L253 251L256 250L255 238L257 235L261 227L260 221L257 215L255 215L262 207L267 207L268 204L263 202L260 198L258 199L254 197L247 198L238 189L231 186L225 190L221 186L224 184L225 172L222 173L217 171L222 167L219 160L221 156L220 151L229 144L231 145L233 139L231 130L223 127L222 121L216 122L210 118L208 111L208 107L206 100L203 103L198 100L196 102L189 104L188 100L184 100L182 96L186 89L181 88L174 96L169 92L169 87L166 85L165 77L158 78L157 71L155 69L143 78L140 79L136 85L136 90L133 92L136 96L130 98L127 96L119 103L121 107L117 115L113 122L110 122L109 125L105 124L99 128L96 126L92 130L91 136L93 137L92 142L95 146L92 152L91 162L86 162L80 166L77 165L70 160L69 165L71 168L69 174L73 184L71 185L75 195L78 194L80 197L83 194L85 195L89 188L92 189L100 197L104 199L106 198L109 199L109 198L110 199L110 198L111 198L111 194L119 201L126 197L128 187L133 185L135 186L135 188L135 189L136 189L135 190L136 190L137 189L137 190L138 189L139 189L139 188L139 187L138 185L140 183L140 182L140 181L141 180L142 180L142 178L144 177ZM105 296L94 286L102 278L104 275L108 276L110 273L113 281L108 281L105 286L107 288L105 296Z',cx:167,cy:208},
+  {c:'서울',d:'M144 177L142 178L142 180L141 180L140 181L140 182L140 183L138 185L139 187L139 188L139 189L138 189L137 190L137 189L136 190L135 190L136 189L135 189L135 188L135 186L133 185L128 187L126 197L119 201L111 194L111 198L110 198L110 199L109 200L108 200L108 201L108 202L107 202L108 202L108 203L107 202L107 203L106 203L106 204L107 205L108 205L109 205L110 206L110 207L111 207L111 206L112 206L113 206L114 206L115 209L115 210L115 211L115 212L114 212L114 213L114 214L114 216L114 217L114 218L113 218L113 219L114 219L114 218L115 218L118 219L121 215L123 219L124 221L125 223L125 224L126 225L126 226L127 226L130 223L135 225L141 220L142 221L142 222L143 222L145 222L146 220L146 221L147 222L146 222L146 223L147 223L147 224L147 225L146 225L147 225L148 227L149 227L150 227L151 227L152 225L153 225L154 224L157 221L163 219L163 218L163 217L165 216L165 215L165 214L165 213L164 214L164 213L163 213L162 213L162 212L162 211L163 211L163 210L163 209L164 208L164 207L165 206L168 205L169 206L168 205L168 204L168 203L168 202L168 201L167 200L167 199L159 202L159 203L158 203L157 203L156 203L156 200L159 195L157 191L157 190L158 190L158 189L158 188L157 187L155 187L155 184L155 183L155 181L155 180L155 179L154 179L153 178L146 178L144 177Z',cx:140,cy:204},
+  {c:'인천',d:'M106 204L106 203L107 203L107 202L108 203L108 202L107 202L108 202L108 201L108 200L109 200L110 199L109 198L109 199L106 198L104 199L100 197L92 189L89 188L85 195L83 194L80 197L77 198L82 208L82 215L85 222L80 220L80 225L83 222L83 235L89 240L79 241L80 243L87 243L91 241L95 235L99 236L104 229L106 227L108 219L102 216L102 212L105 207L106 205L106 204Z',cx:93,cy:215},
+  {c:'강원',d:'M253 267L256 277L259 280L268 278L272 276L276 279L279 276L281 271L279 265L282 262L289 259L294 261L297 266L296 271L302 271L307 268L309 263L314 266L321 260L325 264L328 264L331 268L338 265L340 269L330 277L335 281L341 277L348 277L351 279L350 283L356 286L362 286L365 283L368 287L373 290L382 292L384 290L388 294L396 299L405 300L404 296L408 289L412 292L415 292L418 297L425 298L429 289L432 289L434 292L438 291L446 292L449 294L451 290L455 288L465 294L468 299L475 298L474 293L481 285L485 285L489 280L495 279L492 270L492 264L494 263L490 258L488 253L485 249L481 247L478 239L478 236L470 229L469 223L464 218L459 210L457 205L458 199L449 191L447 188L449 181L443 176L439 170L423 153L422 151L415 143L414 139L410 135L399 117L392 109L392 106L386 100L382 94L381 82L375 74L373 65L368 57L368 53L362 47L359 40L361 38L357 34L351 21L352 19L344 8L337 12L338 27L333 41L328 45L323 53L320 53L314 58L308 59L303 64L298 65L293 63L292 70L289 71L285 66L272 63L264 65L260 62L259 57L253 60L253 58L245 61L234 61L232 59L228 59L216 66L211 63L198 59L186 64L184 61L177 60L164 65L162 63L155 69L157 71L158 78L165 77L166 85L169 87L169 92L174 96L181 88L186 89L182 96L184 100L188 100L189 104L196 102L198 100L203 103L206 100L208 107L208 111L210 118L216 122L222 121L223 127L231 130L233 139L231 145L229 144L220 151L221 156L219 160L222 167L217 171L222 173L225 172L224 184L221 186L225 190L231 186L238 189L247 198L254 197L258 199L260 198L263 202L268 204L267 207L262 207L255 215L257 215L260 221L261 227L257 235L255 238L256 250L253 251L255 256L253 267Z',cx:335,cy:172},
+  {c:'충북',d:'M200 400L201 401L202 403L201 404L201 405L201 406L201 407L202 407L203 407L206 407L209 408L211 404L214 403L214 404L213 404L213 405L213 406L213 407L216 407L216 408L214 411L215 414L216 414L216 415L216 416L217 416L217 415L218 415L218 414L218 413L219 413L220 413L220 414L221 414L222 413L222 414L222 415L224 417L225 417L225 418L224 418L222 418L221 419L220 419L220 420L220 421L220 422L220 423L220 424L219 424L219 425L219 426L216 428L216 430L216 431L216 432L215 432L216 433L215 433L215 434L216 434L216 435L215 436L215 437L216 438L216 439L215 440L214 441L214 442L214 443L214 444L214 445L215 446L215 447L221 445L223 449L226 448L231 451L230 458L231 462L229 467L234 471L233 474L237 479L240 484L244 480L246 485L255 487L256 489L269 484L272 487L278 481L280 482L285 478L286 469L289 468L290 462L287 456L291 453L299 454L295 447L298 444L292 441L286 445L277 438L276 435L273 441L269 441L267 434L269 430L274 425L270 419L273 413L272 410L273 406L272 402L276 398L276 394L273 392L270 386L264 386L261 383L260 380L264 378L270 378L268 374L273 370L274 375L277 375L280 380L282 371L280 368L273 365L275 363L280 363L283 360L284 355L291 359L293 356L298 360L301 358L296 353L300 340L301 340L302 341L302 342L307 342L309 339L310 339L323 341L323 334L326 335L327 330L333 333L339 340L346 343L348 341L354 341L358 334L358 332L354 329L357 322L357 320L360 316L367 312L368 309L372 308L377 302L375 301L382 297L386 299L388 294L384 290L382 292L373 290L368 287L365 283L362 286L356 286L350 283L351 279L348 277L341 277L335 281L330 277L340 269L338 265L331 268L328 264L325 264L321 260L314 266L309 263L307 268L302 271L296 271L297 266L294 261L289 259L282 262L279 265L281 271L279 276L276 279L272 276L268 278L259 280L256 277L253 267L248 272L244 281L237 280L236 288L231 290L231 294L228 292L224 299L219 296L217 297L211 296L210 303L205 306L200 307L199 309L201 312L197 316L193 315L187 319L184 326L187 327L187 332L191 333L191 337L194 338L201 344L200 347L204 350L202 353L199 351L191 352L192 355L188 357L185 362L184 363L184 364L185 364L186 364L187 365L187 366L187 367L187 368L186 368L186 369L184 369L184 371L183 372L183 373L182 373L183 373L183 374L184 374L185 373L185 374L187 380L187 381L187 382L186 382L186 383L187 383L189 383L191 386L191 387L197 388L199 391L201 391L202 392L202 393L202 394L201 394L201 395L201 396L202 396L202 397L202 398L202 400L201 400L200 400Z',cx:266,cy:355},
+  {c:'충남',d:'M183 415L183 414L182 415L181 414L180 414L180 415L180 416L179 416L178 416L178 415L177 414L175 413L174 411L173 411L172 411L172 410L171 410L171 409L171 408L171 407L172 406L171 405L170 405L170 404L170 403L170 401L168 400L166 397L167 392L167 391L168 390L168 391L169 391L169 390L170 390L169 389L169 388L170 388L170 387L171 387L171 386L172 385L172 384L171 383L170 384L169 382L164 379L164 372L164 368L164 367L165 367L165 366L166 366L166 365L165 365L165 364L165 363L163 364L161 361L160 360L161 360L161 359L162 359L163 359L163 358L165 356L167 356L171 357L178 363L182 363L183 364L184 364L184 363L184 364L185 364L184 364L184 363L185 362L188 357L192 355L191 352L199 351L202 353L204 350L200 347L201 344L194 338L191 337L191 333L187 332L187 327L184 326L182 322L173 319L171 315L163 312L158 312L154 316L145 319L140 318L128 324L127 327L120 328L114 325L108 312L109 311L95 306L86 306L70 298L69 295L65 295L60 303L62 305L55 303L49 304L41 307L41 309L48 310L46 312L42 312L44 315L48 316L50 319L54 320L53 323L55 324L51 328L46 329L46 338L41 332L39 335L41 341L37 341L34 343L34 339L39 336L35 335L40 328L36 321L38 314L37 310L34 312L35 319L33 325L28 322L22 325L20 329L21 334L15 338L11 348L8 348L11 354L11 359L14 356L12 352L15 352L23 355L22 361L16 359L13 361L15 366L21 366L23 363L27 361L26 358L32 356L31 367L35 368L36 375L34 381L35 383L46 375L53 377L59 381L62 388L61 390L64 394L63 403L66 411L63 420L68 421L73 426L73 429L67 431L73 442L71 447L72 454L67 463L72 464L75 467L80 467L83 473L88 475L86 476L86 481L88 481L91 485L90 489L102 491L102 489L103 486L111 485L114 482L122 479L122 471L126 465L129 466L133 463L143 464L150 468L150 474L155 478L159 479L161 475L171 475L175 473L178 476L179 470L182 471L187 468L192 467L194 471L195 481L197 487L201 490L206 486L209 494L217 495L221 492L221 484L230 487L232 491L234 479L237 479L233 474L234 471L229 467L231 462L230 458L231 451L226 448L223 449L221 445L215 447L214 448L213 449L212 449L211 450L211 451L211 452L210 452L209 453L209 454L207 455L206 454L206 453L204 453L203 453L203 452L202 452L202 451L203 451L201 448L199 448L199 443L198 442L198 441L197 441L196 441L195 441L195 442L195 443L195 444L196 445L196 446L195 447L195 448L195 449L191 457L190 455L191 455L191 454L190 453L190 454L188 450L187 450L187 449L185 450L183 445L185 442L184 442L183 442L182 442L182 441L181 441L181 440L180 440L179 439L178 437L180 437L180 435L180 434L180 433L180 432L180 431L181 429L182 428L183 427L182 426L182 425L182 424L183 424L183 423L183 422L183 421L183 420L183 419L183 418L183 417L183 416L183 415ZM83 401L82 404L76 404L76 408L71 410L70 408L73 404L77 402L79 403L83 401Z',cx:119,cy:393},
+  {c:'대전',d:'M201 406L201 405L201 404L202 403L201 401L200 400L199 399L198 399L195 401L195 402L196 403L195 407L192 411L192 412L191 412L190 413L185 413L185 414L184 414L183 414L183 415L183 416L183 417L183 418L183 419L183 420L183 421L183 422L183 423L183 424L182 424L182 425L182 426L183 427L182 428L181 429L180 431L180 432L180 433L180 434L180 435L180 437L178 437L179 439L180 440L181 440L181 441L182 441L182 442L183 442L184 442L185 442L183 445L185 450L187 449L187 450L188 450L190 454L190 453L191 454L191 455L190 455L191 457L195 449L195 448L195 447L196 446L196 445L195 444L195 443L195 442L195 441L196 441L197 441L198 441L198 442L199 443L199 448L201 448L203 451L202 451L202 452L203 452L203 453L204 453L206 453L206 454L207 455L209 454L209 453L210 452L211 452L211 451L211 450L212 449L213 449L214 448L215 447L215 446L214 445L214 444L214 443L214 442L214 441L215 440L216 439L216 438L215 437L215 436L216 435L216 434L215 434L215 433L216 433L215 432L216 432L216 431L216 430L216 428L219 426L219 425L219 424L220 424L220 423L220 422L220 421L220 420L220 419L221 419L222 418L224 418L225 418L225 417L224 417L222 415L222 414L222 413L221 414L220 414L220 413L219 413L218 413L218 414L218 415L217 415L217 416L216 416L216 415L216 414L215 414L214 411L216 408L216 407L213 407L213 406L213 405L213 404L214 404L214 403L211 404L209 408L206 407L203 407L202 407L201 407L201 406Z',cx:200,cy:428},
+  {c:'세종',d:'M200 400L201 400L202 400L202 398L202 397L202 396L201 396L201 395L201 394L202 394L202 393L202 392L201 391L199 391L197 388L191 387L191 386L189 383L187 383L186 383L186 382L187 382L187 381L187 380L185 374L185 373L184 374L183 374L183 373L182 373L183 373L183 372L184 371L184 369L186 369L186 368L187 368L187 367L187 366L187 365L186 364L185 364L184 364L184 363L184 364L183 364L182 363L178 363L171 357L167 356L165 356L163 358L163 359L162 359L161 359L161 360L160 360L161 361L163 364L165 363L165 364L165 365L166 365L166 366L165 366L165 367L164 367L164 368L164 372L164 379L169 382L170 384L171 383L172 384L172 385L171 386L171 387L170 387L170 388L169 388L169 389L170 390L169 390L169 391L168 391L168 390L167 391L167 392L166 397L168 400L170 401L170 403L170 404L170 405L171 405L172 406L171 407L171 408L171 409L171 410L172 410L172 411L173 411L174 411L175 413L177 414L178 415L178 416L179 416L180 416L180 415L180 414L181 414L182 415L183 414L183 415L183 414L184 414L185 414L185 413L190 413L191 412L192 412L192 411L195 407L196 403L195 402L195 401L198 399L199 399L200 400Z',cx:180,cy:388},
+  {c:'경북',d:'M370 550L371 561L374 562L377 566L381 569L386 568L389 565L394 566L396 569L399 569L404 571L409 571L411 567L416 566L417 567L422 561L428 558L432 559L438 563L440 562L441 562L441 561L451 554L451 552L451 551L451 550L451 549L452 549L452 548L453 547L464 544L472 543L480 548L479 550L480 550L480 551L479 552L479 553L479 554L479 555L480 555L481 556L482 555L482 556L483 556L484 556L484 557L485 557L485 556L486 556L486 555L487 554L490 554L493 550L495 551L496 552L497 552L498 552L502 553L508 556L512 548L511 546L514 537L514 531L517 527L517 524L520 515L518 515L520 510L518 506L522 500L524 493L528 488L528 483L524 475L516 486L509 491L505 492L500 488L501 484L498 486L498 480L502 478L506 471L500 465L500 461L496 453L498 452L496 444L498 440L497 430L500 423L506 412L506 402L507 397L506 389L502 383L503 373L506 367L510 366L512 357L511 351L512 349L509 341L505 334L503 326L503 315L502 310L503 308L502 301L504 294L500 291L497 286L495 279L489 280L485 285L481 285L474 293L475 298L468 299L465 294L455 288L451 290L449 294L446 292L438 291L434 292L432 289L429 289L425 298L418 297L415 292L412 292L408 289L404 296L405 300L396 299L388 294L386 299L382 297L375 301L377 302L372 308L368 309L367 312L360 316L357 320L357 322L354 329L358 332L358 334L354 341L348 341L346 343L339 340L333 333L327 330L326 335L323 334L323 341L310 339L309 339L307 342L302 342L302 341L301 340L300 340L296 353L301 358L298 360L293 356L291 359L284 355L283 360L280 363L275 363L273 365L280 368L282 371L280 380L277 375L274 375L273 370L268 374L270 378L264 378L260 380L261 383L264 386L270 386L273 392L276 394L276 398L272 402L273 406L272 410L273 413L270 419L274 425L269 430L267 434L269 441L273 441L276 435L277 438L286 445L292 441L298 444L295 447L299 454L291 453L287 456L290 462L289 468L286 469L285 478L280 482L278 481L272 487L272 492L275 494L277 502L273 504L274 508L275 512L279 511L280 518L288 517L293 523L299 523L301 521L309 525L311 531L314 531L315 535L319 537L321 542L321 550L315 553L315 555L318 554L321 557L326 558L327 555L330 557L335 555L344 558L346 563L351 559L351 557L344 550L344 545L352 547L356 545L355 542L348 536L354 526L361 527L363 523L358 520L348 518L350 511L354 504L359 502L362 503L360 508L366 512L371 503L370 496L374 496L381 494L383 490L395 488L398 490L402 496L401 504L404 507L405 516L397 523L398 527L393 530L395 536L393 543L386 546L383 545L383 540L378 539L370 544L370 550Z',cx:402,cy:428},
+  {c:'대구',d:'M370 550L370 544L378 539L383 540L383 545L386 546L393 543L395 536L393 530L398 527L397 523L405 516L404 507L401 504L402 496L398 490L395 488L383 490L381 494L374 496L370 496L371 503L366 512L360 508L362 503L359 502L354 504L350 511L348 518L358 520L363 523L361 527L354 526L348 536L355 542L356 545L352 547L344 545L344 550L351 557L351 559L346 563L355 561L358 558L367 558L367 551L370 550Z',cx:376,cy:522},
+  {c:'전북',d:'M237 479L234 479L232 491L230 487L221 484L221 492L217 495L209 494L206 486L201 490L197 487L195 481L194 471L192 467L187 468L182 471L179 470L178 476L175 473L171 475L161 475L159 479L155 478L150 474L150 468L143 464L133 463L129 466L126 465L122 471L122 479L114 482L111 485L103 486L102 489L104 489L101 494L97 492L93 494L69 496L71 504L66 519L62 524L58 522L59 527L62 526L65 522L71 503L76 503L77 506L79 506L79 501L84 502L83 511L91 513L92 512L94 520L97 529L89 530L86 528L84 531L85 538L76 548L75 547L61 559L60 563L65 568L71 569L77 567L89 569L92 570L91 574L89 571L83 571L80 576L78 575L69 577L65 581L64 579L55 596L59 597L62 597L65 600L63 605L66 607L66 611L68 609L68 616L71 619L73 618L79 620L79 615L82 614L88 617L91 611L94 612L97 609L101 606L101 603L104 599L102 593L106 590L113 589L113 587L118 588L117 591L122 591L127 595L126 598L131 603L138 602L137 597L140 595L141 590L146 590L147 596L149 597L147 606L152 609L152 613L149 613L147 617L157 621L163 619L165 616L169 614L169 616L173 617L176 614L180 618L187 620L194 616L199 620L207 609L215 609L227 619L232 617L234 613L232 608L236 602L240 599L242 594L238 593L236 588L239 586L235 579L229 574L233 568L234 562L236 562L234 557L237 552L237 548L240 545L240 535L249 529L253 520L254 521L265 516L267 516L270 508L274 508L273 504L277 502L275 494L272 492L272 487L269 484L256 489L255 487L246 485L244 480L240 484L237 479Z',cx:163,cy:544},
+  {c:'전남',d:'M59 597L55 596L52 601L53 607L51 608L46 623L42 623L40 627L40 631L37 630L36 637L42 640L48 637L47 641L44 642L54 656L61 658L57 660L60 662L52 671L50 668L53 664L51 662L47 665L46 662L43 662L41 659L43 646L39 652L31 649L28 655L29 658L20 655L15 658L19 665L25 665L27 668L25 672L30 674L32 669L30 666L35 665L36 668L38 666L39 660L41 660L44 669L48 667L50 672L42 677L45 677L40 682L37 679L35 682L39 686L41 691L46 691L47 684L45 683L47 676L48 681L50 683L50 690L52 694L49 698L53 705L49 706L45 713L46 717L49 717L57 713L59 716L48 719L45 724L50 726L47 732L44 733L41 728L41 724L35 720L32 731L30 731L30 738L33 744L33 751L38 753L38 756L41 755L50 759L50 762L54 758L60 763L62 767L60 768L62 774L60 778L63 782L67 779L69 784L64 785L66 789L62 790L64 793L67 793L70 799L68 802L69 806L73 805L75 801L81 803L84 795L83 790L86 785L90 783L93 784L96 779L100 779L103 773L102 771L106 769L106 762L107 749L110 753L110 760L109 766L112 777L118 777L124 781L122 777L125 777L132 778L132 772L138 774L136 769L138 766L139 757L138 755L142 748L140 746L148 743L151 738L155 737L158 733L168 733L171 730L172 725L177 720L181 726L185 725L187 722L190 722L191 730L188 738L184 738L183 729L179 729L176 733L175 740L170 740L167 745L167 751L164 751L158 757L159 763L164 765L174 762L176 765L179 765L183 769L181 772L186 774L189 779L192 776L189 775L195 770L200 771L198 768L202 767L207 759L200 758L202 754L206 752L212 755L217 751L215 744L210 742L212 738L205 735L198 726L197 724L201 719L199 718L200 714L204 711L200 710L194 706L200 708L212 705L215 705L215 699L218 699L220 705L222 706L219 711L225 712L227 719L229 721L224 729L224 737L227 743L228 741L233 742L236 745L236 735L233 731L237 728L240 721L247 728L253 725L253 718L256 713L257 703L255 701L246 702L241 706L236 708L236 705L232 704L229 699L233 696L229 691L233 692L237 698L241 694L242 689L245 691L246 688L247 688L250 684L253 688L256 688L255 682L258 678L259 672L256 667L252 664L245 656L245 652L235 642L234 633L232 628L230 626L227 619L215 609L207 609L199 620L194 616L187 620L180 618L176 614L173 617L169 616L169 614L165 616L163 619L157 621L147 617L149 613L152 613L152 609L147 606L149 597L147 596L146 590L141 590L140 595L137 597L138 602L131 603L126 598L127 595L122 591L117 591L118 588L113 587L113 589L106 590L102 593L104 599L101 603L101 606L97 609L94 612L91 611L88 617L82 614L79 615L79 620L73 618L71 619L68 616L68 609L66 611L66 607L63 605L65 600L62 597L59 597ZM106 629L105 630L105 631L104 632L104 633L105 633L107 633L108 634L112 636L120 632L121 631L121 630L123 630L130 629L131 631L131 632L132 633L133 633L134 636L136 638L136 639L135 639L135 640L135 641L136 643L137 642L141 641L144 644L144 645L143 645L142 647L142 651L142 652L143 652L142 654L141 655L140 655L139 656L139 657L139 658L139 659L138 659L137 659L136 659L135 660L135 661L134 662L133 663L131 662L130 661L130 660L129 659L128 659L128 660L127 661L125 662L119 662L118 663L118 664L117 664L116 664L115 665L114 665L114 666L113 666L112 666L110 665L109 665L108 666L105 665L107 663L106 662L106 661L105 659L102 656L101 655L101 656L100 656L99 656L98 656L97 656L96 656L95 655L93 657L90 655L89 654L89 649L90 645L91 645L92 645L92 644L91 644L91 643L89 640L91 640L92 640L92 641L93 641L94 636L96 638L102 629L105 628L106 629ZM63 724L61 730L49 727L55 726L55 723L58 723L60 726L63 724Z',cx:135,cy:687},
+  {c:'광주',d:'M106 629L105 628L102 629L96 638L94 636L93 641L92 641L92 640L91 640L89 640L91 643L91 644L92 644L92 645L91 645L90 645L89 649L89 654L90 655L93 657L95 655L96 656L97 656L98 656L99 656L100 656L101 656L101 655L102 656L105 659L106 661L106 662L107 663L105 665L108 666L109 665L110 665L112 666L113 666L114 666L114 665L115 665L116 664L117 664L118 664L118 663L119 662L125 662L127 661L128 660L128 659L129 659L130 660L130 661L131 662L133 663L134 662L135 661L135 660L136 659L137 659L138 659L139 659L139 658L139 657L139 656L140 655L141 655L142 654L143 652L142 652L142 651L142 647L143 645L144 645L144 644L141 641L137 642L136 643L135 641L135 640L135 639L136 639L136 638L134 636L133 633L132 633L131 632L131 631L130 629L123 630L121 630L121 631L120 632L112 636L108 634L107 633L105 633L104 633L104 632L105 631L105 630L106 629Z',cx:116,cy:647},
+  {c:'경남',d:'M415 659L414 658L416 655L415 652L414 652L411 650L410 647L417 647L419 645L423 647L421 639L423 636L431 634L438 634L440 632L443 625L448 625L449 622L452 622L457 619L460 610L458 608L467 611L470 608L471 604L471 603L472 603L472 602L473 602L473 601L470 595L466 596L461 593L461 592L460 592L459 591L459 590L459 589L458 588L457 587L457 586L456 584L448 581L448 580L448 579L449 579L449 578L445 579L444 579L443 579L442 579L442 578L441 578L440 578L440 577L440 576L438 575L437 575L437 574L436 573L436 572L437 572L438 572L440 571L443 568L444 567L444 565L444 563L441 561L441 562L440 562L438 563L432 559L428 558L422 561L417 567L416 566L411 567L409 571L404 571L399 569L396 569L394 566L389 565L386 568L381 569L377 566L374 562L371 561L370 550L367 551L367 558L358 558L355 561L346 563L344 558L335 555L330 557L327 555L326 558L321 557L318 554L315 555L315 553L321 550L321 542L319 537L315 535L314 531L311 531L309 525L301 521L299 523L293 523L288 517L280 518L279 511L275 512L274 508L270 508L267 516L265 516L254 521L253 520L249 529L240 535L240 545L237 548L237 552L234 557L236 562L234 562L233 568L229 574L235 579L239 586L236 588L238 593L242 594L240 599L236 602L232 608L234 613L232 617L227 619L230 626L232 628L234 633L235 642L245 652L245 656L252 664L256 667L259 672L258 678L255 682L256 682L260 689L267 685L271 686L275 684L279 673L282 676L281 679L287 677L288 681L291 677L292 679L294 675L288 668L294 670L296 663L299 661L297 666L298 673L297 676L298 681L295 684L299 689L307 690L307 694L311 697L314 693L321 696L320 688L327 686L331 692L333 694L336 691L336 688L341 684L344 693L335 694L339 698L343 697L344 700L353 701L346 704L350 708L353 706L358 704L359 698L362 696L359 692L354 700L353 693L356 689L354 687L357 682L356 679L352 677L360 678L366 672L363 671L363 664L361 662L357 665L358 666L349 670L349 673L346 673L348 670L345 667L352 665L355 665L357 663L360 663L360 659L358 658L363 656L368 658L371 654L373 658L378 660L375 662L378 664L377 666L382 665L381 661L385 661L381 657L380 650L375 642L379 637L379 643L383 651L385 649L389 651L394 650L396 656L402 661L405 662L408 658L411 658L408 662L412 662L415 659Z',cx:329,cy:608},
+  {c:'울산',d:'M471 604L471 605L472 606L473 606L480 604L481 606L482 607L482 608L483 608L483 609L483 610L482 610L483 611L483 612L483 613L482 613L483 613L484 613L484 614L485 614L486 615L487 615L489 612L495 609L492 607L496 593L494 595L493 590L497 591L499 586L497 577L502 585L501 588L505 587L509 574L508 569L510 564L507 561L506 555L502 553L498 552L497 552L496 552L495 551L493 550L490 554L487 554L486 555L486 556L485 556L485 557L484 557L484 556L483 556L482 556L482 555L481 556L480 555L479 555L479 554L479 553L479 552L480 551L480 550L479 550L480 548L472 543L464 544L453 547L452 548L452 549L451 549L451 550L451 551L451 552L451 554L441 561L444 563L444 565L444 567L443 568L440 571L438 572L437 572L436 572L436 573L437 574L437 575L438 575L440 576L440 577L440 578L441 578L442 578L442 579L443 579L444 579L445 579L449 578L449 579L448 579L448 580L448 581L456 584L457 586L457 587L458 588L459 589L459 590L459 591L460 592L461 592L461 593L466 596L470 595L473 601L473 602L472 602L472 603L471 603L471 604Z',cx:476,cy:574},
+  {c:'부산',d:'M414 658L415 660L416 660L416 661L423 661L424 656L426 654L425 661L430 659L430 662L433 656L434 666L436 668L439 665L441 667L439 661L442 666L444 658L450 653L451 656L455 659L459 658L460 654L457 651L459 647L470 646L470 643L474 642L478 631L479 620L483 616L485 617L486 615L485 614L484 614L484 613L483 613L482 613L483 613L483 612L483 611L482 610L483 610L483 609L483 608L482 608L482 607L481 606L480 604L473 606L472 606L471 605L471 604L470 608L467 611L458 608L460 610L457 619L452 622L449 622L448 625L443 625L440 632L438 634L431 634L423 636L421 639L423 647L419 645L417 647L410 647L411 650L414 652L415 652L416 655L414 658Z',cx:451,cy:637},
+  {c:'제주',d:'M126 827L123 825L120 826L115 822L115 819L111 820L108 818L102 820L101 819L91 822L88 820L86 824L81 823L68 827L65 826L59 831L39 836L37 840L31 842L31 846L15 861L15 869L19 875L26 879L32 887L39 879L46 880L52 878L56 879L59 878L62 882L69 878L81 879L87 875L106 869L108 866L112 867L118 864L121 855L124 852L127 850L129 836L127 834L128 829L126 827Z',cx:74,cy:852}
+];
+function koreaMapSVG(opts){
+  opts=opts||{};var agg=opts.agg||{},sel=opts.sel,vb=KMAP_VB;
+  var _vn=KMAP_VB.split(' '),MVW=+_vn[2],MVH=+_vn[3],MASP=MVH/MVW; // 실 aspect(빌드 산출)
+  if(opts.drill&&sel){var r=KMAP.filter(function(x){return x.c===sel;})[0];if(r){var s=220;vb=(r.cx-s/2)+' '+(r.cy-s*MASP/2)+' '+s+' '+(s*MASP);}}
+  var regions=KMAP.map(function(r){
+    var a=agg[r.c],ramp=a&&a.util!=null?utilRamp(a.util):0;var cls='map-region m'+(ramp||0);
+    if(sel){cls+=(r.c===sel?' sel':' dim');}
+    return '<path class="'+cls+'" data-sido="'+r.c+'" d="'+r.d+'" role="button" aria-label="'+r.c+(a&&a.util!=null?' 가동률 '+a.util.toFixed(0)+'%':' 사업장 없음')+'"><title>'+r.c+'</title></path>';
+  }).join('');
+  // 제주 인셋 프레임(전체 보기에서만 · 드릴다운 시엔 뷰박스 밖) — 인셋임을 정직하게 명시
+  var inset=(!opts.drill)?('<rect class="map-inset-frame" x="'+KMAP_JEJU_INSET.x+'" y="'+KMAP_JEJU_INSET.y+'" width="'+KMAP_JEJU_INSET.w+'" height="'+KMAP_JEJU_INSET.h+'" rx="6"/><text class="map-inset-label" x="'+(KMAP_JEJU_INSET.x+KMAP_JEJU_INSET.w-4)+'" y="'+(KMAP_JEJU_INSET.y+11)+'" text-anchor="end">제주 인셋</text>'):'';
+  var markers='';if(sel){var rr=KMAP.filter(function(x){return x.c===sel;})[0];if(rr){var cnt=LEDGER.SITES.filter(function(s){return s.sido===sel;}).length;for(var i=0;i<cnt;i++){markers+='<circle class="map-marker pulse" cx="'+(rr.cx+(i-(cnt-1)/2)*7)+'" cy="'+rr.cy+'" r="3.5"/>';}}}
+  return '<svg class="korea-map" viewBox="'+vb+'" role="img" aria-label="대한민국 시도별 가동률 지도(실 행정경계 · 통계청 KOSTAT · 제주 인셋)" style="width:100%;height:auto;max-height:520px">'+inset+regions+markers+'</svg>';
+}
+
+/* ══════════════════ 실행 ══════════════════ */
+boot();
+})();
+</script>
+</body>
+</html>
