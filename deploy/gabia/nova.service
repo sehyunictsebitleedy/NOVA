@@ -1,0 +1,25 @@
+[Unit]
+Description=NOVA Portal Nuxt production server
+After=network.target
+
+[Service]
+Type=simple
+User=nova
+Group=nova
+WorkingDirectory=/srv/nova/current
+EnvironmentFile=/etc/nova/nova.env
+ExecStart=/usr/local/bin/node /srv/nova/current/apps/portal/.output/server/index.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+UMask=0027
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

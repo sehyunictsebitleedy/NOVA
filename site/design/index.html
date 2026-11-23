@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light"><meta name="description" content="업무 화면의 공통 언어, NOVA. 화면을 만드는 UX, 데이터를 보여주는 Chart, 정보를 다루는 Grid를 만나보세요.">
+  <title>NOVA | 업무 화면의 공통 언어</title><link rel="icon" href="data:,">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('nova-design-theme')||'dark'}catch{}</script>
+  <link rel="stylesheet" href="/design/assets/fonts.css"><link rel="stylesheet" href="/design/style.css"><script src="/design/main.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 이동</a>
+  <header class="header container">
+    <a class="brand" href="#" aria-label="SEbit NOVA 홈"><span>SEbit</span>NOVA<i aria-hidden="true">✳</i></a>
+    <nav id="nav" aria-label="주 메뉴"><a href="#about">NOVA 소개</a><a href="#products">제품</a><a href="#workspace">활용 화면</a><a href="#next">데모 안내</a></nav>
+    <button class="theme" aria-label="라이트 모드로 변경">라이트</button><button class="menu" aria-controls="nav" aria-expanded="false" aria-label="메뉴 열기">메뉴</button>
+  </header>
+  <main id="main">
+    <section class="hero container" id="about" aria-labelledby="hero-title">
+      <h1 id="hero-title">업무 화면의<br><span>공통 언어, NOVA.</span></h1>
+      <div class="hero-bottom"><p>화면을 만들고, 데이터를 읽고, 정보를 다루는 일.<br>UX, Chart, Grid로 하나의 경험을 만듭니다.</p><a class="text-link" href="#products">제품 살펴보기 <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <section class="products container" id="products" aria-labelledby="products-title">
+      <h2 class="sr-only" id="products-title">NOVA 제품 탐색</h2>
+      <div class="product-tabs" role="tablist" aria-label="제품 선택">
+        <button role="tab" id="ux" aria-controls="panel-ux" aria-selected="true" tabindex="0"><span>UX</span><small>화면을 만들다</small></button>
+        <button role="tab" id="chart" aria-controls="panel-chart" aria-selected="false" tabindex="-1"><span>Chart</span><small>데이터를 읽다</small></button>
+        <button role="tab" id="grid" aria-controls="panel-grid" aria-selected="false" tabindex="-1"><span>Grid</span><small>정보를 다루다</small></button>
+      </div>
+      <div class="product-panel" id="panel-ux" role="tabpanel" aria-labelledby="ux" tabindex="0">
+        <div class="product-copy"><h3>어느 화면에서나<br>익숙한 사용 경험.</h3><p>메뉴, 탭, 버튼, 입력 폼.<br>자주 쓰는 조작에 같은 기준을 적용합니다.</p><ul><li>화면을 오가는 멀티탭</li><li>명확한 입력과 피드백</li><li>조합해서 쓰는 컴포넌트</li></ul><a href="#workspace" class="text-link">함께 쓰는 모습 <span aria-hidden="true">↗</span></a></div>
+        <figure><img src="/concept/assets/ux.webp" width="1032" height="680" alt="NOVA 프로토타입의 입력 폼, 버튼, 탭 컴포넌트 팔레트" fetchpriority="high"><figcaption>컴포넌트 팔레트 · 프로토타입 화면</figcaption></figure>
+      </div>
+      <div class="product-panel" id="panel-chart" role="tabpanel" aria-labelledby="chart" tabindex="0" hidden>
+        <div class="product-copy"><h3>숫자 속의 흐름을<br>한눈에 이해하다.</h3><p>추이와 비율, 비교와 분포.<br>데이터의 관계를 알맞은 차트로 보여줍니다.</p><ul><li>기간에 따른 변화</li><li>항목 간 비교와 구성</li><li>현황에서 상세 정보로</li></ul><a href="#workspace" class="text-link">함께 쓰는 모습 <span aria-hidden="true">↗</span></a></div>
+        <figure><img src="/concept/assets/chart.webp" width="1032" height="680" alt="NOVA 프로토타입의 라인, 막대, 도넛 차트 갤러리" loading="lazy"><figcaption>차트 갤러리 · 예시 데이터</figcaption></figure>
+      </div>
+      <div class="product-panel" id="panel-grid" role="tabpanel" aria-labelledby="grid" tabindex="0" hidden>
+        <div class="product-copy"><h3>많은 정보도<br>다루기 쉬운 목록으로.</h3><p>찾고, 정렬하고, 수정하는 업무.<br>행과 열 안에서 필요한 작업을 이어갑니다.</p><ul><li>조건에 맞는 정보 검색</li><li>정렬과 데이터 비교</li><li>목록 안에서 이어지는 편집</li></ul><a href="#workspace" class="text-link">함께 쓰는 모습 <span aria-hidden="true">↗</span></a></div>
+        <figure><img src="/concept/assets/grid.webp" width="1032" height="680" alt="NOVA 프로토타입의 검색, 정렬, 행 편집 그리드" loading="lazy"><figcaption>조회·편집 그리드 · 예시 데이터</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="workspace container" id="workspace" aria-labelledby="workspace-title">
+      <div class="workspace-top"><h2 id="workspace-title">각각의 도구가,<br>하나의 업무 공간으로.</h2><p>UX로 화면을 선택하고, Chart로 현황을 읽고,<br>Grid로 상세 정보를 다룹니다.</p></div>
+      <div class="workspace-bottom" id="next"><div><strong>통합 업무 포털</strong><p>예시 데이터로 구성한 프로토타입을 살펴보세요.</p></div><a class="button" href="/prototype/" target="_blank" rel="noopener">프로토타입 보기 <span aria-hidden="true">↗</span></a></div>
+      <p class="demo-note">UX, Chart, Grid의 상세 기능별 데모는 다음 단계에서 제공합니다.</p>
+    </section>
+  </main>
+  <footer class="footer container"><a class="brand" href="#" aria-label="NOVA 처음으로"><span>SEbit</span>NOVA<i aria-hidden="true">✳</i></a><p>업무 화면의 공통 언어.</p><small>© SEbit NOVA</small></footer>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="복잡한 업무를 명확한 경험으로. NOVA UX, Chart, Grid를 소개합니다.">
+  <meta name="color-scheme" content="dark light"><title>NOVA | 명확한 업무 경험</title>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('nova-concept-theme')||'dark'}catch{}</script>
+  <link rel="icon" href="data:,">
+  <link rel="preload" as="image" href="/concept/assets/keycaps.webp">
+  <link rel="stylesheet" href="/concept/style.css"><script src="/concept/script.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 이동</a>
+  <header class="header shell">
+    <a class="brand" href="#" aria-label="SEbit NOVA 홈"><span class="brand-owner">SEbit</span>NOVA<span class="brand-star" aria-hidden="true">✳</span></a>
+    <span class="header-label">Web experience platform</span>
+    <nav id="navigation" aria-label="주 메뉴"><a href="#about">NOVA 소개</a><a href="#products">제품</a><a href="#workspace">활용 화면</a><a href="#next">데모 안내</a></nav>
+    <button id="theme" aria-label="라이트 모드로 변경">라이트</button><button id="menu" aria-controls="navigation" aria-expanded="false">메뉴 <span aria-hidden="true">＋</span></button>
+  </header>
+  <main id="main">
+    <section class="hero shell" aria-labelledby="hero-heading">
+      <div class="hero-art"><img src="/concept/assets/keycaps.webp" width="1536" height="1024" alt="UX, Chart, Grid 키캡으로 표현한 NOVA의 세 가지 제품" fetchpriority="high"><span class="asset-error" hidden>UX / Chart / Grid</span></div>
+      <div class="hero-title"><h1 id="hero-heading"><span>복잡한 업무를,</span><span>명확한 <em>경험으로.</em></span></h1></div>
+      <div class="hero-aside"><p>조작은 익숙하게.<br>데이터는 선명하게.<br>NOVA로 연결되는 업무 화면.</p><a href="#products" class="button primary">제품 살펴보기 <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="about shell" id="about" aria-labelledby="about-heading">
+      <div class="about-copy reveal"><h2 id="about-heading">화면은 달라도,<br>경험은 같아야 하니까.</h2><p>메뉴를 누르고, 현황을 읽고, 목록을 편집하는 일.<br>반복되는 업무에 공통의 기준을 만듭니다.</p></div>
+      <div class="principles reveal"><p><span>UX</span>일관되게 조작하고</p><p><span>Chart</span>데이터를 이해하고</p><p><span>Grid</span>정보를 다룹니다</p></div>
+    </section>
+
+    <section class="products shell" id="products" aria-labelledby="products-heading">
+      <div class="section-heading reveal"><h2 id="products-heading">좋은 업무 화면의<br>세 가지 바탕.</h2><p>각 제품을 열어, 어떤 역할을 하는지 살펴보세요.</p></div>
+      <div class="product-collection">
+        <details class="product reveal" id="product-ux" open>
+          <summary><span class="product-name">NOVA <b>UX</b></span><span class="product-sub">사람과 화면을 연결하다</span><span class="expand" aria-hidden="true">＋</span></summary>
+          <div class="product-content"><div class="product-copy"><h3>어느 화면에서도<br>자연스럽게, 익숙하게.</h3><p>메뉴와 탭, 버튼과 입력 폼.<br>자주 쓰는 조작을 일관된 방식으로 연결합니다.</p><ul><li>화면을 오가는 멀티탭</li><li>명확한 입력과 피드백</li><li>조합해서 쓰는 컴포넌트</li></ul><a class="text-link" href="#workspace">활용 화면 보기 <span aria-hidden="true">↗</span></a></div><figure><img src="/concept/assets/ux.webp" width="1032" height="680" alt="기존 NOVA 프로토타입의 입력 폼, 버튼, 탭 컴포넌트 팔레트" loading="lazy"><figcaption>기존 프로토타입의 컴포넌트 예시</figcaption></figure></div>
+        </details>
+        <details class="product reveal" id="product-chart">
+          <summary><span class="product-name">NOVA <b>Chart</b></span><span class="product-sub">숫자에서 흐름을 읽다</span><span class="expand" aria-hidden="true">＋</span></summary>
+          <div class="product-content"><div class="product-copy"><h3>데이터가 보여주는<br>다음 판단의 단서.</h3><p>추이와 비율, 비교와 분포.<br>숫자의 관계를 한눈에 이해하도록 표현합니다.</p><ul><li>데이터에 맞는 시각화</li><li>기간과 조건에 따른 비교</li><li>현황에서 상세 정보로</li></ul><a class="text-link" href="#workspace">활용 화면 보기 <span aria-hidden="true">↗</span></a></div><figure><img src="/concept/assets/chart.webp" width="1032" height="680" alt="기존 NOVA 프로토타입의 라인, 막대, 도넛 등 차트 갤러리" loading="lazy"><figcaption>예시 데이터로 표현한 SVG 차트 프로토타입</figcaption></figure></div>
+        </details>
+        <details class="product reveal" id="product-grid">
+          <summary><span class="product-name">NOVA <b>Grid</b></span><span class="product-sub">많은 정보를 다루기 쉽게</span><span class="expand" aria-hidden="true">＋</span></summary>
+          <div class="product-content"><div class="product-copy"><h3>조회에서 편집까지.<br>작업의 흐름을 잇다.</h3><p>찾고, 정렬하고, 수정하는 업무.<br>행과 열 안에서 필요한 정보를 다룹니다.</p><ul><li>조건에 맞는 정보 검색</li><li>정렬과 데이터 비교</li><li>목록 안에서 이어지는 편집</li></ul><a class="text-link" href="#workspace">활용 화면 보기 <span aria-hidden="true">↗</span></a></div><figure><img src="/concept/assets/grid.webp" width="1032" height="680" alt="기존 NOVA 프로토타입의 검색과 행 편집 그리드 화면" loading="lazy"><figcaption>예시 데이터 기반 조회·편집 프로토타입</figcaption></figure></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="workspace shell" id="workspace" aria-labelledby="workspace-heading">
+      <div class="section-heading reveal"><h2 id="workspace-heading">따로보다,<br>함께일 때 더 명확하게.</h2><p>업무를 선택하고, 흐름을 파악하고, 상세 정보를 다루는 하나의 공간.</p></div>
+      <div class="workspace-preview reveal"><iframe src="/prototype/?view=overview" title="NOVA 통합 업무 포털 프로토타입 미리보기" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><p class="frame-fallback" hidden>아래 버튼에서 업무 포털 프로토타입을 열어보세요.</p></div>
+      <div class="workspace-caption"><div><strong>한올정밀 통합 업무 포털</strong><p>가상 회사의 예시 데이터로 보는 제품 구성</p></div><a class="button outline" href="/prototype/" target="_blank" rel="noopener">프로토타입 보기 <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="next shell" id="next" aria-labelledby="next-heading"><div class="next-top reveal"><p>이해에서 체험으로.</p><h2 id="next-heading">다음은,<br><span>직접 써볼 차례.</span></h2><a class="button primary" href="#products">제품 살펴보기 <span aria-hidden="true">↑</span></a></div><div class="next-note reveal"><p>UX, Chart, Grid의 상세 기능을 체험하는<br>전용 데모 사이트를 다음으로 만듭니다.</p><p>지금은 소개 페이지와 예시 프로토타입을 제공합니다.</p></div></section>
+  </main>
+  <footer class="footer shell"><a class="brand" href="#" aria-label="NOVA 처음으로"><span class="brand-owner">SEbit</span>NOVA<span class="brand-star" aria-hidden="true">✳</span></a><a href="/">기존 디자인 보기 <span aria-hidden="true">↗</span></a><small>© SEbit NOVA</small></footer>
+</body>
+</html>

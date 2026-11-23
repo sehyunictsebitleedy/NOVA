@@ -1,5 +1,7 @@
 # NOVA 제품별 독립 데모 사이트 — 구조·디자인 벤치마크 (research)
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **목적**: 확정 아키텍처(2레이어: Micro 소개 / **제품별 별도 실제 데모**)에 따라, NOVA UX·Grid·Chart **각각의 독립 데모 사이트**를 "다양한 샘플 + 더 디테일한 설명"으로 조직하기 위한 **사실 근거**.
 > **범위**: ① 벤치마크 3사이트(sbux/sbgrid/sbchart)의 **조직 방식**(네비·샘플 배열·설명 깊이·코드뷰) 실측 ② **레퍼런스-퍼스트 디자인 벤치마크**(component docs / data grid demo / chart docs 카테고리). 코드/설계 확정은 하지 않음(그것은 architect·ui-designer 소관).
 > **⛔ 전제**: 컴포넌트/기능/차트 **인벤토리는 재조사하지 않음** — `nova-feature-coverage-checklist.md`(2026-07-27 실측)가 정본. 본 문서는 "무엇이 있나"가 아니라 "**어떻게 조직하나**"만 다룬다.

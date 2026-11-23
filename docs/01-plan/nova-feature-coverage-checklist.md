@@ -1,5 +1,7 @@
 # NOVA 기능 완전 커버리지 체크리스트 — 소프트보울 전 제품 전수 채집
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **목적**: 소프트보울 5제품(SBUx·SBGrid·SBChart·SBDashBoard·SBWrapDoc)의 모든 기능·특장점을 하나도 빠짐없이 열거하여, NOVA가 벤치마킹 극대화 시 **단 하나의 기능/특장점도 누락하지 않도록** 하는 완전 커버리지 체크리스트.
 > **기준시각**: 2026-07-27 (전 항목 실 fetch / 원시 데이터 파일 직접 다운로드·파싱 실측)
 > **방법론**: ① 페이지 실 fetch(WebFetch) ② SPA 페이지는 원시 HTML의 데이터 소스 JS 파일(searchData.js·SBGridApiData.js·SBChartApiData.js·ReleaseNote.js)을 curl로 직접 다운로드해 Node로 전수 파싱 ③ MCP 엔드포인트는 JSON-RPC initialize 실호출(200 확인). **발명 0 — 전 항목 원문/실측**.
