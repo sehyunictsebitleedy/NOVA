@@ -1,5 +1,7 @@
 # NOVA 통합 데모 — 멀티탭 워크스페이스 (Integrated Workspace) 재설계
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **작성**: 2026-07-29 · architect · **상태**: 확정 설계(구현 착수 기준)
 > **대체 관계**: 본 문서는 `nova-integrated-demo-design.md`(2026-07-29 ui-designer)의 **범위(scope) 결정을 대체(supersede)** 한다. 이전 문서의 "가상 기업 상황실 1개 시나리오 = 대시보드 3뷰로 **압축**" 선언(§0 범위 가드)은 home.sb의 **33화면 breadth + 멀티탭 워크스페이스 UX**를 잃은 오설계였다(main 압축 지시 → 벤치마크 핵심 상실 사고). ⛔ 이전 문서의 **위젯 카탈로그·크로스필터 6경로·단일 원장·실경계 지도·토큰·정직 장치는 전부 유효** — 그것들은 본 워크스페이스의 **한 탭("통합 상황실")** 안에서 그대로 살아있다. 대체되는 것은 오직 **최상위 구조(단일 대시보드 → 멀티탭 워크스페이스)** 뿐이다.
 > **근거(참조 우선)**: `../01-plan/nova-integrated-demo-analysis.md`(home.sb 소스 실측 — §0-2 멀티탭 메커니즘·§1-1 셸·§1-2 GNB 5그룹 33항목·§1-4 위젯·§3 refine 매트릭스 "멀티탭 워크스페이스 추가" 권고) · **`../01-plan/nova-viz-asset-inventory.md`(⭐ Track C 하베스트 카탈로그 — NOVA Chart 코어=Canvas `CanvasChartWrapper` §1-8·차별화 시각화 3종 §4-D·손코딩 SVG 부채 실파일:라인 §4-B)** · `project_nova_platform.md`(NOVA 2레이어·6제품·확정 아키텍처) · `nova-integrated-demo-design.md`(상황실 탭 상세 — 재선언 없이 참조) · `nova-showcase-design.md` 부록 A(--nova-* 토큰 원장) · 어제 프로토타입 `nova-integrated-demo.html`(상황실 3뷰·지도·크로스필터 구현 자산)

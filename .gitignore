@@ -12,3 +12,10 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+apps/portal/public/
+
+*.tsbuildinfo
+
+# Local browser QA artifacts
+test-artifacts/

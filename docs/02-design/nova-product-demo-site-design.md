@@ -1,5 +1,7 @@
 # NOVA 제품별 독립 데모 사이트 (UX·Grid·Chart) — 디자인 스펙
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **작성**: 2026-07-29 · ui-designer · **상태**: 확정 제안(제품별 사이트 구현 기준)
 > **위치 재정의**: 어제안(`nova-product-demo-design.md`)의 "단일 HTML + 제품 탭 + 스크롤 스파이" IA(§1-1 A-1+B-1)는 **본 문서로 대체**된다. 어제안의 나머지 자산 — **데모 유닛 문법(§4)·코드 패널(§5, 토큰 7종 포함)·제품별 렌더 스펙(§6)·정직 3장치(§7)·접근성(§8)** — 은 전부 승계하며 재선언하지 않는다. 토큰·타이포·대비 원장은 `nova-showcase-design.md` §1·§2·§6-2·부록 A 그대로.
 > **근거(레퍼런스-퍼스트)**: `../01-plan/nova-product-demo-benchmark.md`(2026-07-29 실측 — 이하 "벤치") 표1·§3(풍부화 F1~F9)·표2(디자인 벤치마크 D1~D9)·§5(IA 권고). 인벤토리 정본 = `../01-plan/nova-feature-coverage-checklist.md`(재조사 금지). 실물 자산 = 어제 프로토타입 `nova-product-demo-prototype.html`(2,865줄, 스크래치패드).

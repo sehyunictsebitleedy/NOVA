@@ -1,0 +1,15 @@
+.git
+node_modules
+**/node_modules
+**/.nuxt
+**/.output
+**/public
+dist
+coverage
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+design
+*.log

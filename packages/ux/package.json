@@ -1,0 +1,24 @@
+{
+  "name": "@sebit-nova/ux",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./nuxt.config.ts",
+  "exports": {
+    ".": "./nuxt.config.ts",
+    "./server": "./server/index.ts",
+    "./roles": "./shared/roles.ts",
+    "./catalog": "./shared/catalog.ts",
+    "./locale": "./shared/locale.ts"
+  },
+  "dependencies": {
+    "@iconify-json/ph": "^1.2.2",
+    "@internationalized/date": "^3.12.4",
+    "@nuxt/ui": "4.12.0",
+    "@sebit-nova/tokens": "0.1.0",
+    "h3": "1.15.11",
+    "jose": "6.2.17",
+    "tailwindcss": "^4.1.0",
+    "zod": "4.6.7"
+  }
+}

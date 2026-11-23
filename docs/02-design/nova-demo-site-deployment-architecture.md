@@ -1,5 +1,7 @@
 # ② NOVA 통합 데모 대시보드 사이트 — 배포 아키텍처 (구조 결정서)
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **작성**: 2026-08-03 · architect · **상태**: 제안(사용자 승인 대기 — §8 승인 항목)
 > **상위 정본**: `../01-plan/nova-platform-structure-canonical.md` (§9-2 architect 위임 이행) · ② 설계 정본 `nova-integrated-workspace-design.md` · ADR 001~006 (`adr/README.md`)
 > **소비자**: 사용자(§8 승인) → frontend(②-P2 패키징) → devops(배포 실행) → planner(① 랜딩이 링크할 URL 확정 수령)
