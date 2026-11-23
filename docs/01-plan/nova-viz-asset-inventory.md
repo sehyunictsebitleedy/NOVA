@@ -1,5 +1,7 @@
 # SEbit 시각화 자산 카탈로그 — NOVA Chart/Dashboard 하베스트 근거
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > 목적: NOVA Chart/Dashboard가 "처음부터 새로 짜기"가 아니라 **우리가 이미 만든 실제 시각화 자산을 하베스트·포함**하도록.
 > ⛔ SEbit 메타룰(`c:\SEbit\CLAUDE.md §0`): 1:1 차용·새로짜기 금지 / ⛔ 발명 금지·실코드 근거(파일:라인)만.
 > 조사 기준시각: 2026-07-29 (c:\SEbit 로컬 실코드 grep·Read)

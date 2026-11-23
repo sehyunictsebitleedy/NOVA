@@ -1,5 +1,9 @@
 # NOVA 플랫폼 구조 — 정본 (Canonical Structure)
 
+> **2026-11-14 사용자 방향 변경**: NOVA 소개 사이트를 먼저 제작하고 UX·Chart·Grid 기능별 데모 사이트를 다음 단계로 만든다. 기존 ②→①→③→④ 순서는 이번 사용자 지시로 대체한다. 현재 소개는 `site/`의 간결한 세로형 한 페이지다. 기존 통합 업무 포털은 예시 프로토타입으로 보존하며 17탭 완성·제품 구현과 구분한다.
+
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **작성**: 2026-07-31 · planner(기획) · **상태**: 정본(Canonical) — 상위 구조 문서
 > **개정**: 2026-08-03 · planner — 마스터 확정(1차 공개 = **17탭 전부** · **17탭 완성 후 일괄 배포** · 데모 URL = ADR-007) 반영: §9-2·§9-3(a) 종결, ②-2C·②-3·②-5 S2·②-6 WBS·②-8·요약 동기 개정
 > **정본 근거**: 사용자 확정(2026-07-31) — softbowl 3-part 벤치마크를 NOVA 4-part로 이식. ⛔ 본 문서는 **사용자 확정 구조·순서를 문서화**한 것이며, 구조/배포/코드 결정은 architect·frontend 위임(본문 표기).
@@ -34,7 +38,7 @@ NOVA는 7/27~31 동안 여러 각도로 기획되며 문서가 **12건 이상** 
 | — | `softbowl.co.kr/front/main.do` | 솔루션 **소개**(코퍼레이트) | → | **① Micro NOVA 랜딩** | `sebit.co.kr/nova/` (Micro 내 페이지, 현 Nexus 랜딩 격) | 미착수 |
 | — | `softbowl.co.kr/SBUxDemo/home.sb` | **통합 데모**(멀티탭 업무포털) | → | **② NOVA 통합 데모 대시보드 사이트** | **자체 URL**(독립 배포, ①이 "바로가기"로 링크) | ⭐ **프로토타입 존재**(11탭·`nova-integrated-workspace.html`) |
 | — | `sbux.co.kr` · `sbgrid.co.kr` · `sbchart.co.kr` | **제품별 상세** 샘플 사이트 | → | **③ NOVA 제품별 데모** | 제품별 독립(UX·Grid·Chart 상세) | 설계만(`nova-product-demo-*`) |
-| — | (SBUx 프레임워크 실물 = 판매품) | **실제 제품**(FE 프레임워크) | → | **④ SEbit-NOVA 제품** | `github.com/Sebit-AI-Infra/SEbit-NOVA` (FE+백엔드 실물) | ⛔ **빈 레포**(2026-07-31 생성·`isEmpty:true`·diskUsage 0·로컬 미클론) |
+| — | (SBUx 프레임워크 실물 = 판매품) | **실제 제품**(FE 프레임워크) | → | **④ SEbit-NOVA 제품** | `github.com/Sebit-AI-Infra/SEbit-NOVA` (FE+백엔드 실물) | **문서·11탭 데모 보유, 제품 패키지 미구현**(2026-11-10) |
 
 **해석 주의(정본)**:
 - softbowl의 3개 "사이트"(main.do·home.sb·sbux 류)는 **전부 데모/마케팅 레이어**다. 실제로 파는 SBUx 프레임워크(고객이 설치하는 실물)는 그 3사이트가 아닌 **별도 제품**이다. NOVA는 이 실물을 **④로 명시**해 3-part → 4-part가 된다.
@@ -114,7 +118,7 @@ NOVA는 7/27~31 동안 여러 각도로 기획되며 문서가 **12건 이상** 
 
 ### ② NOVA 통합 데모 대시보드 사이트 (통합 데모) — 본 문서 후반 스펙 대상
 - **무엇을**: home.sb 격. 가상사 멀티탭 업무 워크스페이스로 NOVA 5제품이 조립된 모습을 **만지며 체험**. **자체 URL**(①이 링크).
-- **현 자산**: ⭐ **프로토타입 실존** `nova-integrated-workspace.html`(11탭·자체완결 HTML·약 183KB) · 설계 정본 `nova-integrated-workspace-design.md`(셸5층·ADR001~006) · 벤치 분석 `nova-integrated-demo-analysis.md`(home.sb 38/38).
+- **현 자산**: ⭐ **프로토타입 실존** `nova-integrated-workspace.html`(11탭·자체완결 HTML·192970 bytes) · 설계 정본 `nova-integrated-workspace-design.md`(셸5층·ADR001~006) · 벤치 분석 `nova-integrated-demo-analysis.md`(home.sb 38/38).
 - **담당**: planner(본 스펙) → frontend(리파인·T6 버블 마감) → architect(배포·자체 URL) → 독립 qa(재계측).
 - **상태**: 프로토타입 → **배포 가능 사이트화 대상**(본 문서 스펙).
 
@@ -126,7 +130,7 @@ NOVA는 7/27~31 동안 여러 각도로 기획되며 문서가 **12건 이상** 
 
 ### ④ SEbit-NOVA 제품 (실물)
 - **무엇을**: FE 패키지(tokens·ux·grid·chart·dashboard·ui-templates)+백엔드(API-On Gateway·Nexus Flow 소비)+Portal의 **실 제품**. ②③가 데모하는 대상의 실체. ②의 **실연결**(실데이터)이 여기에 의존.
-- **현 자산**: ⛔ **빈 레포**(`github.com/Sebit-AI-Infra/SEbit-NOVA`·`isEmpty:true`·로컬 미클론) · 전체 기획 `nova-platform-spec.md`(6제품·MoSCoW·P1~P6) · 전체 설계 `nova-platform-architecture.md`(ADR30) · Chart 하베스트 `nova-viz-asset-inventory.md`(코어=Canvas `CanvasChartWrapper`).
+- **현 자산**: **문서·데모 저장소, 제품 코드 미구현**(현재 개인 작업본 `github.com/sehyunictsebitleedy/NOVA`) · 전체 기획 `nova-platform-spec.md`(6제품·MoSCoW·P1~P6) · 전체 설계 `nova-platform-architecture.md`(ADR30) · Chart 하베스트 `nova-viz-asset-inventory.md`(코어=Canvas `CanvasChartWrapper`).
 - **담당**: architect(스캐폴딩·GH Packages) → backend/frontend(패키지 빌드) → devops(배포). 백엔드 ≈ SEbit 4축(SSO·RBAC·승인·AI) 소비.
 - **상태**: 레포 준비됨(빈 상태)·제품코드 미빌드(빌드 순서 #4).
 
@@ -292,6 +296,6 @@ NOVA는 7/27~31 동안 여러 각도로 기획되며 문서가 **12건 이상** 
 ---
 
 ## 요약 (3줄)
-1. **NOVA = softbowl 3-part의 4-part 이식**(정본): ① Micro NOVA 랜딩(소개) · ② 통합 데모 대시보드 사이트(home.sb 격·**자체 URL**) · ③ 제품별 데모(sbux류) · ④ SEbit-NOVA 실물(**빈 레포 확인**) — Micro 1depth는 `Nexus→NOVA 대체(흡수 아님)+Nexus 별도 1depth 공존`, 빌드 순서 **②→①→③④**(사용자 확정).
+1. **NOVA = softbowl 3-part의 4-part 이식**(정본): ① Micro NOVA 랜딩(소개) · ② 통합 데모 대시보드 사이트(home.sb 격·**자체 URL**) · ③ 제품별 데모(sbux류) · ④ SEbit-NOVA 실물(**제품 패키지 미구현**) — Micro 1depth는 `Nexus→NOVA 대체(흡수 아님)+Nexus 별도 1depth 공존`, 빌드 순서 **②→①→③④**(사용자 확정).
 2. **② 스펙 = 현 프로토타입(`nova-integrated-workspace.html`)을 17탭 완성 데모 사이트로 발전** — P1 리파인(T6 버블 마감)·P1b 6탭 증분(1차 = 17탭 전부, 2026-08-03 마스터 확정·`nova-demo-tier2-tabs-spec.md`)·P2 사이트화(`nova-demo.sebit.co.kr`, 17탭 완성 후 일괄 배포)·P3 실연결(④ 후). ⛔ **데모(샘플·SVG)/제품(실데이터·ECharts) 경계**를 X-ray로 명시.
 3. ⛔ **구조·배포·코드 결정은 architect/frontend 위임**(본 문서 §9·②-7 표기). 정본 문서 = `SEbit-Micro/docs/01-plan/nova-platform-structure-canonical.md`. **main 검증 → 사용자 확인 후 ②-P1 착수.**

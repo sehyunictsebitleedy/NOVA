@@ -1,0 +1,1 @@
+{"name":"@sebit-nova/grid","version":"0.1.0","private":true,"type":"module","main":"./nuxt.config.ts","exports":{".":"./nuxt.config.ts","./types":"./shared/types.ts","./core":"./shared/core.ts","./exchange":"./shared/exchange.ts"},"dependencies":{"@sebit-nova/ux":"0.1.0","@tanstack/vue-table":"^8.21.3","@tanstack/vue-virtual":"^3.13.12","exceljs":"^4.4.0"}}

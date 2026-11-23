@@ -1,5 +1,7 @@
 # NOVA Chart 도입 마이그레이션 프로그램 — 기획서
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > 대상: Nexus · Sentinel · API-On 3개 서비스의 **손코딩 SVG 대시보드 + 선언만 하고 안 쓰는 echarts**를
 > **NOVA Chart(ECharts 6.0 등록형 래퍼)** 로 대체.
 > ⛔ 이 문서 = 무엇을·왜·범위·WBS·수용기준·리스크(planner 소관). **구조/코드/아키텍처/패키지 API 결정은 architect 소관** — 여기서 정하지 않는다.

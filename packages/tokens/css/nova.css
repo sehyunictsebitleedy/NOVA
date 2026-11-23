@@ -1,0 +1,23 @@
+:root {
+  color-scheme: dark;
+  --nova-bg: #151518;
+  --nova-surface: #1d1d22;
+  --nova-text: #eeedf0;
+  --nova-text-muted: #aaa7b2;
+  --nova-border: #36353d;
+  --nova-primary: #b7a2eb;
+  --nova-button: #b7a2eb;
+  --nova-button-text: #21182f;
+  --nova-font-family: 'NOVA Pretendard', 'Malgun Gothic', Arial, sans-serif;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --nova-bg: #f8f8fa;
+  --nova-surface: #efedf3;
+  --nova-text: #27252e;
+  --nova-text-muted: #696572;
+  --nova-border: #dad7e0;
+  --nova-primary: #67479a;
+  --nova-button: #67479a;
+  --nova-button-text: #f8f6fc;
+}

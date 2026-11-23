@@ -1,0 +1,9 @@
+const theme = document.querySelector('.theme');
+function labelTheme() {const dark=document.documentElement.dataset.theme==='dark';theme.textContent=dark?'라이트':'다크';theme.setAttribute('aria-label',`${dark?'라이트':'다크'} 모드로 변경`);}
+theme.addEventListener('click',()=>{const value=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=value;try{localStorage.setItem('nova-design-theme',value)}catch{}labelTheme()});labelTheme();
+const menu=document.querySelector('.menu'),nav=document.querySelector('#nav');
+function closeMenu(restore=false){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','메뉴 열기');if(restore)menu.focus()}
+menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'메뉴 닫기':'메뉴 열기');nav.classList.toggle('open',open)});
+nav.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav.classList.contains('open'))closeMenu(true)});document.addEventListener('click',e=>{if(!e.target.closest('.header'))closeMenu()});matchMedia('(min-width:761px)').addEventListener('change',()=>closeMenu());
+if('IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){document.documentElement.classList.add('motion');const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in');observer.unobserve(entry.target)}}),{threshold:.08});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));}
+const stage=document.querySelector('.workspace-preview');new ResizeObserver(()=>{const scale=stage.clientWidth/1440;stage.style.height=`${930*scale}px`;stage.querySelector('iframe').style.transform=`scale(${scale})`}).observe(stage);

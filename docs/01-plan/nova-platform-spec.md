@@ -1,9 +1,11 @@
 # SEbit NOVA — 웹서비스 표준 플랫폼 기획서 (최종 통합본 v2.0)
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > 작성: 2026-07-27 · planner (SEbit-Creator 개발조직) · v2.0 = research 2종 통합 최종본
 > 벤치마크: softbowl 5제품 생태계 — SBUx·SBGrid·SBChart·SBDashBoard·**SBWrapDoc**(v2.0에서 추가 채집) + 통합데모 허브(SBUxDemo)
 > **통합 입력 3문서**: ① 본 문서 v1(기획 골격) ② `nova-feature-coverage-checklist.md`(전수 기능 인벤토리 — 커버리지 원장) ③ `nova-superiority-benchmark.md`(상회 목표 근거 — 성능 원장). 구조 결정 대조: `../02-design/nova-platform-architecture.md`(architect ADR 16건)
-> 문서 위치가 Micro인 이유: NOVA 대외 소개의 주체가 sebit.co.kr(Micro)이므로. Micro 개편 기획서(`micro-renewal-spec.md`)의 자매 문서.
+> 과거 Micro 배치 이유(현재는 NOVA 저장소로 이관됨): NOVA 대외 소개의 주체가 sebit.co.kr(Micro)이므로. Micro 개편 기획서(`micro-renewal-spec.md`)의 자매 문서.
 > ⛔ 본 문서는 "무엇을·왜"를 확정한다. "어떻게"(도구·라이브러리·구조)는 architect가 ADR로 결정한다.
 
 ### v2.0 통합 4원칙 (이 문서 전체를 관통)

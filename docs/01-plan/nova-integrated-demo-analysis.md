@@ -1,5 +1,7 @@
 # 소프트보울 통합 데모(SBUxDemo/DashBoard/home.sb) 심층 분석 — NOVA 통합 데모 refine 기준
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > **조회일 2026-07-29** · 방법 = 원시 HTML 실 fetch(curl, HTTP 200) + 참조 JS 역추적(dashboard.js·chart.js·SBUx.js 826KB·index.css 76KB·content.css) + 탭 콘텐츠 HTML 10종 직접 다운로드. **발명 0 — 전 항목 원문/실측. 못 본 것은 "미확인" 명기.**
 > 선행 조사: [nova-feature-coverage-checklist.md](nova-feature-coverage-checklist.md) §4 (2026-07-27, 메뉴 33·위젯 5·테마 3 관찰) — 본 문서가 이를 **소스 레벨로 심화·일부 정정**한다(테마 3종 → **미구현 판정**).
 > **2026-07-29 2차 완결**: 미확인 26개 콘텐츠 탭 전수 fetch(전부 HTTP 200)·본문 판독 → §2-b 신규 표. **전 페이지 분석 38/38 완료**.

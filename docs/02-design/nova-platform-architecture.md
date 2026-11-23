@@ -1,5 +1,7 @@
 # SEbit NOVA — 웹서비스 표준 플랫폼 아키텍처 설계서
 
+> **현행 상태 보정 · 2026-11-10**: 현재 구현·저장소 사실은 [CURRENT_STATUS](../CURRENT_STATUS.md), 이번 소개 사이트 범위는 [사이트 기획](../01-plan/nova-website-spec.md)을 우선 참조한다. 아래 과거 실사·QA·외부 저장소·배포 기록은 작성 당시 이력이다. 기능 11탭+홈만 존재하며 17탭은 공개 목표다. 현재 Portal·공통 UX Layer·토큰·Nitro 기반은 구현했으며, 실제 제품 라이브러리와 운영 연동은 미완료다. 최신 상태는 CURRENT_STATUS와 backend/SETUP을 따른다.
+
 > 작성: 2026-07-27 · architect (SEbit-Creator 개발조직)
 > 상위 문서: `docs/01-plan/nova-platform-spec.md` (planner, 2026-07-27)
 > **개정 2026-07-27 (2차 — research 반영 증보)**: research ①(`docs/01-plan/nova-superiority-benchmark.md` 성능·확장성 벤치마크)·②(`docs/01-plan/nova-feature-coverage-checklist.md` 전수 기능 인벤토리) 반영 — **ADR-G~M(§8~§14) 증보**, 근거 원장 E18~E25 추가, 디렉토리 트리에 grid/features 증설·chart/renderer·doc 패키지·benchmarks/ 반영(§15), 성능 실측 게이트 신설(ADR-L), 통합 쇼케이스 플래그십(ADR-M). **기존 ADR-A~F·결정 D1~D9 불변**(신규 사용자 결정 = D10·D11, §17).

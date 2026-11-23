@@ -1,178 +1,128 @@
 # SEbit NOVA
 
-**SEbit 웹서비스 표준 플랫폼 — 컴포넌트·그리드·차트·대시보드를 한 벌로 제공하는 모노레포**
+Vue 기반 웹서비스 UI 플랫폼. 현재는 **소개 시안 + Nuxt/Nitro 백엔드 기반 + UX·Grid 기능 데모**를 구성한 단계입니다.
 
-NOVA 는 SEbit 서비스가 공통으로 상속해 쓰는 화면 표준입니다. NOVA UX(컴포넌트) · NOVA UI(페이지 템플릿) · NOVA Grid · NOVA Chart · NOVA Dashboard 다섯 제품과, 이를 전시·문서화하는 NOVA Portal 로 이루어집니다.
-프런트 라이브러리만 파는 기존 제품과 달리, 인증(API-On Hub SSO) · 데이터 게이트웨이(API-On) · 노코드 흐름(Nexus)을 함께 묶는 것이 차별점입니다.
+- 개인 저장소: https://github.com/sehyunictsebitleedy/NOVA
+- 원본 저장소: https://github.com/Sebit-AI-Infra/SEbit-NOVA (`upstream`)
+- 로컬: `C:\Users\lenovo\Downloads\git\NOVA`
 
-> 현재 단계: **기획·설계 완료, 제품 코드 착수 전.** 이 레포에는 기획·설계 문서와 통합 데모 프로토타입(17탭)이 들어 있습니다. 패키지(`packages/`)와 Portal(`apps/portal`)은 아직 없습니다.
-> 운영 주소(예정): Portal `https://nova.sebit.co.kr` · 통합 데모 `https://nova-demo.sebit.co.kr` — 둘 다 아직 배포 전입니다.
+## 로컬 실행
 
----
+Node.js 24 이상을 사용합니다.
 
-## Tech Stack
-
-설계 확정안 기준입니다(`docs/02-design/nova-platform-architecture.md`). 구현하면서 바뀌면 이 표를 같이 고칩니다.
-
-| Layer | Technology |
-|-------|-----------|
-| 레포 구조 | npm workspaces 모노레포 (ADR-A1) |
-| Framework | Nuxt 4 (Vue 3, Nitro) · `<script setup>` 전용 |
-| UI | Nuxt UI v4 + Tailwind CSS v4 · 토큰 `--nova-*` (ADR-A2·A3) |
-| State | Pinia |
-| Grid | @tanstack/vue-table v8 (어댑터 격리) + @tanstack/vue-virtual · Excel = exceljs (ADR-B2·H1·H4) |
-| Chart | ECharts 6.0 등록형 래퍼 · svg/canvas 자동 선택 · 접근성 계약 (ADR-B3·G1·G2) |
-| 문서·데모 | Nuxt Content + vue-component-meta (ADR-C2) |
-| Auth | NaverWorks SSO — API-On Hub 경유 · 서명검증 내장 (ADR-E1) |
-| Data | `useNovaGateway()` — API-On 경유 · Origin 직접 호출 금지 (ADR-E2) |
-| 배포물 | GitHub Packages npm (`@sebit-nova/*`) (ADR-F2) |
-| Portal 배포 | IDC Docker + Cloudflare · 포트 4000 |
-| 통합 데모 배포 | Cloudflare Pages 별도 프로젝트 · 빌드 없음 (ADR-007·008) |
-
-## Architecture
-
-```
-                 ┌──────────────── SEbit-NOVA (이 레포) ────────────────┐
-                 │  packages/tokens   --nova-* 디자인 토큰                │
-                 │  packages/ux       Nuxt Layer (상속 · 런타임)          │
-  SEbit 서비스 ──extends──▶  packages/grid · chart · dashboard · doc      │
-  (Origin·PROVE…)│  ui-templates/     복사 전용 페이지 템플릿             │
-                 │  apps/portal :4000 문서 · 데모 · 쇼케이스 · MCP        │
-                 └──────────────┬───────────────────────────────────────┘
-                                │ useNovaGateway() / SSO
-                                ▼
-                  API-On Hub (:3100) ──▶ Origin (:3000)
-                  Nexus Flow (노코드)
+```powershell
+cd C:\Users\lenovo\Downloads\git\NOVA
+npm.cmd ci
+npm.cmd run dev
 ```
 
-- **UX = 상속, UI = 복사**: NOVA UX 는 서비스가 `extends` 로 런타임 상속하고 NOVA 가 소유합니다. NOVA UI 템플릿은 개발 시점에 복사하고, 복사한 뒤엔 서비스가 소유합니다(ADR-B1).
-- **Layer 의 서버 코드는 stateless 만**: 상태를 가진 처리는 각 서비스와 Hub 몫입니다(ADR-A4).
-- 전체 다이어그램·인증 시퀀스는 설계서 §1 · §15 에 있습니다.
+http://127.0.0.1:4000 에서 최신 소개 시안이 열립니다. 이미 설치된 환경에서는 `npm.cmd run dev`만 실행하면 됩니다.
+외부 API 설정 없이 소개 페이지와 제품 설명이 동작합니다. 종료는 Ctrl+C입니다.
 
-## Key Features
-
-- **NOVA UX** — Nuxt UI 위에 NOVA 토큰을 입힌 컴포넌트 Layer. 셸(GNB·LNB)·인증 미들웨어·RBAC(guest < viewer < editor < manager < admin)를 기본 제공
-- **NOVA UI** — 로그인·목록/상세·폼 마법사·설정·셸 변형 등 복사해서 쓰는 페이지 템플릿
-- **NOVA Grid** — 행·열 가상화, 서버 블록 지연 로딩(50만 행 이상 목표), 그룹핑·편집·Excel 내보내기·피봇·스파크라인
-- **NOVA Chart** — ECharts 6.0 래퍼. 데이터 양에 따라 svg/canvas 를 고르고, aria·decal·대체 표로 접근성 기본 확보
-- **NOVA Dashboard** — 위젯 계약·배치 렌더러·레이아웃 직렬화 스키마(저장 DB 는 서비스 몫)
-- **NOVA Portal** — 제품별 문서·라이브 플레이그라운드·통합 쇼케이스·벤치마크 공개·NOVA MCP 서버
-- **통합 데모 프로토타입** — 가상 회사 업무 포털 안에 NOVA 제품을 심은 17탭 워크스페이스(`docs/02-design/nova-integrated-workspace.html`, 단일 HTML · 외부 요청 없음)
-
-## Numbers
-
-2026-11-09 이 레포에서 직접 센 값입니다.
-
-| Metric | Value |
-|--------|-------|
-| 기획 문서 (`docs/01-plan/`) | 9 |
-| 설계 문서 (`docs/02-design/*.md`) | 7 |
-| 플랫폼 아키텍처 ADR (설계서 안 A1~M1) | 32 |
-| 통합 데모 ADR (`docs/02-design/adr/` 001~006) | 6 |
-| 배포 ADR (배포 아키텍처 문서 안 007~009) | 3 |
-| 통합 데모 프로토타입 | 1개 · 17탭 · 191KB |
-| 제품 패키지 (`packages/`) | 0 (착수 전) |
-
-## Structure
-
-지금 들어 있는 것:
-
-```
-SEbit-NOVA/
-├── README.md
-├── .github/CODEOWNERS                 PR 승인자 지정
-└── docs/
-    ├── 01-plan/                       기획 9건
-    │   ├── nova-platform-structure-canonical.md   ⭐ 구조 정본(4-part · 빌드 순서)
-    │   ├── nova-platform-spec.md                  제품 기획 정본
-    │   ├── nova-demo-tier2-tabs-spec.md           통합 데모 2차 6탭 기능정의
-    │   └── …                                      벤치마크 · 기능 커버리지 · 시각화 자산 · 차트 이관 계획
-    └── 02-design/                     설계 7건 + 프로토타입
-        ├── nova-platform-architecture.md          ⭐ 제품 아키텍처 정본(ADR 32건 · 디렉토리 확정안 §15)
-        ├── nova-integrated-workspace-design.md    통합 데모 설계 정본
-        ├── nova-demo-site-deployment-architecture.md  통합 데모 배포(ADR-007~009)
-        ├── nova-integrated-workspace.html         통합 데모 프로토타입(17탭)
-        ├── adr/                                   통합 데모 ADR 001~006
-        └── …                                      제품별 데모 설계 · 구 설계(이력)
+```powershell
+npm.cmd test
+npm.cmd run typecheck
+npm.cmd run build
+npm.cmd run test:integration
+# 별도 터미널에서 서버 실행 후
+npm.cmd run test:grid
+npm.cmd start
 ```
 
-설계상 목표 구조(아직 없음 · 설계서 §15):
+프로덕션 서버도 기본 `127.0.0.1:4000`에서 실행합니다. `HOST`, `PORT` 환경변수로 변경할 수 있습니다.
+`test:integration`은 빌드 후 실행하며, 임시 로컬 Gateway와 테스트 토큰만 사용합니다. 실제 외부 서비스를 호출하지 않습니다.
 
-```
-packages/{tokens,ux,grid,chart,dashboard,doc}
-ui-templates/
+## 구조
+
+```text
 apps/portal/
-benchmarks/
-scripts/
-.github/workflows/
+  app/pages/index.vue              소개 페이지
+  app/components/                  헤더·제품 탭·푸터
+  app/assets/css/site.css          현재 시안 스타일
+  shared/data/products.ts          공개 제품 소개 콘텐츠
+  server/api/                     Nitro BFF
+  .env.example                    외부 연동 설정 예시
+packages/
+  tokens/css/nova.css              --nova-* 디자인 토큰
+  ux/nuxt.config.ts               Nuxt UI v4·Tailwind v4 기반 Layer
+  ux/app/                         테마·Gateway composable·페이지 인증 미들웨어
+  ux/server/                      서명검증·RBAC·동일 출처·Gateway 유틸리티
+scripts/prepare-assets.mjs         공개 자산 허용 목록 준비
+tests/                            서버 단위·HTTP·Nitro 통합 테스트
+site/                             기존 정적 시안·공개 자산 원본 보존
+docs/                             기획·설계·연동 가이드
 ```
 
-문서를 처음 볼 때는 `docs/01-plan/nova-platform-structure-canonical.md` 부터 읽으면 됩니다. NOVA 를 ① Micro 소개 페이지 · ② 통합 데모 사이트 · ③ 제품별 데모 · ④ 제품 실물(이 레포) 네 부분으로 나누고, 빌드 순서(② → ① → ③ → ④)와 문서별 위치를 정리해 둔 상위 문서입니다.
+실행 화면은 Vue 컴포넌트입니다. 기존 HTML을 iframe으로 감싼 소개 페이지가 아닙니다.
+제품 사진은 기존 프로토타입의 실제 캡처이며, `/prototype/`는 원래의 HTML 업무 포털입니다.
 
-## Development
+## 백엔드 경계
 
-아직 빌드할 코드가 없습니다. 프로토타입은 브라우저로 바로 엽니다.
-
-```bash
-git clone git@github.com:Sebit-AI-Infra/SEbit-NOVA.git
-cd SEbit-NOVA
-git switch dev
-start docs/02-design/nova-integrated-workspace.html   # Windows · macOS 는 open
+```text
+브라우저 → NOVA Nitro BFF → API-On Gateway → 업무 데이터 / Nexus
+                    ↑
+              API-On Hub 토큰 검증
 ```
 
-패키지가 생기면 아래 형태가 됩니다(설계 기준).
+- NOVA는 OAuth·계정·JWT를 자체 발급하지 않습니다.
+- Hub 토큰은 서버에서 서명·발급자·대상·만료·역할을 검증하고 host-only HttpOnly 쿠키에 저장합니다.
+- 브라우저에 서비스 키·Hub 검증 키를 전달하지 않습니다.
+- 역할은 `guest < viewer < editor < manager < admin`입니다.
+- Layer는 stateless 유틸리티만 제공하고 실제 API는 Portal이 소유합니다.
+- 자체 DB·직접 Origin 호출·직접 LLM 호출은 추가하지 않았습니다.
+- 현재 화면은 공개 소개 페이지이며 로그인 UI와 운영 SSO 왕복 흐름은 아직 연결하지 않았습니다.
 
-```bash
-npm install
-npm run dev -w apps/portal      # http://localhost:4000
+운영 API-On·Hub·Nexus는 주소·키·콜백/API 규격 확인 전입니다. 현재는 연결 어댑터와 검증 기반만 준비되어 있습니다.
+설정이 없거나 연동이 실패하면 명확한 오류를 반환합니다. 예시 데이터로 성공을 가장하지 않습니다.
+
+## 외부 연동
+
+```powershell
+Copy-Item apps/portal/.env.example apps/portal/.env
 ```
 
-### 브랜치 · PR 규칙
+실제 값을 로컬 `.env`에 입력하세요. 소개 페이지 실행에는 필요하지 않습니다.
+프로덕션에서는 프로세스 환경변수를 주입합니다. `npm start`는 `.env`를 자동으로 읽지 않습니다.
+자세한 계약과 미구현 범위는 [백엔드 설정 가이드](docs/backend/SETUP.md)를 확인하세요.
 
-| 브랜치 | 용도 | 직접 push |
+## 현재 API
+
+| 경로 | 용도 | 접근 |
 |---|---|---|
-| `dev` | 개발 · 기본 브랜치 | 금지 — PR 로만 반영 |
-| `prod` | 운영 배포 | 금지 — `dev` → `prod` PR 로만 반영 |
+| `GET /api/health` | 서버 상태 | 공개 |
+| `GET /api/ux/components` | UX 컴포넌트·코드·props 카탈로그 | 공개 |
+| `GET /api/products` | 소개 페이지 제품 카탈로그 | 공개 |
+| `GET /api/auth/session` | 검증된 현재 세션 | 익명 상태 조회 가능 |
+| `POST /api/auth/sso-finalize` | Hub 토큰 검증·쿠키 설정 | 동일 출처·설정 필요 |
+| `POST /api/auth/logout` | 쿠키 제거 | 동일 출처·설정 필요 |
+| `GET /api/showcase` | API-On 경유 업무 데이터 | viewer 이상 |
+| `POST /api/nexus/run` | API-On 경유 Nexus 어댑터 | manager 이상·동일 출처 |
 
-`main` 은 두지 않습니다.
+## 디자인·데모
 
-1. 최신 `dev` 에서 작업 브랜치를 만듭니다. 이름은 `<작업자>/<종류>-<주제>-<YYYYMMDD>` (종류 = feat · fix · docs · chore · refactor)
-   예: `leedy/feat-tokens-scaffold-20261110`
-2. 작업 브랜치를 push 하고 **base = `dev`** 로 PR 을 엽니다.
-3. 승인자(김혁진 · `@SEHYUNICT-SeBit`)가 검토·승인한 뒤 병합합니다.
-4. 운영 반영은 `dev` → `prod` PR 을 같은 방식으로 승인받아 병합합니다.
+- `/`: 최신 간결한 Vue 소개 시안
+- `/grid`: Grid 조회·편집·Excel/CSV·10만 행 가상 스크롤 데모
+- `/ux`: 공통 UX 19종 + TabWorkspace의 실제 Vue 미리보기·코드·API
+- `/design/`: 동일 Vue 페이지 별칭
+- `/classic/`: 초기 밝은 정적 시안
+- `/concept/`: 이전 키캡 중심 정적 시안
+- `/prototype/`: 기능 11탭 + 홈의 HTML 업무 포털 프로토타입
 
-코드나 기능을 바꾸면 README 와 관련 설계 문서를 **같은 PR** 에서 고칩니다.
+통합 데모 목표는 T1~T17 + 홈입니다. T4·T5·T8·T10·T11·T13은 아직 미구현입니다.
+UX 기본 컴포넌트와 전용 갤러리를 구현했습니다. 사용법과 범위는 [UX 가이드](docs/ux/README.md)를 확인하세요. Grid 코어 1차 구현과 사용법은 [Grid 가이드](docs/grid/README.md)를 확인하세요. Chart 전용 Vue 구현과 Grid 고급 기능은 다음 단계입니다.
+공통 UX Layer를 추가했다고 전체 제품 구현이 완료된 것은 아닙니다.
 
-## Quality
+## 문서
 
-코드가 생기면 아래 검사를 PR 마다 통과해야 합니다(SEbit 공통 기준).
+- [현재 상태](docs/CURRENT_STATUS.md)
+- [백엔드 설정·미연결 범위](docs/backend/SETUP.md)
+- [현재 시안 기획](design/nova-simple-design.md)
+- [사이트 기획](docs/01-plan/nova-website-spec.md)
+- [플랫폼 아키텍처](docs/02-design/nova-platform-architecture.md)
 
-```bash
-npm run lint          # ESLint (@sebit-ai-infra/eslint-config · 커스텀 룰 8개)
-npm run test:run      # Vitest
-npm run build         # 빌드
-```
+과거의 Micro 배치안·QA·외부 저장소 실사·성능 수치는 당시 기록입니다. 현행 상태와 구분합니다.
+기존 브랜치·PR 정책 및 `.github/CODEOWNERS`는 유지합니다. 이번 작업으로 커밋·푸시·운영 배포를 수행하지 않았습니다.
 
-- 성능 수치는 `benchmarks/` 실측 게이트를 통과하기 전에는 공표하지 않습니다(ADR-L1).
-- 다크모드 변형 필수 · 키는 환경변수로만 · catch 에서 하드코딩 기본값 반환 금지.
+## 가비아 배포
 
-## 검증
-
-| 항목 | 값 |
-|---|---|
-| 최근 검증 | 2026-08-03 · 통합 데모 프로토타입 독립 qa 3회차 통과 |
-| 결함 | 수정 4건(T6 버블 라벨 겹침·대비 · 라이트 히어로 대비 · 거대 아이콘 렌더 · 복사 거짓 성공) |
-| 미결 | 홈 런처 아이콘 크기 변경(36→14px) 판단 · 정본 개정 추인 · T5 최대 행수 · T8 범위 |
-| 게이트 | 제품 코드 없음 — 해당 없음 |
-
-## 변경 이력
-
-| 날짜 | 내용 |
-|---|---|
-| 2026-07-27 ~ 08-03 | 기획·설계·통합 데모 프로토타입 작성(당시 `SEbit-Micro` 레포 `0d0aa6c` · `7c7058e` · `1a13754` · `2a1860d`) |
-| 2026-11-09 | 레포 첫 반영 — 기획 9 · 설계 7 · ADR 6 · 프로토타입을 `SEbit-Micro/docs` 에서 옮김(내용 동일) · README · CODEOWNERS · dev/prod 브랜치 구성 |
-
----
-
-*SEbit AI Infra — SEbit NOVA (2026-11-09)*
+Ubuntu 서버 설치와 서비스 관리 방법은 [가비아 배포 기록](deploy/gabia/README.md)을 참고하세요. 기존 Canvers는 유지하고 NOVA는 8080 포트를 사용합니다.
